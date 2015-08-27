@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>shaders/imageplane/vertex.glsl</file>
+        <file>shaders/imageplane/fragment.glsl</file>
+        <file>shaders/basic/vertex.glsl</file>
+        <file>shaders/basic/fragment.glsl</file>
+        <file>shaders/outline/vertex.glsl</file>
+        <file>shaders/outline/fragment.glsl</file>
+        <file>shaders/framebuffer/vertex.glsl</file>
+        <file>shaders/framebuffer/fragment.glsl</file>
+        <file>shaders/template/vertex.glsl</file>
+        <file>shaders/template/fragment.glsl</file>
+        <file>shaders/template/geometry.glsl</file>
+        <file>shaders/contour/vertex.glsl</file>
+        <file>shaders/contour/fragment.glsl</file>
+    </qresource>
+</RCC>
