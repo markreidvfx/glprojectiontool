@@ -18,3 +18,5 @@ ${RESOURCES}
 )
 
 target_link_libraries(glprojectiontool projectionwidget Qt5::Widgets)
+
+install(TARGETS glprojectiontool DESTINATION bin)
