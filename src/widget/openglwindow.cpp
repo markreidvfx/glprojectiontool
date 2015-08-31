@@ -52,8 +52,9 @@ bool Renderer::make_current(SurfaceInfo& info)
     if (!m_context->makeCurrent(m_window))
         return false;
 
-    glm::ivec2 size = glm::ivec2(m_window->size().width(),
-                                 m_window->size().height());
+    const qreal retinaScale = m_window->devicePixelRatio();
+    glm::ivec2 size = glm::ivec2(m_window->size().width() * retinaScale,
+                                 m_window->size().height()* retinaScale);
     locker.unlock();
 
     if (!m_initialized) {

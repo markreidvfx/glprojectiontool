@@ -17,6 +17,13 @@ ${UI_HEADERS}
 ${RESOURCES}
 )
 
-target_link_libraries(glprojectiontool projectionwidget Qt5::Widgets)
+set_property(TARGET glprojectiontool PROPERTY CXX_STANDARD 11)
+set_property(TARGET glprojectiontool PROPERTY CXX_STANDARD_REQUIRED ON)
+
+target_link_libraries(glprojectiontool
+projectionwidget
+Qt5::Widgets
+Threads::Threads
+)
 
 install(TARGETS glprojectiontool DESTINATION bin)

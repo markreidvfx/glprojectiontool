@@ -29,6 +29,7 @@ ${ImageMagick_INCLUDE_DIRS}
 ${Boost_INCLUDE_DIRS}
 ${OPENSUBDIV_INCLUDE_DIR}
 ${ZLIB_INCLUDE_DIRS}
+${GLM_INCLUDE_DIR}
 )
 
 target_compile_definitions(projectionscene PRIVATE

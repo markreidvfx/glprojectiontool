@@ -4,6 +4,7 @@
 #include <QSurfaceFormat>
 #include <QCommandLineParser>
 #include <iostream>
+#include <stdio.h>
 
 #ifndef QT_NO_OPENGL
 #include "projector.h"

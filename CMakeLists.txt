@@ -30,7 +30,10 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(ImageMagick COMPONENTS Magick++ MagickCore REQUIRED)
 find_package(Boost REQUIRED)
-find_package(zlib REQUIRED)
+find_package(ZLIB REQUIRED)
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
 
 message(STATUS "boost include ${Boost_INCLUDE_DIRS}")
 
