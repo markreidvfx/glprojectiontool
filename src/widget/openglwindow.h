@@ -13,6 +13,7 @@
 #include <glm/glm.hpp>
 
 #include "scene.h"
+#include "loader.h"
 
 class OpenGLWindow;
 
@@ -76,6 +77,9 @@ public slots:
     void create_template(QString imageplane,
                          QString dest,
                          int frame);
+
+    void set_imageplane_data(const FloatImage &data, int width, int height, int frame);
+    void set_template_texture(const FloatImage &data, int width, int height);
 
 private slots:
     void render();

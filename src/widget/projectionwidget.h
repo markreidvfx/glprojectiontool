@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QThread>
 #include "openglwindow.h"
+#include "loader.h"
 
 class ProjectionWidget : public QWidget
 {
@@ -13,7 +14,10 @@ public:
 
     OpenGLWindow *glwidget;
     Renderer *renderer;
+    Loader *loader;
+
     QThread *render_thread;
+    QThread *loader_thread;
 
 };
 

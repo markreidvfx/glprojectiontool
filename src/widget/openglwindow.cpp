@@ -97,6 +97,33 @@ void Renderer::render()
 
 }
 
+void Renderer::set_imageplane_data(const FloatImage &data, int width, int height, int frame)
+{
+    std::cerr << width << "x" << height << " " << frame << " "<< data.size() << "\n";
+
+    SurfaceInfo info;
+    if (!make_current(info)) {
+        std::cerr << "error make current\n";
+        return;
+    }
+
+    m_scene.set_imageplane_data(data, width, height, frame);
+
+}
+
+void Renderer::set_template_texture(const FloatImage &data, int width, int height)
+{
+    std::cerr << "template texture: " << width << "x" << height  << " "<< data.size() << "\n";
+
+    SurfaceInfo info;
+    if (!make_current(info)) {
+        std::cerr << "error make current\n";
+        return;
+    }
+
+    m_scene.set_template_texture(data, width, height);
+}
+
 void Renderer::create_template(QString imageplane,
                                QString dest,
                                int frame)

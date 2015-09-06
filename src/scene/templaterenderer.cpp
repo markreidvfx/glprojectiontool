@@ -35,7 +35,7 @@ void TemplateRenderer::load_shaders()
 
 void TemplateRenderer::create()
 {
-    m_texture_reader.read("/Users/mark/Dev/ProjectionWidget/guides.tif", 0);
+    //m_texture_reader.read("/Users/mreid/Dev/ProjectionWidget/guides.tif", 0);
     m_framebuffer.create();
     m_contour_render.create();
 
@@ -44,8 +44,7 @@ void TemplateRenderer::create()
     glGenTextures(1, &m_template_texture_id);
 }
 
-void TemplateRenderer::load_texture_data(const int width, const int height,
-                                         const std::vector<float> image_data)
+void TemplateRenderer::set_template_texture(const std::vector<float> &image_data, const int width, const int height)
 {
 
     glBindTexture(GL_TEXTURE_2D, m_template_texture_id);
@@ -73,17 +72,17 @@ void TemplateRenderer::draw(std::vector< std::shared_ptr<Mesh> > objects,
 
 {
     double t;
-    if (!m_texture_loaded && m_texture_reader.dataReady(t)) {
-        load_texture_data(m_texture_reader.width(),
-                          m_texture_reader.height(),
-                          m_texture_reader.image_data);
-        std::cerr << "template texture loaded\n";
-        redraw_offscreen_buffers = true;
+    //if (!m_texture_loaded && m_texture_reader.dataReady(t)) {
+    //    load_texture_data(m_texture_reader.width(),
+    //                      m_texture_reader.height(),
+    //                      m_texture_reader.image_data);
+    //    std::cerr << "template texture loaded\n";
+    //    redraw_offscreen_buffers = true;
 
-    }
+    //}
 
     if (!m_texture_loaded)
-        return;
+       return;
 
     if (redraw_offscreen_buffers) {
         m_framebuffer.bind();

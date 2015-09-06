@@ -35,7 +35,6 @@ public slots:
     void updateScene();
     void showSceneViewContextMenu(const QPoint&);
     void setFrameRange(int first, int last);
-    void set_template_texture(const QString &path) {}
 
     void on_browse_imageplane_clicked() {browse_file(Imageplane);}
     void on_browse_project_clicked() {browse_file(Project);}
@@ -67,6 +66,8 @@ signals:
     void request_template(QString imageplane,
                           QString dest,
                           int frame);
+
+    void set_template_texture(QString path);
 
 private:
     Ui::Projector *ui;

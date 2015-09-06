@@ -3,6 +3,7 @@ add_library(projectionwidget
 openglwindow.cpp
 projectionwidget.cpp
 glew_helper.cpp
+loader.cpp
 )
 
 set_property(TARGET projectionwidget PROPERTY CXX_STANDARD 11)

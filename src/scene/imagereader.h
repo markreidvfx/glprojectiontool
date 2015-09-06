@@ -7,6 +7,11 @@
 #include <future>
 
 
+void read_image(const std::string &path,
+                std::vector<float> &data,
+                int &width, int &height);
+
+
 class ImageReader
 {
 public:

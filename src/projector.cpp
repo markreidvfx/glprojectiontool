@@ -88,6 +88,13 @@ Projector::Projector(QWidget *parent) :
     connect(ui->progress_cancel, SIGNAL(clicked(bool)),
             this, SLOT(cancel_processing()));
 
+    connect(this, SIGNAL(set_template_texture(QString)),
+            ui->projector->loader, SLOT(set_template_texture(QString)));
+
+    QString template_texture = "/home/mreid/Projects/Samples/guides.tif";
+   // QTimer::singleShot(0 )
+    emit set_template_texture(template_texture);
+
     hide_progress();
 }
 
@@ -199,7 +206,10 @@ void Projector::frameChange(int value)
 {
     QString path;
     path.sprintf(ui->imageplane_path->text().toStdString().c_str(), value);
-    ui->projector->renderer->setImagePlanePath(path, double(value));
+
+    ui->projector->loader->set_imageplane_path(path, value);
+
+    //ui->projector->renderer->setImagePlanePath(path, double(value));
 
     ui->currentTime->blockSignals(true);
     ui->timeSlider->blockSignals(true);

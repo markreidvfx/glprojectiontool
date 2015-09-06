@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1093</width>
+    <width>1129</width>
     <height>726</height>
    </rect>
   </property>
@@ -105,7 +105,7 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_5">
       <property name="spacing">
-       <number>-1</number>
+       <number>6</number>
       </property>
       <property name="leftMargin">
        <number>12</number>
@@ -136,12 +136,6 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>640</width>
-           <height>0</height>
-          </size>
          </property>
          <property name="autoFillBackground">
           <bool>false</bool>

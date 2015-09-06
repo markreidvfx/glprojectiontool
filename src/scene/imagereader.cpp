@@ -26,6 +26,35 @@ static bool load(ImageReader *reader)
 
 }
 
+void read_image(const std::string &path,
+                std::vector<float> &data,
+                int &width, int &height)
+{
+    Magick::Image image;
+    std::chrono::time_point<std::chrono::system_clock> start;
+    start = std::chrono::system_clock::now();
+
+    try {
+        //image.read("logo:");
+        image.read( path);
+    }
+    catch (...) {
+        std::cerr << "error reading" << path << "\n";
+        image.read("logo:");
+        //return false;
+    }
+    image.resize("1024x1024!");
+    width = image.size().width();
+    height = image.size().height();
+
+    data.resize(width * height * 4 );
+    image.write(0, 0, width, height, "RGBA",  Magick::FloatPixel, &data[0]);
+
+    std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now()-start;
+    std::cerr << "image read in " << elapsed_seconds.count() << " secs\n";
+
+}
+
 void ImageReader::read(const std::string &path, double time)
 {
     std::lock_guard<std::recursive_mutex> lock(m_lock);

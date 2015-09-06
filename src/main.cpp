@@ -74,6 +74,8 @@ int main(int argc, char *argv[])
     app.setApplicationName("projector");
     app.setApplicationVersion("0.1");
 
+    qRegisterMetaType<std::vector < float > > ("FloatImage");
+
     QCommandLineParser parser;
     QString errorMessage;
     ProjectorOptions options;

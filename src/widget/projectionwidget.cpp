@@ -10,7 +10,7 @@ ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
     format.setDepthBufferSize(24);
     format.setStencilBufferSize(8);
     format.setSamples(8);
-    format.setSwapBehavior(QSurfaceFormat::TripleBuffer);
+    format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
 
     QCoreApplication *app = QApplication::instance();
 
@@ -18,6 +18,8 @@ ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
     glwidget = new OpenGLWindow(gl_renderer);
     renderer = gl_renderer.data();
     QWidget *container = QWidget::createWindowContainer(glwidget);
+
+    loader = new Loader();
 
     //container->setAttribute(Qt::WA_NoSystemBackground);
     //container->setAttribute(Qt::WA_OpaquePaintEvent);
@@ -31,8 +33,24 @@ ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
     render_thread = new QThread;
     renderer->moveToThread(render_thread);
 
+    loader_thread = new QThread;
+    loader->moveToThread(loader_thread);
+
     QObject::connect(app, SIGNAL(lastWindowClosed()), render_thread, SLOT(quit()));
     render_thread->start();
+
+    QObject::connect(app, SIGNAL(lastWindowClosed()), loader_thread, SLOT(quit()));
+    loader_thread->start();
+
+    // this signal needs to block
+    QObject::connect(loader, SIGNAL(imageplane_ready(const FloatImage&,int,int,int)),
+                     renderer, SLOT(set_imageplane_data(const FloatImage&,int,int,int)),
+                     Qt::BlockingQueuedConnection);
+
+    // this signal needs to block
+    QObject::connect(loader, SIGNAL(template_texture_ready(const FloatImage&,int,int)),
+                     renderer, SLOT(set_template_texture(const FloatImage&,int,int)),
+                     Qt::BlockingQueuedConnection);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);

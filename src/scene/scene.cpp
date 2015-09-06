@@ -229,6 +229,21 @@ void Scene::updateImagePlanes()
 
 }
 
+void Scene::set_imageplane_data(const std::vector <float> &data, int width, int height, int frame)
+{
+
+    std::cerr << width << "laoding data\n";
+    m_imageplane->update();
+    m_imageplane->setImageData(width, height, data);
+
+    update(frame);
+}
+
+void Scene::set_template_texture(const std::vector<float> &data, int width, int height)
+{
+    m_template.set_template_texture(data, width, height);
+}
+
 void Scene::render_template(std::string image_plane, std::string  dest, int frame)
 {
 
@@ -268,7 +283,7 @@ void Scene::draw()
 
     m_crc = crc32(0L, NULL, 0);
 
-    updateImagePlanes();
+    //updateImagePlanes();
 
     std::unique_lock<std::recursive_mutex> lock(m_lock);
     glm::mat4 modelToVewMatrix = camera->viewMatrix();
@@ -285,6 +300,7 @@ void Scene::draw()
     glViewport(0,0, viewport_size.x, viewport_size.y);
     glClearColor(0.85f, 0.85f, 0.85f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //return;
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -293,8 +309,9 @@ void Scene::draw()
 
     m_imageplane->setViewportMatrix(viewportMatrix);
     m_imageplane->setAlpha(1.0);
-    m_imageplane->setZ(0.9999f);
+    m_imageplane->setZ(0.99999f);
     m_imageplane->draw();
+   // return;
 
     int level = subdivLevel();
 

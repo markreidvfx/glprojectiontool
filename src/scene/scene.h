@@ -84,6 +84,9 @@ public:
 
     bool frame_range_changed;
 
+    void set_imageplane_data(const std::vector<float> &data, int width, int height, int frame);
+    void set_template_texture(const std::vector<float> &data, int width, int height);
+
     void render_template(std::string image_plane,
                          std::string dest,
                          int frame);

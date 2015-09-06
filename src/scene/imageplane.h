@@ -13,7 +13,7 @@ public:
     void create();
     void update();
     void setImageData(const int width, const int height,
-                         const std::vector<float> image_data);
+                         const std::vector<float> &image_data);
     void draw();
 
     void setZ(float value){m_z = value;}
