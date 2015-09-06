@@ -31,7 +31,7 @@ public:
     void update(double time = 0);
 
     void updateImagePlanes();
-    void draw();
+    void draw(unsigned int default_framebuffer_id=0);
 
     void setImagePlanePath(const std::string &path, double time);
     std::string imagePlanePath()

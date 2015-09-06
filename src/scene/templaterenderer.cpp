@@ -68,7 +68,8 @@ void TemplateRenderer::draw(std::vector< std::shared_ptr<Mesh> > objects,
                             glm::mat4 &modelToProjectionMatrix,
                             glm::mat4 &viewportMatrix,
                             glm::vec2 &viewport_size,
-                            bool redraw_offscreen_buffers)
+                            bool redraw_offscreen_buffers,
+                            unsigned int default_framebuffer_id)
 
 {
     double t;
@@ -81,8 +82,8 @@ void TemplateRenderer::draw(std::vector< std::shared_ptr<Mesh> > objects,
 
     //}
 
-    if (!m_texture_loaded)
-       return;
+    //if (!m_texture_loaded)
+    //   return;
 
     if (redraw_offscreen_buffers) {
         m_framebuffer.bind();
@@ -115,7 +116,7 @@ void TemplateRenderer::draw(std::vector< std::shared_ptr<Mesh> > objects,
         m_contour_render.render_countour(m_framebuffer.m_normal_buffer_id,
                                          m_framebuffer.m_depth_buffer_id);
     }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, default_framebuffer_id);
     glViewport(0,0, viewport_size.x, viewport_size.y);
 
     glDisable(GL_CULL_FACE);

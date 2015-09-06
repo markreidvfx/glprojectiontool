@@ -13,11 +13,11 @@ public:
     explicit ProjectionWidget(QWidget *parent = 0);
     ~ProjectionWidget();
 
-    OpenGLWindow *glwidget;
+    OpenGLWidget *glwidget;
     Renderer *renderer;
     Loader *loader;
 
-    QThread *render_thread;
+    //QThread *render_thread;
     QThread *loader_thread;
 
 };

@@ -243,7 +243,7 @@ void Scene::updateImagePlanes()
 void Scene::set_imageplane_data(const std::vector <float> &data, int width, int height, int frame)
 {
 
-    std::cerr << width << "laoding data\n";
+    std::cerr << width << "loading data\n";
     m_imageplane->update();
     m_imageplane->setImageData(width, height, data);
 
@@ -289,7 +289,7 @@ void Scene::render_template(std::string image_plane, std::string  dest, int fram
 
 }
 
-void Scene::draw()
+void Scene::draw(unsigned int default_framebuffer_id)
 {
 
     m_crc = crc32(0L, NULL, 0);
@@ -307,7 +307,7 @@ void Scene::draw()
 
     glm::mat4 modelToProjectionMatrix = projectionMatrix * modelToVewMatrix;
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, default_framebuffer_id);
     glViewport(0,0, viewport_size.x, viewport_size.y);
     glClearColor(0.85f, 0.85f, 0.85f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -322,7 +322,6 @@ void Scene::draw()
     m_imageplane->setAlpha(1.0);
     m_imageplane->setZ(0.99999f);
     m_imageplane->draw();
-   // return;
 
     int level = subdivLevel();
 
@@ -356,7 +355,7 @@ void Scene::draw()
         cerr << "crc " << m_crc << "\n";
     }
 
-    m_template.draw(m_objects, modelToProjectionMatrix, viewportMatrix, viewport_size, redraw_offscreen_buffers);
+    m_template.draw(m_objects, modelToProjectionMatrix, viewportMatrix, viewport_size, redraw_offscreen_buffers, default_framebuffer_id);
 
     m_prev_crc = m_crc;
     m_draw_count++;

@@ -74,7 +74,19 @@ int main(int argc, char *argv[])
     app.setApplicationName("projector");
     app.setApplicationVersion("0.1");
 
+
     qRegisterMetaType<std::vector < float > > ("FloatImage");
+
+
+    QSurfaceFormat format;
+    format.setVersion(3, 3);
+    format.setProfile(QSurfaceFormat::CoreProfile);
+    format.setDepthBufferSize(24);
+    format.setStencilBufferSize(8);
+    format.setSamples(8);
+    format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+    QSurfaceFormat::setDefaultFormat(format);
+
 
     QCommandLineParser parser;
     QString errorMessage;

@@ -19,19 +19,16 @@ Projector::Projector(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    OpenGLWindow *glwidget = ui->projector->glwidget;
-    Renderer *renderer = ui->projector->renderer;
+    OpenGLWidget *glwidget = ui->projector->glwidget;
+    //Renderer *renderer = ui->projector->renderer;
 
     QTreeWidget *scene_view = ui->scene_view;
     QComboBox *camera_select = ui->camera_select;
 
-    renderer->setTime(0);
+    //renderer->setTime(0);
 
     scene_view->setContextMenuPolicy(Qt::CustomContextMenu);
     scene_view->header()->setSectionResizeMode(0, QHeaderView::Stretch);
-
-    connect(renderer, SIGNAL(sceneLoaded(QString)),
-            this, SLOT(sceneDataLoaded(QString)));
 
     connect(camera_select, SIGNAL(currentIndexChanged(int)),
             this, SLOT(updateScene()));
@@ -61,8 +58,11 @@ Projector::Projector(QWidget *parent) :
     connect(ui->currentTime, SIGNAL(valueChanged(int)),
             this, SLOT(frameChange(int)));
 
-    connect(renderer, SIGNAL(frameRangeChanged(int,int)),
+    connect(glwidget, SIGNAL(frame_range_changed(int,int)),
             this, SLOT(setFrameRange(int,int)));
+
+    connect(glwidget, SIGNAL(scene_loaded(QString)),
+            this, SLOT(sceneDataLoaded(QString)));
 
     connect(ui->timeSlider, SIGNAL(valueChanged(int)),
             ui->currentTime, SLOT(setValue(int)));
@@ -80,9 +80,9 @@ Projector::Projector(QWidget *parent) :
     connect(ui->export_templates, SIGNAL(clicked(bool)),
             this, SLOT(create_templates()));
     connect(this,  SIGNAL(request_template(QString, QString, int)),
-            renderer, SLOT(create_template(QString, QString, int)));
+            ui->projector->loader, SLOT(create_template(QString, QString, int)));
 
-    connect(renderer, SIGNAL(template_complete(QString,QString,int)),
+    connect(ui->projector->loader, SIGNAL(projection_template_complete(QString,QString,int)),
             this, SLOT(next_template()));
 
     connect(ui->progress_cancel, SIGNAL(clicked(bool)),
@@ -105,8 +105,10 @@ Projector::~Projector()
 
 void Projector::open(const QString &path)
 {
-    OpenGLWindow *glwidget = ui->projector->glwidget;
-    glwidget->open(path);
+    //OpenGLWindow *glwidget = ui->projector->glwidget;
+    //glwidget->open(path);
+
+    ui->projector->glwidget->open_abc(path);
 }
 
 void Projector::browse_file(BrowseFilter f)
@@ -231,13 +233,13 @@ void Projector::sceneDataLoaded(QString path)
     std::vector<SceneObject> scene_objects;
     std::vector<SceneObject> cameras;
 
-    Renderer *renderer = ui->projector->renderer;
+    OpenGLWidget *renderer = ui->projector->glwidget;
     QTreeWidget *scene_view = ui->scene_view;
     QComboBox *camera_select = ui->camera_select;
 
     scene_view->clear();
-    scene_objects = renderer->m_scene.scene_objects();
-    cameras =  renderer->m_scene.scene_cameras();
+    scene_objects = renderer->scene.scene_objects();
+    cameras =  renderer->scene.scene_cameras();
 
     QList<QTreeWidgetItem *> items;
     for (int i = 0; i < scene_objects.size(); ++i) {
@@ -267,7 +269,7 @@ void Projector::updateScene()
     std::cerr << "updating scene\n";
 
 
-    Renderer *renderer = ui->projector->renderer;
+    OpenGLWidget *renderer = ui->projector->glwidget;
     QTreeWidget *scene_view = ui->scene_view;
     QComboBox *camera_select = ui->camera_select;
 
@@ -278,7 +280,7 @@ void Projector::updateScene()
     if (camera != "UV") {
         SceneObject c = {camera.toStdString(), true };
         cameras.push_back(c);
-        renderer->m_scene.update_cameras(cameras);
+        renderer->scene.update_cameras(cameras);
     }
 
     for (int i =0; i < scene_view->topLevelItemCount(); i++){
@@ -287,7 +289,7 @@ void Projector::updateScene()
         scene_objects[i].visible = item->checkState(1) == Qt::Checked? true: false;
         scene_objects[i].selected = item->isSelected();
     }
-    renderer->m_scene.update_objects(scene_objects);
+    renderer->scene.update_objects(scene_objects);
 }
 static void qstring_int_list(QString &str, std::vector<int> &values)
 {
@@ -382,7 +384,7 @@ void Projector::check_progress()
        return;
     }
 
-    int value = ui->projector->renderer->m_scene.progress();
+    int value = ui->projector->glwidget->scene.progress();
     ui->progress->setValue(value);
 
     QTimer::singleShot(1000, this, SLOT(check_progress()));

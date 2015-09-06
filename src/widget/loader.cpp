@@ -38,6 +38,12 @@ void Loader::set_template_texture(QString path)
 
 }
 
+void Loader::create_template(QString imageplane_path, QString dest, int frame)
+{
+    QThread::currentThread()->sleep(3);
+    emit projection_template_complete(imageplane_path, dest, frame);
+}
+
 void Loader::load_imageplane()
 {
     QPair <QString, int > p;

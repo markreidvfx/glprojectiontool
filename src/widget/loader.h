@@ -21,9 +21,11 @@ public:
 signals:
     void imageplane_ready( const FloatImage &data, int width, int height, int frame);
     void template_texture_ready(const FloatImage &data, int width, int height);
+    void projection_template_complete(QString imageplane_path, QString dest,int frame);
 
 public slots:
     void set_template_texture(QString path);
+    void create_template(QString imageplane_path, QString dest, int frame);
 
 private slots:
     void load_imageplane();

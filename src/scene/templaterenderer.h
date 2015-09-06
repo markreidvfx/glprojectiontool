@@ -18,7 +18,8 @@ public:
               glm::mat4 &modelToProjectionMatrix,
               glm::mat4 &viewportMatrix,
               glm::vec2 &viewport_size,
-              bool redraw_buffers = true);
+              bool redraw_buffers = true,
+              unsigned int default_framebuffer_id=0);
 
     void set_template_texture(std::string path);
     void render_template(std::string image_plane, std::string dest);

@@ -4,6 +4,35 @@
 
 ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
 {
+
+
+
+    loader = new Loader();
+    loader_thread = new QThread;
+    loader->moveToThread(loader_thread);
+    loader_thread->start();
+
+    glwidget = new OpenGLWidget(this);
+    //glwidget->setFormat(format);
+    QSize windowSize(400, 320);
+    glwidget->setMinimumSize(windowSize);
+
+
+    QObject::connect(loader, SIGNAL(imageplane_ready(const FloatImage&,int,int,int)),
+                     glwidget, SLOT(set_imageplane_data(const FloatImage&,int,int,int)),
+                     Qt::BlockingQueuedConnection);
+
+    QObject::connect(loader, SIGNAL(template_texture_ready(const FloatImage&,int,int)),
+                     glwidget, SLOT(set_template_texture(const FloatImage&,int,int)),
+                     Qt::BlockingQueuedConnection);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
+    layout->addWidget(glwidget);
+    setLayout(layout);
+
+
+    /*
     QSurfaceFormat format;
     format.setVersion(3, 3);
     format.setProfile(QSurfaceFormat::CoreProfile);
@@ -55,7 +84,7 @@ ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
     layout->addWidget(container);
-    setLayout(layout);
+    setLayout(layout); */
 
 }
 
@@ -63,10 +92,10 @@ ProjectionWidget::~ProjectionWidget()
 {
     loader_thread->quit();
     loader_thread->wait();
-    delete loader_thread;
 
+    /*
     render_thread->quit();
     render_thread->wait();
-    delete render_thread;
+    delete render_thread; */
 
 }
