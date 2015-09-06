@@ -30,14 +30,12 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(ImageMagick COMPONENTS Magick++ MagickCore REQUIRED)
 find_package(Boost REQUIRED)
-find_package(ZLIB REQUIRED)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 message(STATUS "boost include ${Boost_INCLUDE_DIRS}")
 
-message(STATUS "zlib include ${ZLIB_INCLUDE_DIRS}")
 message(STATUS "imagemagick include ${ImageMagick_INCLUDE_DIRS}")
 
 find_path(GLM_INCLUDE_DIR glm/glm.hpp)

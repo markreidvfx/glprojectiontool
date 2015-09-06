@@ -11,9 +11,20 @@
 
 #include <chrono>
 
-#include <zlib.h>
-
 #define DEFAULT_BUFFER_SIZE 1024 + 128
+
+
+static uint32_t crc32(uint32_t crc, const uint8_t *p, unsigned int len)
+{
+    unsigned int i;
+
+    while (len--) {
+       crc ^= *p++;
+       for (i = 0; i < 8; i++)
+           crc = (crc >> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+    }
+    return crc;
+}
 
 Scene::Scene() : m_time(0),
                  m_first(1),
@@ -354,5 +365,8 @@ void Scene::draw()
 
 void Scene::append_crc(void *data, int size)
 {
-    m_crc = crc32(m_crc, (unsigned char *)data, size);
+    m_crc = crc32(m_crc, (const uint8_t *)data, size);
 }
+
+
+
