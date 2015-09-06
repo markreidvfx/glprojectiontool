@@ -11,6 +11,7 @@ class ProjectionWidget : public QWidget
     Q_OBJECT
 public:
     explicit ProjectionWidget(QWidget *parent = 0);
+    ~ProjectionWidget();
 
     OpenGLWindow *glwidget;
     Renderer *renderer;

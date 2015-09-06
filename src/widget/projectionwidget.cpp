@@ -36,10 +36,10 @@ ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
     loader_thread = new QThread;
     loader->moveToThread(loader_thread);
 
-    QObject::connect(app, SIGNAL(lastWindowClosed()), render_thread, SLOT(quit()));
+    //QObject::connect(app, SIGNAL(lastWindowClosed()), render_thread, SLOT(quit()));
     render_thread->start();
 
-    QObject::connect(app, SIGNAL(lastWindowClosed()), loader_thread, SLOT(quit()));
+    //QObject::connect(app, SIGNAL(lastWindowClosed()), loader_thread, SLOT(quit()));
     loader_thread->start();
 
     // this signal needs to block
@@ -59,3 +59,14 @@ ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
 
 }
 
+ProjectionWidget::~ProjectionWidget()
+{
+    loader_thread->quit();
+    loader_thread->wait();
+    delete loader_thread;
+
+    render_thread->quit();
+    render_thread->wait();
+    delete render_thread;
+
+}
