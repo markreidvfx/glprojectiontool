@@ -14,7 +14,6 @@ public:
     ~ProjectionWidget();
 
     OpenGLWidget *glwidget;
-    Renderer *renderer;
     Loader *loader;
 
     //QThread *render_thread;
