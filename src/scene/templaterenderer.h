@@ -56,7 +56,6 @@ private:
     void load_texture_data(const int width, const int height,
                            const std::vector<float> image_data);
 
-    ImageReader m_texture_reader;
     FrameBuffer m_framebuffer;
     ContourRender m_contour_render;
 

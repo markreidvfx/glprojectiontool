@@ -33,7 +33,6 @@ void TemplateRenderer::load_shaders()
 
 void TemplateRenderer::create()
 {
-    //m_texture_reader.read("/Users/mreid/Dev/ProjectionWidget/guides.tif", 0);
     m_framebuffer.create();
     m_contour_render.create();
 
@@ -71,17 +70,9 @@ void TemplateRenderer::draw(std::vector< std::shared_ptr<Mesh> > objects,
 
 {
     double t;
-    //if (!m_texture_loaded && m_texture_reader.dataReady(t)) {
-    //    load_texture_data(m_texture_reader.width(),
-    //                      m_texture_reader.height(),
-    //                      m_texture_reader.image_data);
-    //    std::cerr << "template texture loaded\n";
-    //    redraw_offscreen_buffers = true;
 
-    //}
-
-    //if (!m_texture_loaded)
-    //   return;
+    if (!m_texture_loaded)
+       return;
 
     if (redraw_offscreen_buffers) {
         m_framebuffer.bind();
