@@ -155,14 +155,6 @@ void Scene::setTime(double value)
 }
 
 
-
-void Scene::setImagePlanePath(const string &path, double time)
-{
-    m_imageplane_reader.read(path, time);
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
-    m_imageplane_path = path;
-}
-
 void Scene::create()
 {
     glClearColor(0.85f, 0.85f, 0.85f, 0.0f);
@@ -209,44 +201,11 @@ void Scene::update(double time)
 
 }
 
-void Scene::updateImagePlanes()
-{
-    std::unique_lock<std::recursive_mutex> lock(m_imageplane_reader.data_lock,
-                                                 std::defer_lock);
-
-    double t = 0;
-
-    // lock the image data so it doesn't change or resize while
-    // we are trying to read it
-    if (!lock.try_lock())
-        return;
-
-    if (m_imageplane_reader.dataReady(t)) {
-
-        if (imagePlanePath() != m_imageplane_reader.path() && t != time()) {
-            m_imageplane_reader.requeue();
-        } else {
-            m_imageplane->time = t;
-            m_imageplane->update();
-            m_imageplane->setImageData(m_imageplane_reader.width(),
-                                       m_imageplane_reader.height(),
-                                       m_imageplane_reader.image_data);
-            //image data no longer need
-            m_imageplane_reader.clear();
-            update(t);
-
-        }
-    }
-
-}
-
 void Scene::set_imageplane_data(const std::vector <float> &data, int width, int height, int frame)
 {
 
-    std::cerr << width << "loading data\n";
     m_imageplane->update();
     m_imageplane->setImageData(width, height, data);
-
     update(frame);
 }
 
@@ -337,10 +296,10 @@ void Scene::draw(unsigned int default_framebuffer_id)
         redraw_offscreen_buffers = true;
     }
 
-    if (redraw_offscreen_buffers) {
-        cerr << "redrawing offscreen frame buffers " << m_draw_count << "\n";
-        cerr << "crc " << m_crc << "\n";
-    }
+    //if (redraw_offscreen_buffers) {
+    //    cerr << "redrawing offscreen frame buffers " << m_draw_count << "\n";
+    //    cerr << "crc " << m_crc << "\n";
+    //}
 
     m_template.draw(m_objects, modelToProjectionMatrix, viewportMatrix, viewport_size, redraw_offscreen_buffers, default_framebuffer_id);
 

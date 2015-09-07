@@ -34,13 +34,6 @@ public:
     void updateImagePlanes();
     void draw(unsigned int default_framebuffer_id=0);
 
-    void setImagePlanePath(const std::string &path, double time);
-    std::string imagePlanePath()
-    {
-        std::lock_guard<std::recursive_mutex> lock(m_lock);
-        return m_imageplane_path;
-    }
-
     void setTime(double value);
     double time() {
          std::lock_guard<std::recursive_mutex> lock(m_lock);
@@ -107,7 +100,6 @@ private:
     unsigned long m_crc;
     unsigned long m_prev_crc;
 
-    ImageReader m_imageplane_reader;
     ImagePlane *m_imageplane;
     std::string m_imageplane_path;
     std::string m_prev_imageplane_path;

@@ -86,9 +86,6 @@ void ImagePlane::setImageData(const int width, const int height,
                                  const std::vector<float> &image_data)
 {
 
-    //if (!created)
-    //    create();
-
     glBindVertexArray(vertexArrayId);
 
     //glActiveTexture(GL_TEXTURE0);
@@ -104,7 +101,6 @@ void ImagePlane::setImageData(const int width, const int height,
                  &image_data[0]);
 
     glBindVertexArray(0);
-    std::cerr << "laoded ing to opengl \n";
 
 }
 
