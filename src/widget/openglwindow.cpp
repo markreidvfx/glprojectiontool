@@ -1,7 +1,4 @@
-
 #include "openglwindow.h"
-
-#include <qmath.h>
 #include <QThread>
 
 #include <iostream>

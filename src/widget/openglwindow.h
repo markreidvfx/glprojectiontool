@@ -4,8 +4,6 @@
 #include "glew_helper.h"
 #include <QWindow>
 #include <QMutex>
-#include <QSharedPointer>
-#include <QOpenGLContext>
 #include <QOpenGLWidget>
 #include <QMouseEvent>
 #include <QTimer>
