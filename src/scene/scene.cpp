@@ -276,40 +276,6 @@ void Scene::render_template_data(FloatImageData &color_data,
 
 }
 
-void Scene::render_template(std::string image_plane, std::string  dest, int frame)
-{
-
-    std::cerr << "image_plane = " << image_plane << "\n";
-    std::cerr << "dest = " << dest << "\n";
-    std::cerr << "frame = " <<frame << "\n";
-
-    std::chrono::time_point<std::chrono::system_clock> start;
-    std::chrono::duration<double> elapsed_seconds;
-    start = std::chrono::system_clock::now();
-
-    //m_template.resize_buffers(1920 * 2 , 1080 * 2);
-    m_template.set_progress(5);
-    m_template.resize_buffers(1024 * 4 , 1024 * 4);
-    float line_width = m_template.line_width();
-    m_template.set_line_width(0.5);
-    m_template.set_progress(10);
-
-    update(frame);
-    draw();
-
-    m_template.set_progress(20);
-    m_template.render_template(image_plane, dest);
-
-    m_template.resize_buffers(DEFAULT_BUFFER_SIZE,
-                              DEFAULT_BUFFER_SIZE);
-    m_template.set_line_width(line_width);
-
-    elapsed_seconds = std::chrono::system_clock::now()-start;
-    std::cerr << "template rendered in " << elapsed_seconds.count() << " secs \n";
-    m_template.set_progress(100);
-
-}
-
 void Scene::draw(unsigned int default_framebuffer_id)
 {
 

@@ -5,8 +5,6 @@
 #include <iostream>
 #include <list>
 
-#include <Magick++.h>
-
 TemplateRenderer::TemplateRenderer()
 {
     m_texture_loaded = false;
@@ -125,20 +123,6 @@ void TemplateRenderer::draw(std::vector< std::shared_ptr<Mesh> > objects,
     m_framebuffer.setViewportMatrix(viewportMatrix);
     m_framebuffer.draw(m_contour_render.m_texture_id);
 }
-static void prep_image(Magick::Image &image)
-{
-    image.modifyImage();
-    Magick::PixelPacket *pixels = image.getPixels(0, 0, image.size().width(), 1);
-
-    for (int i = 0; i < image.size().width(); i++ ) {
-        float alpha = .01 * 1.0 / (i+1);
-        Magick::Color c = pixels[i];
-        c.alpha(1.0 - alpha + c.alpha());
-        pixels[i] = c;
-    }
-    image.syncPixels();
-
-}
 
 void TemplateRenderer::render_template_data(FloatImageData &color_data,
                                             FloatImageData &alpha_data,
@@ -148,89 +132,4 @@ void TemplateRenderer::render_template_data(FloatImageData &color_data,
     m_framebuffer.read_texture(Color, color_data.width, color_data.height, color_data.data);
     m_framebuffer.read_texture(Alpha, alpha_data.width, alpha_data.height, alpha_data.data);
     m_contour_render.read_contour(contour_data.width, contour_data.height, contour_data.data);
-}
-
-void TemplateRenderer::render_template(std::string image_plane, std::string dest)
-{
-    std::vector<float> color_data;
-    std::vector<float> alpha_data;
-    std::vector<float> contour_data;
-
-    Magick::Image plane;
-    Magick::Image color;
-    Magick::Image alpha;
-    Magick::Image contour;
-
-    Magick::Geometry geo("1920x1080!");
-
-    int width,height;
-
-    set_progress(20);
-
-    color.read(width, height, "RGBA", Magick::FloatPixel, &color_data[0]);
-
-    set_progress(30);
-    m_framebuffer.read_texture(Alpha, width, height, alpha_data);
-    alpha.read(width, height, "RGBA", Magick::FloatPixel, &alpha_data[0]);
-    alpha.channel(Magick::RedChannel);
-
-    color.composite(alpha, 0, 0, Magick::CopyOpacityCompositeOp);
-    color.attribute("label", "guides");
-    color.resize(geo);
-    color.flip();
-
-    set_progress(40);
-    m_contour_render.read_contour(width, height, contour_data);
-    contour.read(width, height, "RGBA", Magick::FloatPixel, &contour_data[0]);
-    contour.flip();
-    contour.attribute("label", "contour");
-    contour.resize(geo);
-
-    set_progress(50);
-    Magick::Image empty(geo,"rgba(0,0,0,0.0)" );
-    empty.type(Magick::TrueColorMatteType);
-    empty.attribute("label", "clones");
-
-    prep_image(empty);
-    prep_image(color);
-    prep_image(contour);
-
-    set_progress(60);
-    plane.read(image_plane);
-
-    set_progress(70);
-
-    /*
-    plane.write("plane.png");
-    alpha.write("alpha.png");
-    color.write("color.png");
-    contour.write("contour.png");
-    empty.write("empty.png");*/
-
-    set_progress(80);
-
-    //std::cerr << plane.attribute("colorspace") << "\n";
-    plane.attribute("colorspace", "rgb");
-    plane.magick("PSD");
-    plane.depth(16);
-    plane.verbose(true);
-    plane.compressType(Magick::RLECompression);
-    plane.attribute("label", "background");
-
-    Magick::Image liquify = plane;
-    liquify.attribute("label", "liquify");
-
-    std::list<Magick::Image> images;
-    images.push_back(plane);
-    images.push_back(plane);
-    images.push_back(liquify);
-    images.push_back(empty);
-    images.push_back(color);
-    images.push_back(contour);
-
-    set_progress(90);
-
-    Magick::writeImages(images.begin(), images.end(), "out.psd");
-
-
 }

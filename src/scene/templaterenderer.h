@@ -22,7 +22,6 @@ public:
               unsigned int default_framebuffer_id=0);
 
     void set_template_texture(std::string path);
-    void render_template(std::string image_plane, std::string dest);
 
     void render_template_data(FloatImageData &color_data,
                               FloatImageData &alpha_data,
