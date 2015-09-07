@@ -24,6 +24,10 @@ public:
     void set_template_texture(std::string path);
     void render_template(std::string image_plane, std::string dest);
 
+    void render_template_data(FloatImageData &color_data,
+                              FloatImageData &alpha_data,
+                              FloatImageData &contour_data);
+
     void set_template_texture(const std::vector<float> &data, int width, int height);
 
     void resize_buffers(int width, int height)

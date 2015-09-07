@@ -5,6 +5,8 @@
 #include <QCommandLineParser>
 #include <iostream>
 #include <stdio.h>
+#include <QMainWindow>
+#include "scene/imagereader.h"
 
 #ifndef QT_NO_OPENGL
 #include "projector.h"
@@ -76,6 +78,7 @@ int main(int argc, char *argv[])
 
 
     qRegisterMetaType<std::vector < float > > ("FloatImage");
+    qRegisterMetaType<FloatImageData>("FloatImageData");
 
 
     QSurfaceFormat format;
@@ -111,6 +114,11 @@ int main(int argc, char *argv[])
     }
 
     Projector widget;
+    //widget.setAttribute(Qt::WA_NoSystemBackground);
+    //widget.setAttribute(Qt::WA_OpaquePaintEvent);
+    //widget.setAttribute(Qt::WA_NativeWindow);
+
+    //widget.setAttribute(Qt::WA_PaintOnScreen);
 
     std::cerr << "imageplane " << options.imageplane.toStdString() << "\n";
     widget.set_imageplane(options.imageplane);
@@ -122,6 +130,9 @@ int main(int argc, char *argv[])
 
     widget.resize(QSize(1200,600));
     widget.show();
+    //QMainWindow window;
+    //window.setCentralWidget(&widget);
+    //window.show();
 
     return app.exec();
 }

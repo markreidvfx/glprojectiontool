@@ -40,7 +40,30 @@ void Loader::set_template_texture(QString path)
 
 void Loader::create_template(QString imageplane_path, QString dest, int frame)
 {
-    QThread::currentThread()->sleep(3);
+
+    FloatImageData color;
+    FloatImageData alpha;
+    FloatImageData contour;
+
+    progress.set_value(0);
+
+    emit request_template_textures(color, alpha, contour, frame);
+
+    progress.set_value(25);
+
+    std::cerr << color.width << "\n";
+
+    write_template_psd(imageplane_path.toStdString(),
+                       dest.toStdString(),
+                       color,
+                       alpha,
+                       contour,
+                       progress);
+
+
+    //QThread::currentThread()->sleep(3);
+
+    progress.set_value(100);
     emit projection_template_complete(imageplane_path, dest, frame);
 }
 
@@ -64,9 +87,12 @@ void Loader::load_imageplane()
     int width;
     int height;
 
-    read_image(p.first.toStdString(), data, width, height);
+    //read_image(p.first.toStdString(), data, width, height);
+
+    FloatImageData image;
+    read_image(p.first.toStdString(), image);
 
     // this signal should block
-    emit imageplane_ready(data, width, height, p.second);
+    emit imageplane_ready(image.data, image.width, image.height, p.second);
 
 }

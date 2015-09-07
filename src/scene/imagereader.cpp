@@ -7,6 +7,7 @@
 #include <Magick++.h>
 //using namespace Magick;
 
+#include <list>
 #include <chrono>
 
 ImageReader::ImageReader()
@@ -53,6 +54,98 @@ void read_image(const std::string &path,
     std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now()-start;
     std::cerr << "image read in " << elapsed_seconds.count() << " secs\n";
 
+}
+
+void read_image(const std::string &path, FloatImageData &image)
+{
+    read_image(path, image.data, image.width, image.height);
+}
+
+static void prep_image(Magick::Image &image)
+{
+    image.modifyImage();
+    Magick::PixelPacket *pixels = image.getPixels(0, 0, image.size().width(), 1);
+
+    for (int i = 0; i < image.size().width(); i++ ) {
+        float alpha = .01 * 1.0 / (i+1);
+        Magick::Color c = pixels[i];
+        c.alpha(1.0 - alpha + c.alpha());
+        pixels[i] = c;
+    }
+    image.syncPixels();
+
+}
+
+
+void write_template_psd(const std::string &imageplane,
+                        const std::string &dest,
+                        FloatImageData &color_data,
+                        FloatImageData &alpha_data,
+                        FloatImageData &contour_data,
+                        Progress &p)
+{
+    Magick::Image plane;
+    Magick::Image color;
+    Magick::Image alpha;
+    Magick::Image contour;
+
+    Magick::Geometry geo("1920x1080!");
+
+    color.read(color_data.width, color_data.height, "RGBA", Magick::FloatPixel, &color_data.data[0]);
+    alpha.read(alpha_data.width, alpha_data.height, "RGBA", Magick::FloatPixel, &alpha_data.data[0]);
+    contour.read(contour_data.width, contour_data.height, "RGBA", Magick::FloatPixel, &contour_data.data[0]);
+
+    p.set_value(50);
+
+    alpha.channel(Magick::RedChannel);
+    color.composite(alpha, 0, 0, Magick::CopyOpacityCompositeOp);
+    color.attribute("label", "guides");
+    color.resize(geo);
+    color.flip();
+
+    contour.flip();
+    contour.attribute("label", "contour");
+    contour.resize(geo);
+
+    Magick::Image empty(geo,"rgba(0,0,0,0.0)" );
+    empty.type(Magick::TrueColorMatteType);
+    empty.attribute("label", "clones");
+
+    prep_image(empty);
+    prep_image(color);
+    prep_image(contour);
+
+    p.set_value(60);
+
+    plane.read(imageplane);
+
+    plane.write("plane.png");
+    alpha.write("alpha.png");
+    color.write("color.png");
+    contour.write("contour.png");
+    empty.write("empty.png");
+
+    p.set_value(80);
+
+    plane.attribute("colorspace", "rgb");
+    plane.magick("PSD");
+    plane.depth(16);
+    plane.verbose(true);
+    plane.compressType(Magick::RLECompression);
+    plane.attribute("label", "background");
+
+    Magick::Image liquify = plane;
+    liquify.attribute("label", "liquify");
+
+    std::list<Magick::Image> images;
+    images.push_back(plane);
+    images.push_back(plane);
+    images.push_back(liquify);
+    images.push_back(empty);
+    images.push_back(color);
+    images.push_back(contour);
+    p.set_value(90);
+    Magick::writeImages(images.begin(), images.end(), "out.psd");
 }
 
 void ImageReader::read(const std::string &path, double time)

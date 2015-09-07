@@ -290,6 +290,8 @@ void Projector::updateScene()
         scene_objects[i].selected = item->isSelected();
     }
     renderer->scene.update_objects(scene_objects);
+
+    ui->projector->glwidget->update();
 }
 static void qstring_int_list(QString &str, std::vector<int> &values)
 {
@@ -374,7 +376,7 @@ void Projector::next_template()
                                                        m_projection_count - m_projection_frames.size(),
                                                        m_projection_count);
     show_progress(message, 0, 100, 0);
-    QTimer::singleShot(1000, this, SLOT(check_progress()));
+    QTimer::singleShot(100, this, SLOT(check_progress()));
 }
 
 void Projector::check_progress()
@@ -384,10 +386,10 @@ void Projector::check_progress()
        return;
     }
 
-    int value = ui->projector->glwidget->scene.progress();
+    int value = ui->projector->loader->progress.value();
     ui->progress->setValue(value);
 
-    QTimer::singleShot(1000, this, SLOT(check_progress()));
+    QTimer::singleShot(100, this, SLOT(check_progress()));
 
 }
 
@@ -485,6 +487,7 @@ void Projector::filter_selected(SelectionFilter f)
             break;
         }
     }
+
 
 }
 

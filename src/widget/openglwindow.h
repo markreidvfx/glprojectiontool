@@ -150,6 +150,12 @@ public slots:
     void set_imageplane_data(const FloatImage &data, int width, int height, int frame);
     void set_template_texture(const FloatImage &data, int width, int height);
 
+    void render_template_data(FloatImageData &color_data,
+                              FloatImageData &alpha_data,
+                              FloatImageData &contour_data,
+                              int frame);
+
+
 signals:
     void scene_loaded(QString);
     void frame_range_changed(int, int);

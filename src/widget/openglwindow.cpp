@@ -341,6 +341,16 @@ void OpenGLWidget::set_template_texture(const FloatImage &data, int width, int h
     update();
 }
 
+void OpenGLWidget::render_template_data(FloatImageData &color_data,
+                                        FloatImageData &alpha_data,
+                                        FloatImageData &contour_data,
+                                        int frame)
+{
+    makeCurrent();
+    scene.render_template_data(color_data, alpha_data, contour_data, frame);
+}
+
+
 void OpenGLWidget::resizeGL(int w, int h)
 {
     scene.camera->setViewportSize(glm::vec2(w,h));

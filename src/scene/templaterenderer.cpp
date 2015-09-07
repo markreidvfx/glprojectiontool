@@ -140,6 +140,16 @@ static void prep_image(Magick::Image &image)
 
 }
 
+void TemplateRenderer::render_template_data(FloatImageData &color_data,
+                                            FloatImageData &alpha_data,
+                                            FloatImageData &contour_data)
+{
+
+    m_framebuffer.read_texture(Color, color_data.width, color_data.height, color_data.data);
+    m_framebuffer.read_texture(Alpha, alpha_data.width, alpha_data.height, alpha_data.data);
+    m_contour_render.read_contour(contour_data.width, contour_data.height, contour_data.data);
+}
+
 void TemplateRenderer::render_template(std::string image_plane, std::string dest)
 {
     std::vector<float> color_data;
@@ -156,7 +166,7 @@ void TemplateRenderer::render_template(std::string image_plane, std::string dest
     int width,height;
 
     set_progress(20);
-    m_framebuffer.read_texture(Color, width, height, color_data);
+
     color.read(width, height, "RGBA", Magick::FloatPixel, &color_data[0]);
 
     set_progress(30);

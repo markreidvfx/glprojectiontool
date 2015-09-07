@@ -6,6 +6,7 @@
 #include "camera.h"
 #include "framebuffer.h"
 #include "templaterenderer.h"
+#include "imagereader.h"
 
 #include <vector>
 #include <string>
@@ -90,6 +91,12 @@ public:
     void render_template(std::string image_plane,
                          std::string dest,
                          int frame);
+
+    void render_template_data(FloatImageData &color_data,
+                              FloatImageData &alpha_data,
+                              FloatImageData &contour_data,
+                              int frame);
+
     int progress(){return m_template.get_progress();}
 
 private:

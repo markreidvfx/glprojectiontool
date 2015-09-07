@@ -255,6 +255,27 @@ void Scene::set_template_texture(const std::vector<float> &data, int width, int 
     m_template.set_template_texture(data, width, height);
 }
 
+void Scene::render_template_data(FloatImageData &color_data,
+                                 FloatImageData &alpha_data,
+                                 FloatImageData &contour_data,
+                                 int frame)
+{
+
+    m_template.resize_buffers(1024 * 4 , 1024 * 4);
+    float line_width = m_template.line_width();
+    m_template.set_line_width(0.5);
+
+    update(frame);
+    draw();
+    m_template.render_template_data(color_data, alpha_data, contour_data);
+
+    //reset sizes
+    m_template.resize_buffers(DEFAULT_BUFFER_SIZE,
+                              DEFAULT_BUFFER_SIZE);
+    m_template.set_line_width(line_width);
+
+}
+
 void Scene::render_template(std::string image_plane, std::string  dest, int frame)
 {
 

@@ -137,9 +137,6 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="autoFillBackground">
-          <bool>false</bool>
-         </property>
         </widget>
         <widget class="QGroupBox" name="properites_groupBox">
          <property name="sizePolicy">
@@ -467,6 +464,9 @@
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
        <widget class="QSlider" name="timeSlider">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
         <property name="minimum">
          <number>1</number>
         </property>
