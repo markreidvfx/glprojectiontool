@@ -55,26 +55,29 @@ AbcMesh::~AbcMesh()
 
 void AbcMesh::update()
 {
-    std::lock_guard<std::recursive_mutex> l(m_reader->lock);
+    //std::lock_guard<std::recursive_mutex> l(m_reader->lock);
 
     if (!created){
         create();
     }
-    std::vector<glm::vec3> vertices;
-    std::vector<glm::vec2> uvs;
-    std::vector<glm::vec3> normals;
-    std::vector<unsigned int> indices;
+    //std::vector<glm::vec3> vertices;
+    //std::vector<glm::vec2> uvs;
+    //std::vector<glm::vec3> normals;
+    //std::vector<unsigned int> indices;
 
-    m_schema.get(m_sample, time);
 
-    read(vertices, uvs, normals, indices);
+
+    MeshData mesh_data;
+    read_data(mesh_data, time);
+    //read(vertices, uvs, normals, indices);
+
 
 
     glBindVertexArray(vertexArrayId);
 
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferId);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3),
-                 &vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh_data.vertices.size() * sizeof(glm::vec3),
+                 &mesh_data.vertices[0], GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(
@@ -87,8 +90,8 @@ void AbcMesh::update()
     );
 
     glBindBuffer(GL_ARRAY_BUFFER, uvBufferId);
-    glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2),
-                 &uvs[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh_data.uvs.size() * sizeof(glm::vec2),
+                 &mesh_data.uvs[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(
        1,                  // attribute 1 = position
@@ -100,8 +103,8 @@ void AbcMesh::update()
     );
 
     glBindBuffer(GL_ARRAY_BUFFER, normalBufferId);
-    glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3),
-                 &normals[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh_data.normals.size() * sizeof(glm::vec3),
+                 &mesh_data.normals[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(
        2,                  // attribute 2 = position
@@ -112,10 +115,10 @@ void AbcMesh::update()
        (void*)0            // array buffer offset
     );
 
-    indexSize = indices.size();
+    indexSize = mesh_data.indices.size();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * sizeof(unsigned int),
-                 &indices[0] , GL_STATIC_DRAW);
+                 &mesh_data.indices[0] , GL_STATIC_DRAW);
 
     glBindVertexArray(0);
 
@@ -390,6 +393,13 @@ void AbcMesh::subdivide(std::vector<glm::vec3> &vertices,
 
     cerr << "total " << total_indice_count << " opt to -> " << vertices.size() << "\n";
     */
+}
+
+void AbcMesh::read_data(MeshData &data, double time)
+{
+    std::lock_guard<std::recursive_mutex> l(m_reader->lock);
+    m_schema.get(m_sample, time);
+    read(data.vertices, data.uvs, data.normals, data.indices);
 }
 
 void AbcMesh::read(std::vector<glm::vec3> &vertices,

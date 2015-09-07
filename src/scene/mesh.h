@@ -2,6 +2,15 @@
 #define MESH_H
 
 #include <string>
+#include <vector>
+#include <glm/glm.hpp>
+
+struct MeshData {
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec2> uvs;
+    std::vector<glm::vec3> normals;
+    std::vector<unsigned int> indices;
+};
 
 class Mesh
 {
@@ -12,6 +21,7 @@ public:
     virtual void create() = 0;
     virtual void update() = 0;
     virtual void draw() = 0;
+    virtual void read_data(MeshData &data, double time) = 0;
 
     unsigned int vertexArrayId;
 

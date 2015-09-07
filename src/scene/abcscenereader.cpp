@@ -67,7 +67,7 @@ void AbcSceneReader::read_object(const IObject &object,
             ICamera camera(object, child_header.getName());
 
             //cerr << "camera found " <<  camera.getFullName()<<"\n";
-            cameras.push_back(std::make_shared<AbcCamera>(camera));
+            cameras.push_back(std::make_shared<AbcCamera>(camera, this));
 
         }
 

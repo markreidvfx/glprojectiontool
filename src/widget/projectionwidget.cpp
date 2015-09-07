@@ -5,15 +5,13 @@
 ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
 {
 
-
+    glwidget = new OpenGLWidget(this);
 
     loader = new Loader();
     loader_thread = new QThread;
     loader->moveToThread(loader_thread);
     loader_thread->start();
 
-    glwidget = new OpenGLWidget(this);
-    //glwidget->setFormat(format);
     QSize windowSize(400, 320);
     glwidget->setMinimumSize(windowSize);
 

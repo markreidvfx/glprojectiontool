@@ -32,6 +32,7 @@ public:
     void create();
     void update();
     void draw();
+    void read_data(MeshData &data, double time);
 
     void create_refiner();
 
