@@ -238,8 +238,8 @@ void Projector::sceneDataLoaded(QString path)
     QComboBox *camera_select = ui->camera_select;
 
     scene_view->clear();
-    scene_objects = renderer->scene.scene_objects();
-    cameras =  renderer->scene.scene_cameras();
+    scene_objects = ui->projector->scene.scene_objects();
+    cameras =  ui->projector->scene.scene_cameras();
 
     QList<QTreeWidgetItem *> items;
     for (int i = 0; i < scene_objects.size(); ++i) {
@@ -280,7 +280,7 @@ void Projector::updateScene()
     if (camera != "UV") {
         SceneObject c = {camera.toStdString(), true };
         cameras.push_back(c);
-        renderer->scene.update_cameras(cameras);
+        ui->projector->scene.update_cameras(cameras);
     }
 
     for (int i =0; i < scene_view->topLevelItemCount(); i++){
@@ -289,7 +289,7 @@ void Projector::updateScene()
         scene_objects[i].visible = item->checkState(1) == Qt::Checked? true: false;
         scene_objects[i].selected = item->isSelected();
     }
-    renderer->scene.update_objects(scene_objects);
+    ui->projector->scene.update_objects(scene_objects);
 
     ui->projector->glwidget->update();
 }

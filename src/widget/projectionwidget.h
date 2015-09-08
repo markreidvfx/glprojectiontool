@@ -19,6 +19,8 @@ public:
     //QThread *render_thread;
     QThread *loader_thread;
 
+    Scene scene;
+
 };
 
 #endif // PROJECTIONWIDGET_H

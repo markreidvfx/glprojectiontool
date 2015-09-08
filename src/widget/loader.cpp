@@ -5,9 +5,9 @@
 
 #include <iostream>
 
-Loader::Loader(QObject *parent) : QObject(parent)
+Loader::Loader(Scene *scene, QObject *parent) : QObject(parent)
 {
-
+    m_scene = scene;
 }
 
 void Loader::set_imageplane_path(QString path, int frame)
@@ -91,6 +91,8 @@ void Loader::load_imageplane()
 
     FloatImageData image;
     read_image(p.first.toStdString(), image);
+
+    m_scene->caculate(p.second);
 
     // this signal should block
     emit imageplane_ready(image.data, image.width, image.height, p.second);

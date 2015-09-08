@@ -19,14 +19,12 @@ class OpenGLWidget : public QOpenGLWidget
     Q_OBJECT
 
 public:
-    OpenGLWidget(QWidget *parent = 0);
+    OpenGLWidget(Scene *scene, QWidget *parent = 0);
     ~OpenGLWidget();
 
     void initializeGL();
     void resizeGL(int w, int h);
     void paintGL();
-
-    Scene scene;
 
 private:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
@@ -38,6 +36,8 @@ private:
     QFlags<Qt::MouseButton> m_mouseButtons;
     glm::vec2 m_mousePressPosition;
     QTime m_mouseLastTime;
+
+    Scene *m_scene;
 
 public slots:
     void open_abc(QString path);

@@ -177,6 +177,16 @@ static void _update(std::shared_ptr<Mesh> object)
     object->update();
 }
 
+void Scene::caculate(double time)
+{
+    int level = subdivLevel();
+    for (int i = 0; i < m_objects.size(); i++) {
+        m_objects[i]->subdiv_level = level;
+        m_objects[i]->time = time;
+        m_objects[i]->calculate(time);
+    }
+}
+
 void Scene::update(double time)
 {
     std::chrono::time_point<std::chrono::system_clock> start;
@@ -272,12 +282,12 @@ void Scene::draw(unsigned int default_framebuffer_id)
     int level = subdivLevel();
 
     for (int i = 0; i < m_objects.size(); i++) {
-
+        /*
         if (m_objects[i]->subdiv_level != level) {
             m_objects[i]->subdiv_level = level;
             m_objects[i]->time = m_prev_time;
             m_objects[i]->update();
-        }
+        }*/
         append_crc(&m_objects[i]->visible, sizeof(bool));
     }
 

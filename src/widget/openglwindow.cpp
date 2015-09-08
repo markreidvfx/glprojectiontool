@@ -4,10 +4,10 @@
 #include <iostream>
 
 
-OpenGLWidget::OpenGLWidget(QWidget *parent)
+OpenGLWidget::OpenGLWidget(Scene *scene, QWidget *parent)
     : QOpenGLWidget(parent)
 {
-
+    m_scene = scene;
 }
 
 OpenGLWidget::~OpenGLWidget()
@@ -21,8 +21,8 @@ void OpenGLWidget::initializeGL()
     glew_initialize();
 
     std::cerr << "using OpenGL " << format().majorVersion() << "." << format().minorVersion() << "\n";
-    scene.create();
-    scene.update();
+    m_scene->create();
+    m_scene->update();
 }
 
 void OpenGLWidget::mousePressEvent(QMouseEvent *event)
@@ -58,15 +58,15 @@ void OpenGLWidget::mouseMoveEvent(QMouseEvent *event)
     if (m_mouseButtons & Qt::LeftButton &&
             event->modifiers() & Qt::AltModifier &&
             event->modifiers() & Qt::ControlModifier) {
-        scene.camera->pan(delta);
+        m_scene->camera->pan(delta);
 
     } else if (m_mouseButtons & Qt::LeftButton &&
                event->modifiers() & Qt::AltModifier) {
-         scene.camera->rotate(delta);
+         m_scene->camera->rotate(delta);
 
     } else if (m_mouseButtons & Qt::RightButton &&
                event->modifiers() & Qt::AltModifier) {
-        scene.camera->dolly(delta);
+        m_scene->camera->dolly(delta);
     }
     event->accept();
     update();
@@ -82,13 +82,13 @@ void OpenGLWidget::keyPressEvent(QKeyEvent * event)
 {
     if (event->key() == Qt::Key_1){
         //std::cerr << "1\n";
-        scene.setSubdivLevel(0);
+        m_scene->setSubdivLevel(0);
     } else if (event->key() == Qt::Key_2) {
-        scene.setSubdivLevel(1);
+        m_scene->setSubdivLevel(1);
     }else if (event->key() == Qt::Key_3) {
-        scene.setSubdivLevel(2);
+        m_scene->setSubdivLevel(2);
     }else if (event->key() == Qt::Key_4) {
-        scene.setSubdivLevel(3);
+        m_scene->setSubdivLevel(3);
     }
     update();
 
@@ -99,21 +99,21 @@ void OpenGLWidget::set_imageplane_data(const FloatImage &data, int width, int he
 {
     std::cerr << width << "x" << height << " " << frame << " "<< data.size() << "\n";
     makeCurrent();
-    scene.set_imageplane_data(data, width, height, frame);
+    m_scene->set_imageplane_data(data, width, height, frame);
     update();
 }
 void OpenGLWidget::open_abc(QString path)
 {
     makeCurrent();
-    scene.open(path.toStdString());
+    m_scene->open(path.toStdString());
     emit scene_loaded(path);
-    emit frame_range_changed(scene.first(), scene.last());
+    emit frame_range_changed(m_scene->first(), m_scene->last());
 }
 
 void OpenGLWidget::set_template_texture(const FloatImage &data, int width, int height)
 {
     makeCurrent();
-    scene.set_template_texture(data, width, height);
+    m_scene->set_template_texture(data, width, height);
     update();
 }
 
@@ -123,18 +123,18 @@ void OpenGLWidget::render_template_data(FloatImageData &color_data,
                                         int frame)
 {
     makeCurrent();
-    scene.render_template_data(color_data, alpha_data, contour_data, frame);
+    m_scene->render_template_data(color_data, alpha_data, contour_data, frame);
 }
 
 
 void OpenGLWidget::resizeGL(int w, int h)
 {
-    scene.camera->setViewportSize(glm::vec2(w,h));
+    m_scene->camera->setViewportSize(glm::vec2(w,h));
     glViewport(0, 0, w, h);
 }
 
 void OpenGLWidget::paintGL()
 {
 
-    scene.draw(defaultFramebufferObject());
+    m_scene->draw(defaultFramebufferObject());
 }

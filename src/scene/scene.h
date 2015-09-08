@@ -68,6 +68,8 @@ public:
         return result;
     }
 
+    void caculate(double time);
+
     std::vector<SceneObject> scene_objects();
     void update_objects(std::vector<SceneObject> &updated_objects);
 

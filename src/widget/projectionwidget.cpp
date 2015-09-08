@@ -5,16 +5,15 @@
 ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
 {
 
-    glwidget = new OpenGLWidget(this);
+    glwidget = new OpenGLWidget(&scene, this);
 
-    loader = new Loader();
-    loader_thread = new QThread;
+    loader = new Loader(&scene);
+    loader_thread = new QThread(this);
     loader->moveToThread(loader_thread);
     loader_thread->start();
 
     QSize windowSize(400, 320);
     glwidget->setMinimumSize(windowSize);
-
 
     QObject::connect(loader, SIGNAL(imageplane_ready(const FloatImage&,int,int,int)),
                      glwidget, SLOT(set_imageplane_data(const FloatImage&,int,int,int)),

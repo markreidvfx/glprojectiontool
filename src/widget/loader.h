@@ -7,6 +7,7 @@
 #include <QPair>
 #include <QSharedPointer>
 #include "../scene/imagereader.h"
+#include "../scene/scene.h"
 
 #include <vector>
 
@@ -16,7 +17,7 @@ class Loader : public QObject
 {
     Q_OBJECT
 public:
-    explicit Loader(QObject *parent = 0);
+    explicit Loader(Scene *scene, QObject *parent = 0);
     void set_imageplane_path(QString path, int frame);
     Progress progress;
 
@@ -39,6 +40,7 @@ private slots:
 private:
     QMutex m_imageplane_lock;
     QList< QPair < QString, int > > m_imagelane_list;
+    Scene *m_scene;
 
 };
 

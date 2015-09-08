@@ -66,9 +66,9 @@ void AbcMesh::update()
     //std::vector<unsigned int> indices;
 
 
-
-    MeshData mesh_data;
-    read_data(mesh_data, time);
+    const MeshData &mesh_data = data;
+    //MeshData mesh_data;
+    //read_data(mesh_data, time);
     //read(vertices, uvs, normals, indices);
 
 
@@ -393,6 +393,12 @@ void AbcMesh::subdivide(std::vector<glm::vec3> &vertices,
 
     cerr << "total " << total_indice_count << " opt to -> " << vertices.size() << "\n";
     */
+}
+
+void AbcMesh::calculate(double time)
+{
+    data.clear();
+    read_data(data, time);
 }
 
 void AbcMesh::read_data(MeshData &data, double time)
