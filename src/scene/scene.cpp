@@ -179,6 +179,12 @@ static void _update(std::shared_ptr<Mesh> object)
 
 void Scene::caculate(double time)
 {
+    std::lock_guard<std::recursive_mutex> lock(m_lock);
+
+    std::chrono::time_point<std::chrono::system_clock> start;
+    std::chrono::duration<double> elapsed_seconds;
+    start = std::chrono::system_clock::now();
+
     int level = subdivLevel();
     for (int i = 0; i < m_objects.size(); i++) {
         m_objects[i]->subdiv_level = level;
@@ -186,26 +192,26 @@ void Scene::caculate(double time)
         m_objects[i]->calculate(time, level);
     }
     m_time = time;
+
+    elapsed_seconds = std::chrono::system_clock::now()-start;
+    std::cerr << "geo caculated in " << elapsed_seconds.count() << " secs \n";
 }
 
 void Scene::update(double time)
 {
+    std::lock_guard<std::recursive_mutex> lock(m_lock);
+
     std::chrono::time_point<std::chrono::system_clock> start;
     std::chrono::duration<double> elapsed_seconds;
     start = std::chrono::system_clock::now();
-    int level = subdivLevel();
 
     for (int i = 0; i < m_objects.size(); i++) {
-        m_objects[i]->subdiv_level = level;
-        m_objects[i]->time = time;
         m_objects[i]->update();
     }
 
     for (int i = 0; i < m_cameras.size(); i++) {
         m_cameras[i]->update(time);
     }
-
-    m_prev_time = time;
 
     elapsed_seconds = std::chrono::system_clock::now()-start;
     std::cerr << "geo updated in " << elapsed_seconds.count() << " secs \n";
@@ -281,6 +287,7 @@ void Scene::draw(unsigned int default_framebuffer_id)
     m_imageplane->draw();
 
     int level = subdivLevel();
+    double t = time();
 
     for (int i = 0; i < m_objects.size(); i++) {
 
@@ -294,7 +301,7 @@ void Scene::draw(unsigned int default_framebuffer_id)
     append_crc(&line_width, sizeof(float));
     append_crc(&buffer_size[0], sizeof(glm::ivec2));
     append_crc(&modelToProjectionMatrix[0][0], sizeof(glm::mat4));
-    append_crc(&m_prev_time, sizeof(m_prev_time));
+    append_crc(&t, sizeof(double));
     append_crc(&level, sizeof(level));
 
     bool redraw_offscreen_buffers = false;

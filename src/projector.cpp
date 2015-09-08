@@ -385,16 +385,17 @@ void Projector::next_template()
     QString dest;
     dest.sprintf("test.%04d.psd", frame);
 
-    emit request_template(imageplane, dest, frame);
-
     frameChange(frame);
 
+
     QString message;
-    message.sprintf("Creating template frame: %d %02d/%02d ", frame,
+    message.sprintf("Creating Template Frame: %d %02d/%02d ", frame,
                                                        m_projection_count - m_projection_frames.size(),
                                                        m_projection_count);
     show_progress(message, 0, 100, 0);
     QTimer::singleShot(100, this, SLOT(check_progress()));
+
+    emit request_template(imageplane, dest, frame);
 }
 
 void Projector::check_progress()
