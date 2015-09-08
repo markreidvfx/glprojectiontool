@@ -99,6 +99,10 @@ void OpenGLWidget::open_scene_file(QString path)
 {
     makeCurrent();
     m_scene->open(path.toStdString());
+
+    QSize s = size();
+    m_scene->camera->setViewportSize(glm::vec2(s.width(),s.height()));
+
     emit scene_loaded(path);
     emit frame_range_changed(m_scene->first(), m_scene->last());
 }
