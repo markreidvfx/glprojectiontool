@@ -85,6 +85,7 @@ void OpenGLWidget::set_imageplane_data(const FloatImage &data, int width, int he
 {
     makeCurrent();
     m_scene->set_imageplane_data(data, width, height, frame);
+    doneCurrent();
     update();
 }
 
@@ -92,6 +93,7 @@ void OpenGLWidget::update_mesh()
 {
     makeCurrent();
     m_scene->update();
+    doneCurrent();
     update();
 }
 
@@ -102,15 +104,18 @@ void OpenGLWidget::open_scene_file(QString path)
 
     QSize s = size();
     m_scene->camera->setViewportSize(glm::vec2(s.width(),s.height()));
+    doneCurrent();
 
     emit scene_loaded(path);
     emit frame_range_changed(m_scene->first(), m_scene->last());
+    update();
 }
 
 void OpenGLWidget::set_template_texture(const FloatImage &data, int width, int height)
 {
     makeCurrent();
     m_scene->set_template_texture(data, width, height);
+    doneCurrent();
     update();
 }
 
@@ -121,6 +126,7 @@ void OpenGLWidget::render_template_data(FloatImageData &color_data,
 {
     makeCurrent();
     m_scene->render_template_data(color_data, alpha_data, contour_data, frame);
+    doneCurrent();
 }
 
 
