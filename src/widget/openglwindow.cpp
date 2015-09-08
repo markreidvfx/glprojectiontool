@@ -15,16 +15,6 @@ OpenGLWidget::~OpenGLWidget()
 
 }
 
-void OpenGLWidget::initializeGL()
-{
-    makeCurrent();
-    glew_initialize();
-
-    std::cerr << "using OpenGL " << format().majorVersion() << "." << format().minorVersion() << "\n";
-    m_scene->create();
-    m_scene->update();
-}
-
 void OpenGLWidget::mousePressEvent(QMouseEvent *event)
 {
     m_mousePressPosition = glm::vec2(event->localPos().x(),
@@ -127,6 +117,17 @@ void OpenGLWidget::render_template_data(FloatImageData &color_data,
     makeCurrent();
     m_scene->render_template_data(color_data, alpha_data, contour_data, frame);
     doneCurrent();
+}
+
+void OpenGLWidget::initializeGL()
+{
+    glew_initialize();
+
+    std::cerr << "using OpenGL " << format().majorVersion() << "." << format().minorVersion() << "\n";
+    m_scene->create();
+    //m_scene->update();
+
+    emit opengl_initialized();
 }
 
 

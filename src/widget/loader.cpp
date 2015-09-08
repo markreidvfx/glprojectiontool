@@ -10,6 +10,13 @@ Loader::Loader(Scene *scene, QObject *parent) : QObject(parent)
     m_scene = scene;
 }
 
+void Loader::wait_for_condition()
+{
+    m_lock.lock();
+    wait_condition.wait(&m_lock);
+    m_lock.unlock();
+}
+
 void Loader::set_imageplane_path(QString path, int frame)
 {
 
@@ -18,7 +25,7 @@ void Loader::set_imageplane_path(QString path, int frame)
     p.first = path;
     p.second = frame;
 
-    QMutexLocker locker(&m_imageplane_lock);
+    QMutexLocker locker(&m_lock);
     m_imagelane_list.append(p);
     locker.unlock();
 
@@ -83,7 +90,7 @@ void Loader::create_template(QString imageplane_path, QString dest, int frame)
 void Loader::load_imageplane()
 {
     QPair <QString, int > p;
-    QMutexLocker locker(&m_imageplane_lock);
+    QMutexLocker locker(&m_lock);
 
     if (m_imagelane_list.empty())
         return;

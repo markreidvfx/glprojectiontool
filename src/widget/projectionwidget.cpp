@@ -42,9 +42,22 @@ ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
     layout->addWidget(glwidget);
     setLayout(layout);
 
+    QTimer::singleShot(0, loader, SLOT(wait_for_condition()));
+
+    QObject::connect(glwidget, SIGNAL(opengl_initialized()),
+                     this, SLOT(unlock_loader()));
+
+}
+
+void ProjectionWidget::unlock_loader()
+{
+    std::cerr << "releasing loader\n";
+    loader->wait_condition.wakeAll();
 }
 
 ProjectionWidget::~ProjectionWidget()
 {
     loader_thread->quit();
+    unlock_loader();
+
 }

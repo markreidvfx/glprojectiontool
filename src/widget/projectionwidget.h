@@ -20,6 +20,8 @@ public:
     QThread *loader_thread;
 
     Scene scene;
+private slots:
+    void unlock_loader();
 
 };
 

@@ -6,6 +6,8 @@
 #include <QList>
 #include <QPair>
 #include <QSharedPointer>
+#include <QWaitCondition>
+
 #include "../scene/imagereader.h"
 #include "../scene/scene.h"
 
@@ -20,6 +22,7 @@ public:
     explicit Loader(Scene *scene, QObject *parent = 0);
     void set_imageplane_path(QString path, int frame);
     Progress progress;
+    QWaitCondition wait_condition;
 
 signals:
     void imageplane_ready( const FloatImage &data, int width, int height, int frame);
@@ -33,6 +36,7 @@ signals:
     void request_open_scene_file(QString path);
 
 public slots:
+    void wait_for_condition();
     void set_template_texture(QString path);
     void create_template(QString imageplane_path, QString dest, int frame);
     void set_subdivision_level(int value);
@@ -42,7 +46,7 @@ private slots:
     void load_imageplane();
 
 private:
-    QMutex m_imageplane_lock;
+    QMutex m_lock;
     QList< QPair < QString, int > > m_imagelane_list;
     Scene *m_scene;
 

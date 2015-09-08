@@ -52,6 +52,7 @@ public slots:
 signals:
     void scene_loaded(QString);
     void frame_range_changed(int, int);
+    void opengl_initialized();
 
 };
 
