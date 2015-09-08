@@ -66,7 +66,6 @@ static inline void rotateVector( float rx, float ry, glm::vec3 &v )
 
 const glm::mat4 Camera::viewMatrix()
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
 
     glm::mat4 m;
     m *= glm::scale(glm::vec3(1,1,1) / m_scale);
@@ -79,7 +78,6 @@ const glm::mat4 Camera::viewMatrix()
 
 const glm::mat4 Camera::projectionMatrix()
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
 
     float aspect = m_image_size.x / m_image_size.y;
     glm::mat4 m = glm::perspective(float(glm::radians(m_fov_y)),
@@ -89,7 +87,6 @@ const glm::mat4 Camera::projectionMatrix()
 
 const glm::mat4 Camera::viewportMatrix()
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
 
     float sx = 1;
     float sy = 1;
@@ -114,8 +111,6 @@ const glm::mat4 Camera::viewportMatrix()
 
 void Camera::forward(float amount)
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
-
     float rotX = m_rotation.x;
     float rotY = m_rotation.y;
 
@@ -127,22 +122,16 @@ void Camera::forward(float amount)
 
 void Camera::right(float amount)
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
-
     pan(glm::vec2(200,0) * -amount);
 }
 
 void Camera::up(float amount)
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
-
     pan(glm::vec2(0,200) * amount);
 }
 
 void Camera::lookAt(const glm::vec3 &eye, const glm::vec3 &at)
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
-
     m_translation = eye;
     glm::vec3 dt = at - eye;
 
@@ -156,8 +145,6 @@ void Camera::lookAt(const glm::vec3 &eye, const glm::vec3 &at)
 
 void Camera::pan(const glm::vec2 &point)
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
-
     float rotX = m_rotation.x;
     float rotY = m_rotation.y;
 
@@ -182,8 +169,6 @@ void Camera::pan(const glm::vec2 &point)
 
 void Camera::dolly(const glm::vec2 &point, double dollySpeed)
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
-
     float rotX = m_rotation.x;
     float rotY = m_rotation.y;
     const glm::vec3 &eye = m_translation;
@@ -216,8 +201,6 @@ void Camera::dolly(const glm::vec2 &point, double dollySpeed)
 
 void Camera::rotate(const glm::vec2 &point, double rotateSpeed)
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
-
     double rotX = m_rotation.x;
     double rotY = m_rotation.y;
     const float rotZ = m_rotation.z;
@@ -240,6 +223,5 @@ void Camera::rotate(const glm::vec2 &point, double rotateSpeed)
 
     setTranslation(new_eye);
     setRotation(glm::vec3( rotX, rotY, rotZ ) );
-
 
 }

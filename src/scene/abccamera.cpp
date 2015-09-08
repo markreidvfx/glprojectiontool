@@ -40,11 +40,11 @@ M44d getFinalMatrix( IObject &iObj ){
 
 void AbcCamera::update(double time)
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
+    M44d xf;
+    {
     std::lock_guard<std::recursive_mutex> l(m_reader->lock);
-
-    M44d xf = getFinalMatrix(m_camera);
-
+    xf = getFinalMatrix(m_camera);
+    }
     //std::cerr <<xf << "\n";
 
     glm::mat4 m = glm::make_mat4(&xf[0][0]);

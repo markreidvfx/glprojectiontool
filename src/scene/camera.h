@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <glm/glm.hpp>
 
-#include <mutex>
 #include <string>
 
 class Camera
@@ -25,7 +24,6 @@ public:
 
     const glm::vec3 translation()
     {
-        std::lock_guard<std::recursive_mutex> lock(m_lock);
         return m_translation;
     }
     void setTranslation( const glm::vec3 &t ) { m_translation = t; }
@@ -39,7 +37,6 @@ public:
     glm::vec2 clippingPlanes() const { return m_clip; }
     void setClippingPlanes( double nearValue, double farValue )
     {
-        std::lock_guard<std::recursive_mutex> lock(m_lock);
         m_clip.x = nearValue;
         m_clip.y = farValue;
     }
@@ -56,35 +53,30 @@ public:
 
     void setImageSize( const glm::vec2 &size)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_lock);
         m_image_size = size;
     }
 
     void setViewportSize(const glm::vec2 &size)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_lock);
         m_viewport_size = size;
     }
     glm::vec2 viewportSize()
     {
-        std::lock_guard<std::recursive_mutex> lock(m_lock);
         return m_viewport_size;
     }
 
     virtual void update(double time=0) {}
 
     std::string name() {
-        std::lock_guard<std::recursive_mutex> lock(m_lock);
         return m_name;
     }
 
     void setName(const std::string &name) {
-        std::lock_guard<std::recursive_mutex> lock(m_lock);
         m_name = name;
     }
 
 protected:
-    std::recursive_mutex m_lock;
+    //std::recursive_mutex m_lock;
 
     glm::vec3 m_rotation;
     glm::vec3 m_scale;
