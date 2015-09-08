@@ -165,7 +165,6 @@ void Scene::create()
     t->create();
     m_imageplane = t;
     m_template.create();
-    m_framebuffer.create();
 
     m_template.resize_buffers(DEFAULT_BUFFER_SIZE,
                               DEFAULT_BUFFER_SIZE);

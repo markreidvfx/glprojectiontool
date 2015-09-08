@@ -112,8 +112,6 @@ private:
 
     unsigned int m_subdiv_level;
 
-    FrameBuffer m_framebuffer;
-
     void update_frame_range();
     long int m_first;
     long int m_last;
