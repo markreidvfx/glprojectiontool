@@ -47,6 +47,7 @@ public slots:
     void hide_progress();
     void show_progress(QString message, int min, int max, int value);
     void cancel_processing();
+    void set_template_texture(QString path) {emit request_template_texture(path);}
 
 private slots:
     void hide_selected();
@@ -67,7 +68,7 @@ signals:
                           QString dest,
                           int frame);
 
-    void set_template_texture(QString path);
+    void request_template_texture(QString path);
     void set_subdivision_level(int value);
     void open_scene_file(QString path);
 

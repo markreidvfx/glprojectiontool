@@ -88,7 +88,7 @@ Projector::Projector(QWidget *parent) :
     connect(ui->progress_cancel, SIGNAL(clicked(bool)),
             this, SLOT(cancel_processing()));
 
-    connect(this, SIGNAL(set_template_texture(QString)),
+    connect(this, SIGNAL(request_template_texture(QString)),
             ui->projector->loader, SLOT(set_template_texture(QString)));
 
     connect(this, SIGNAL(set_subdivision_level(int)),
@@ -96,10 +96,6 @@ Projector::Projector(QWidget *parent) :
 
     connect(this, SIGNAL(open_scene_file(QString)),
             ui->projector->loader, SLOT(open_scene_file(QString)));
-
-    QString template_texture = "/home/mreid/Projects/Samples/guides.tif";
-   // QTimer::singleShot(0 )
-    emit set_template_texture(template_texture);
 
     hide_progress();
 }

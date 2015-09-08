@@ -123,6 +123,9 @@ int main(int argc, char *argv[])
     std::cerr << "imageplane " << options.imageplane.toStdString() << "\n";
     widget.set_imageplane(options.imageplane);
 
+    if (!options.template_path.isEmpty())
+        widget.set_template_texture(options.template_path);
+
     for (int i = 0; i < options.scene_files.size(); i++) {
         std::cerr << "opening " << options.scene_files[i].toStdString() << "\n";
         widget.open(options.scene_files[i]);

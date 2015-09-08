@@ -8,7 +8,7 @@ ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
     glwidget = new OpenGLWidget(&scene, this);
 
     loader = new Loader(&scene);
-    loader_thread = new QThread(this);
+    loader_thread = new QThread();
     loader->moveToThread(loader_thread);
     loader_thread->start();
 
@@ -47,6 +47,4 @@ ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
 ProjectionWidget::~ProjectionWidget()
 {
     loader_thread->quit();
-    loader_thread->wait();
-
 }
