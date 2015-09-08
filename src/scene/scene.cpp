@@ -183,8 +183,9 @@ void Scene::caculate(double time)
     for (int i = 0; i < m_objects.size(); i++) {
         m_objects[i]->subdiv_level = level;
         m_objects[i]->time = time;
-        m_objects[i]->calculate(time);
+        m_objects[i]->calculate(time, level);
     }
+    m_time = time;
 }
 
 void Scene::update(double time)
@@ -282,12 +283,8 @@ void Scene::draw(unsigned int default_framebuffer_id)
     int level = subdivLevel();
 
     for (int i = 0; i < m_objects.size(); i++) {
-        /*
-        if (m_objects[i]->subdiv_level != level) {
-            m_objects[i]->subdiv_level = level;
-            m_objects[i]->time = m_prev_time;
-            m_objects[i]->update();
-        }*/
+
+        append_crc(&m_objects[i]->update_count, sizeof(unsigned int));
         append_crc(&m_objects[i]->visible, sizeof(bool));
     }
 

@@ -91,6 +91,9 @@ Projector::Projector(QWidget *parent) :
     connect(this, SIGNAL(set_template_texture(QString)),
             ui->projector->loader, SLOT(set_template_texture(QString)));
 
+    connect(this, SIGNAL(set_subdivision_level(int)),
+             ui->projector->loader, SLOT(set_subdivision_level(int)));
+
     QString template_texture = "/home/mreid/Projects/Samples/guides.tif";
    // QTimer::singleShot(0 )
     emit set_template_texture(template_texture);
@@ -111,6 +114,19 @@ void Projector::open(const QString &path)
     ui->projector->glwidget->open_abc(path);
 }
 
+void Projector::keyPressEvent(QKeyEvent * event)
+{
+    if (event->key() == Qt::Key_1){
+        emit set_subdivision_level(0);
+    } else if (event->key() == Qt::Key_2) {
+        emit set_subdivision_level(1);
+    }else if (event->key() == Qt::Key_3) {
+        emit set_subdivision_level(2);
+    }else if (event->key() == Qt::Key_4) {
+        emit set_subdivision_level(3);
+    }
+}
+
 void Projector::browse_file(BrowseFilter f)
 {
     QString path;
@@ -126,6 +142,8 @@ void Projector::browse_file(BrowseFilter f)
         path = QFileDialog::getOpenFileName(this,
                             tr("Add Alembic File"), "",
                             tr("ABC Files (*.abc)"));
+        if(!path.isNull())
+            ui->projector->scene.open(path.toStdString());
 
     } else if( f == Project) {
         path = QFileDialog::getExistingDirectory(this,tr("Set Project directory"));

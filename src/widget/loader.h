@@ -29,10 +29,12 @@ signals:
                                    FloatImageData &alpha_data,
                                    FloatImageData &contour_data,
                                    int frame);
+    void update_mesh();
 
 public slots:
     void set_template_texture(QString path);
     void create_template(QString imageplane_path, QString dest, int frame);
+    void set_subdivision_level(int value);
 
 private slots:
     void load_imageplane();

@@ -27,6 +27,10 @@ ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
                      glwidget, SLOT(render_template_data(FloatImageData&,FloatImageData&,FloatImageData&,int)),
                      Qt::BlockingQueuedConnection);
 
+    QObject::connect(loader, SIGNAL(update_mesh()),
+                     glwidget, SLOT(update_mesh()),
+                     Qt::BlockingQueuedConnection);
+
     glwidget->setFocusPolicy(Qt::StrongFocus);
 
     QVBoxLayout *layout = new QVBoxLayout();

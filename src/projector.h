@@ -69,7 +69,11 @@ signals:
 
     void set_template_texture(QString path);
 
+    void set_subdivision_level(int value);
+
 private:
+    void keyPressEvent(QKeyEvent * event) Q_DECL_OVERRIDE;
+
     Ui::Projector *ui;
     void filter_selected(SelectionFilter f);
     void browse_file(BrowseFilter f);

@@ -45,7 +45,7 @@ void OpenGLWidget::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
-    time_delta /= 50;
+    time_delta /= 100;
     glm::vec2 cur = glm::vec2(event->localPos().x(),
                                      event->localPos().y());
     glm::vec2 last = m_mousePressPosition;
@@ -59,17 +59,20 @@ void OpenGLWidget::mouseMoveEvent(QMouseEvent *event)
             event->modifiers() & Qt::AltModifier &&
             event->modifiers() & Qt::ControlModifier) {
         m_scene->camera->pan(delta);
+        update();
 
     } else if (m_mouseButtons & Qt::LeftButton &&
                event->modifiers() & Qt::AltModifier) {
          m_scene->camera->rotate(delta);
+        update();
 
     } else if (m_mouseButtons & Qt::RightButton &&
                event->modifiers() & Qt::AltModifier) {
         m_scene->camera->dolly(delta);
+        update();
     }
     event->accept();
-    update();
+
 
 }
 
@@ -78,30 +81,20 @@ void OpenGLWidget::mouseReleaseEvent(QMouseEvent *event)
     m_mouseButtons = Qt::NoButton;
 }
 
-void OpenGLWidget::keyPressEvent(QKeyEvent * event)
-{
-    if (event->key() == Qt::Key_1){
-        //std::cerr << "1\n";
-        m_scene->setSubdivLevel(0);
-    } else if (event->key() == Qt::Key_2) {
-        m_scene->setSubdivLevel(1);
-    }else if (event->key() == Qt::Key_3) {
-        m_scene->setSubdivLevel(2);
-    }else if (event->key() == Qt::Key_4) {
-        m_scene->setSubdivLevel(3);
-    }
-    update();
-
-}
-
-
 void OpenGLWidget::set_imageplane_data(const FloatImage &data, int width, int height, int frame)
 {
-    std::cerr << width << "x" << height << " " << frame << " "<< data.size() << "\n";
     makeCurrent();
     m_scene->set_imageplane_data(data, width, height, frame);
     update();
 }
+
+void OpenGLWidget::update_mesh()
+{
+    makeCurrent();
+    m_scene->update();
+    update();
+}
+
 void OpenGLWidget::open_abc(QString path)
 {
     makeCurrent();

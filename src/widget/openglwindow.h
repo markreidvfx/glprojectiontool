@@ -2,6 +2,7 @@
 #define OPENGLWINDOW_H
 
 #include "glew_helper.h"
+#include <QWidget>
 #include <QWindow>
 #include <QMutex>
 #include <QOpenGLWidget>
@@ -30,8 +31,6 @@ private:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-    void keyPressEvent(QKeyEvent * event) Q_DECL_OVERRIDE;
-
 
     QFlags<Qt::MouseButton> m_mouseButtons;
     glm::vec2 m_mousePressPosition;
@@ -48,7 +47,7 @@ public slots:
                               FloatImageData &alpha_data,
                               FloatImageData &contour_data,
                               int frame);
-
+    void update_mesh();
 
 signals:
     void scene_loaded(QString);

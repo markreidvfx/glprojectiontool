@@ -28,7 +28,7 @@ public:
     virtual void create() = 0;
     virtual void update() = 0;
     virtual void draw() = 0;
-    virtual void calculate(double time) = 0;
+    virtual void calculate(double time, int subdivision_level = 0) = 0;
     virtual void read_data(MeshData &data, double time) = 0;
 
     unsigned int vertexArrayId;
@@ -48,6 +48,8 @@ public:
     unsigned int subdiv_level;
     double time;
     MeshData data;
+
+    unsigned int update_count;
 
 };
 

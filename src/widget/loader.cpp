@@ -38,6 +38,15 @@ void Loader::set_template_texture(QString path)
 
 }
 
+void Loader::set_subdivision_level(int value)
+{
+    std::cerr << value << "\n";
+    //m_scene->caculate();
+    m_scene->setSubdivLevel(value);
+    m_scene->caculate(m_scene->time());
+    emit update_mesh();
+}
+
 void Loader::create_template(QString imageplane_path, QString dest, int frame)
 {
 
@@ -45,7 +54,11 @@ void Loader::create_template(QString imageplane_path, QString dest, int frame)
     FloatImageData alpha;
     FloatImageData contour;
 
-    progress.set_value(0);
+    progress.set_value(5);
+
+    m_scene->caculate(frame);
+
+    progress.set_value(10);
 
     emit request_template_textures(color, alpha, contour, frame);
 

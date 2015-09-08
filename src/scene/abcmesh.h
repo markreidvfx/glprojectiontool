@@ -32,7 +32,7 @@ public:
     void create();
     void update();
     void draw();
-    void calculate(double time);
+    void calculate(double time,  int subdivision_level = 0);
     void read_data(MeshData &data, double time);
 
     void create_refiner();

@@ -12,7 +12,7 @@ public:
     virtual ~ImagePlane();
     void create();
     void update();
-    void calculate(double time) {}
+    void calculate(double time,  int subdivision_level = 0) {}
     void read_data(MeshData &data, double time) {}
     void setImageData(const int width, const int height,
                          const std::vector<float> &image_data);

@@ -29,6 +29,7 @@ AbcMesh::AbcMesh(const IPolyMesh &mesh, AbcSceneReader *reader) :m_time(0)
        s.erase(0, pos + delimiter.length());
     }
     name = s;
+    update_count = 0;
 }
 
 void AbcMesh::create()
@@ -125,6 +126,8 @@ void AbcMesh::update()
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+
+    update_count++;
 
 }
 void AbcMesh::draw()
@@ -395,9 +398,10 @@ void AbcMesh::subdivide(std::vector<glm::vec3> &vertices,
     */
 }
 
-void AbcMesh::calculate(double time)
+void AbcMesh::calculate(double time, int subdivision_level)
 {
     data.clear();
+    subdiv_level = subdivision_level;
     read_data(data, time);
 }
 
