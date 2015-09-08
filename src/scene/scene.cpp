@@ -46,7 +46,6 @@ Scene::~Scene()
 
 void Scene::open(const std::string &path)
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
     auto reader = std::make_shared<AbcSceneReader>();
     reader->open(path);
     reader->read(m_objects, m_cameras);
@@ -63,7 +62,6 @@ void Scene::open(const std::string &path)
 
 std::vector<SceneObject> Scene::scene_cameras()
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
     std::vector<SceneObject> objects(m_cameras.size());
 
     for (int i = 0; i < m_cameras.size(); i++) {
@@ -79,8 +77,6 @@ std::vector<SceneObject> Scene::scene_cameras()
 
 void Scene::update_cameras(std::vector<SceneObject> &updated_cameras)
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
-
     for (int i = 0; i < m_cameras.size(); i++) {
         for (int j =0; j < updated_cameras.size(); j++){
             if (updated_cameras[j].visible &&
@@ -96,7 +92,6 @@ void Scene::update_cameras(std::vector<SceneObject> &updated_cameras)
 
 std::vector<SceneObject> Scene::scene_objects()
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
     std::vector<SceneObject> objects(m_objects.size());
     for (int i = 0; i < m_objects.size(); i++) {
         objects[i].name = m_objects[i]->name;
@@ -109,7 +104,6 @@ std::vector<SceneObject> Scene::scene_objects()
 
 void Scene::update_objects(std::vector<SceneObject> &updated_objects)
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
     for (int i = 0; i < m_objects.size(); i++) {
         for (int j =0; j < updated_objects.size(); j++) {
             if (updated_objects[j].name == m_objects[i]->name) {
@@ -122,8 +116,6 @@ void Scene::update_objects(std::vector<SceneObject> &updated_objects)
 }
 void Scene::update_frame_range()
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
-
     long int f = 1;
     long int l = 100;
 
@@ -149,7 +141,6 @@ void Scene::update_frame_range()
 
 void Scene::setTime(double value)
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
     cerr << value/24.0 << " " << m_first / 24.0 <<"\n";
     m_time = value/24.0;
 }
@@ -176,10 +167,9 @@ static void _update(std::shared_ptr<Mesh> object)
     object->update();
 }
 
+// this is to run in bg thread
 void Scene::caculate(double time)
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
-
     std::chrono::time_point<std::chrono::system_clock> start;
     std::chrono::duration<double> elapsed_seconds;
     start = std::chrono::system_clock::now();
@@ -198,8 +188,6 @@ void Scene::caculate(double time)
 
 void Scene::update(double time)
 {
-    std::lock_guard<std::recursive_mutex> lock(m_lock);
-
     std::chrono::time_point<std::chrono::system_clock> start;
     std::chrono::duration<double> elapsed_seconds;
     start = std::chrono::system_clock::now();
@@ -256,16 +244,11 @@ void Scene::draw(unsigned int default_framebuffer_id)
 
     m_crc = crc32(0L, NULL, 0);
 
-    //updateImagePlanes();
-
-    std::unique_lock<std::recursive_mutex> lock(m_lock);
     glm::mat4 modelToVewMatrix = camera->viewMatrix();
     glm::mat4 projectionMatrix = camera->projectionMatrix();
     glm::mat4 viewportMatrix = camera->viewportMatrix();
     glm::vec3 camera_world = camera->translation();
     glm::vec2 viewport_size = camera->viewportSize();
-
-    lock.unlock();
 
     glm::mat4 modelToProjectionMatrix = projectionMatrix * modelToVewMatrix;
 
@@ -285,11 +268,7 @@ void Scene::draw(unsigned int default_framebuffer_id)
     m_imageplane->setZ(0.99999f);
     m_imageplane->draw();
 
-    int level = subdivLevel();
-    double t = time();
-
     for (int i = 0; i < m_objects.size(); i++) {
-
         append_crc(&m_objects[i]->update_count, sizeof(unsigned int));
         append_crc(&m_objects[i]->visible, sizeof(bool));
     }
@@ -300,8 +279,6 @@ void Scene::draw(unsigned int default_framebuffer_id)
     append_crc(&line_width, sizeof(float));
     append_crc(&buffer_size[0], sizeof(glm::ivec2));
     append_crc(&modelToProjectionMatrix[0][0], sizeof(glm::mat4));
-    append_crc(&t, sizeof(double));
-    append_crc(&level, sizeof(level));
 
     bool redraw_offscreen_buffers = false;
 

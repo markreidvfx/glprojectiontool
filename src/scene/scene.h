@@ -10,7 +10,6 @@
 
 #include <vector>
 #include <string>
-#include <mutex>
 #include <string>
 
 #include <iostream>
@@ -36,27 +35,22 @@ public:
 
     void setTime(double value);
     double time() {
-         std::lock_guard<std::recursive_mutex> lock(m_lock);
          return m_time;
     }
 
     long int first() {
-        std::lock_guard<std::recursive_mutex> lock(m_lock);
         return m_first;
     }
 
     long int last() {
-        std::lock_guard<std::recursive_mutex> lock(m_lock);
         return m_last;
     }
 
     void setSubdivLevel(int value) {
-        std::lock_guard<std::recursive_mutex> lock(m_lock);
         m_subdiv_level = value;
     }
 
     int subdivLevel(){
-        std::lock_guard<std::recursive_mutex> lock(m_lock);
         return m_subdiv_level;
     }
 
@@ -90,7 +84,6 @@ public:
     int progress(){return m_template.get_progress();}
 
 private:
-    std::recursive_mutex m_lock;
 
     std::vector< std::shared_ptr<Mesh> > m_objects;
     std::vector< std::shared_ptr<Camera> > m_cameras;
