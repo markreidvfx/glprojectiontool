@@ -39,7 +39,7 @@ private:
     Scene *m_scene;
 
 public slots:
-    void open_abc(QString path);
+    void open_scene_file(QString path);
     void set_imageplane_data(const FloatImage &data, int width, int height, int frame);
     void set_template_texture(const FloatImage &data, int width, int height);
 

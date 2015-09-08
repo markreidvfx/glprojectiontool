@@ -94,6 +94,9 @@ Projector::Projector(QWidget *parent) :
     connect(this, SIGNAL(set_subdivision_level(int)),
              ui->projector->loader, SLOT(set_subdivision_level(int)));
 
+    connect(this, SIGNAL(open_scene_file(QString)),
+            ui->projector->loader, SLOT(open_scene_file(QString)));
+
     QString template_texture = "/home/mreid/Projects/Samples/guides.tif";
    // QTimer::singleShot(0 )
     emit set_template_texture(template_texture);
@@ -110,8 +113,8 @@ void Projector::open(const QString &path)
 {
     //OpenGLWindow *glwidget = ui->projector->glwidget;
     //glwidget->open(path);
-
-    ui->projector->glwidget->open_abc(path);
+    emit open_scene_file(path);
+    //ui->projector->glwidget->open_abc(path);
 }
 
 void Projector::keyPressEvent(QKeyEvent * event)

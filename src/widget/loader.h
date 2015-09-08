@@ -30,11 +30,13 @@ signals:
                                    FloatImageData &contour_data,
                                    int frame);
     void update_mesh();
+    void request_open_scene_file(QString path);
 
 public slots:
     void set_template_texture(QString path);
     void create_template(QString imageplane_path, QString dest, int frame);
     void set_subdivision_level(int value);
+    void open_scene_file(QString path){emit request_open_scene_file(path);}
 
 private slots:
     void load_imageplane();

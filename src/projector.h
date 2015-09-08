@@ -68,8 +68,8 @@ signals:
                           int frame);
 
     void set_template_texture(QString path);
-
     void set_subdivision_level(int value);
+    void open_scene_file(QString path);
 
 private:
     void keyPressEvent(QKeyEvent * event) Q_DECL_OVERRIDE;

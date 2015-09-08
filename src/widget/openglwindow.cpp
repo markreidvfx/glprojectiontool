@@ -95,7 +95,7 @@ void OpenGLWidget::update_mesh()
     update();
 }
 
-void OpenGLWidget::open_abc(QString path)
+void OpenGLWidget::open_scene_file(QString path)
 {
     makeCurrent();
     m_scene->open(path.toStdString());
