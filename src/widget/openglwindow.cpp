@@ -76,7 +76,12 @@ void OpenGLWidget::set_imageplane_data(const FloatImage &data, int width, int he
     makeCurrent();
     m_scene->set_imageplane_data(data, width, height, frame);
     doneCurrent();
-    update();
+    //update();
+    QSize s = size();
+    s.setWidth(s.width() + 1);
+    resize(s);
+    s.setWidth(s.width() - 1);
+    resize(s);
 }
 
 void OpenGLWidget::update_mesh()
@@ -141,4 +146,5 @@ void OpenGLWidget::paintGL()
 {
 
     m_scene->draw(defaultFramebufferObject());
+
 }
