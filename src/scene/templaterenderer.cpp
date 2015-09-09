@@ -11,7 +11,7 @@ TemplateRenderer::TemplateRenderer()
     m_width = 1920;
     m_height = 1080;
     m_template_texture_id = 0;
-
+    m_created = false;
 }
 
 void TemplateRenderer::load_shaders()
@@ -34,16 +34,21 @@ void TemplateRenderer::load_shaders()
 
 void TemplateRenderer::create()
 {
-    m_framebuffer.create();
-    m_contour_render.create();
+    if (m_created)
+        return;
 
     load_shaders();
-
+    m_framebuffer.create();
+    m_contour_render.create();
     glGenTextures(1, &m_template_texture_id);
+
+    m_created = true;
 }
 
 void TemplateRenderer::set_template_texture(const std::vector<float> &image_data, const int width, const int height)
 {
+    if (!m_created)
+        create();
 
     glBindTexture(GL_TEXTURE_2D, m_template_texture_id);
 
@@ -71,6 +76,9 @@ void TemplateRenderer::draw(std::vector< std::shared_ptr<Mesh> > objects,
 
 {
     double t;
+
+    if (!objects.size())
+        return;
 
     if (!m_texture_loaded)
        return;

@@ -52,6 +52,7 @@ public:
     }
 
 private:
+    bool m_created;
     void load_shaders();
     void load_texture_data(const int width, const int height,
                            const std::vector<float> image_data);

@@ -41,6 +41,13 @@ ImagePlane::ImagePlane() : m_z(0.9999f), m_alpha(1.0f)
     m_programId = 0;
     created = false;
 
+    vertexBufferId = 0;
+    indexBufferId = 0;
+    uvBufferId = 0;
+    normalBufferId = 0;
+    m_textureId = 0;
+    vertexArrayId = 0;
+
 }
 
 ImagePlane::~ImagePlane()
