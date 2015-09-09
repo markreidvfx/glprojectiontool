@@ -36,10 +36,6 @@ public slots:
     void showSceneViewContextMenu(const QPoint&);
     void setFrameRange(int first, int last);
 
-    void on_browse_imageplane_clicked() {browse_file(Imageplane);}
-    void on_browse_project_clicked() {browse_file(Project);}
-    void on_browse_mesh_clicked(){browse_file(AddMesh);}
-
     void set_imageplane(const QString &path);
     void set_project(const QString &path) {}
     void create_templates();
@@ -59,6 +55,10 @@ private slots:
     void next_template();
     void check_progress();
     void update();
+
+    void on_browse_imageplane_clicked() {browse_file(Imageplane);}
+    void on_browse_project_clicked() {browse_file(Project);}
+    void on_browse_mesh_clicked(){browse_file(AddMesh);}
 
 signals:
     void frameChanged(int value);

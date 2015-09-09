@@ -34,6 +34,7 @@ public:
     unsigned int m_normal_buffer_id;
 
 private:
+
     unsigned int m_framebuffer_id;
 
     unsigned int m_width;
@@ -64,6 +65,8 @@ private:
     unsigned int m_index_buffer_id;
 
     unsigned int m_index_size;
+
+
 };
 
 #endif // FRAMEBUFFER_H

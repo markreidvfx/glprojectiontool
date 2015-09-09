@@ -10,6 +10,7 @@ TemplateRenderer::TemplateRenderer()
     m_texture_loaded = false;
     m_width = 1920;
     m_height = 1080;
+    m_template_texture_id = 0;
 
 }
 

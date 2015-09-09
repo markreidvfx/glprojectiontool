@@ -39,6 +39,7 @@ ImagePlane::ImagePlane() : m_z(0.9999f), m_alpha(1.0f)
     m_shader_loaded = false;
     m_geo_loaded = false;
     m_programId = 0;
+    created = false;
 
 }
 
@@ -106,15 +107,19 @@ void ImagePlane::setImageData(const int width, const int height,
 
 void ImagePlane::update()
 {
+    if (!created)
+        create();
+
+    if (!m_shader_loaded)
+        loadShader();
 
     if (m_geo_loaded)
         return;
 
     glBindVertexArray(vertexArrayId);
 
-    if (!m_shader_loaded) {
-        loadShader();
-    }
+    glBindTexture(GL_TEXTURE_2D, m_textureId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 1024, 1024, 0, GL_RGBA, GL_FLOAT, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferId);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);

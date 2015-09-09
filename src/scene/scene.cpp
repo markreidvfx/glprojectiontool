@@ -267,6 +267,7 @@ void Scene::draw(unsigned int default_framebuffer_id)
     m_imageplane->setAlpha(1.0);
     m_imageplane->setZ(0.99999f);
     m_imageplane->draw();
+    //return;
 
     for (int i = 0; i < m_objects.size(); i++) {
         append_crc(&m_objects[i]->update_count, sizeof(unsigned int));
@@ -292,6 +293,7 @@ void Scene::draw(unsigned int default_framebuffer_id)
     //}
 
     m_template.draw(m_objects, modelToProjectionMatrix, viewportMatrix, viewport_size, redraw_offscreen_buffers, default_framebuffer_id);
+    glBindFramebuffer(GL_FRAMEBUFFER, default_framebuffer_id);
 
     m_prev_crc = m_crc;
     m_draw_count++;

@@ -35,8 +35,8 @@ FrameBuffer::FrameBuffer()
     m_depth_buffer_id = 0;
     m_normal_buffer_id = 0;
 
-    m_width = 1920;
-    m_height = 1080;
+    m_width = 1024;
+    m_height = 1024;
 
 }
 
@@ -175,7 +175,6 @@ void FrameBuffer::create()
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glBindVertexArray(0);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 }
 

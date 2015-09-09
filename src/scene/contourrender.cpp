@@ -123,8 +123,6 @@ void ContourRender::create()
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 }
 
 void ContourRender::resize(int width, int height)
