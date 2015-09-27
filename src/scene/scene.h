@@ -104,12 +104,14 @@ private:
     double m_time;
 
     unsigned int m_subdiv_level;
+    unsigned int m_template_texture_crc;
 
     void update_frame_range();
     long int m_first;
     long int m_last;
 
     int m_draw_count;
+
 
     TemplateRenderer m_template;
 

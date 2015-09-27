@@ -76,7 +76,7 @@ void OpenGLWidget::set_imageplane_data(const FloatImage &data, int width, int he
     makeCurrent();
     m_scene->set_imageplane_data(data, width, height, frame);
     doneCurrent();
-    //update();
+    update();
     QSize s = size();
     s.setWidth(s.width() + 1);
     resize(s);
@@ -111,7 +111,11 @@ void OpenGLWidget::set_template_texture(const FloatImage &data, int width, int h
     makeCurrent();
     m_scene->set_template_texture(data, width, height);
     doneCurrent();
-    update();
+    QSize s = size();
+    s.setWidth(s.width() + 1);
+    resize(s);
+    s.setWidth(s.width() - 1);
+    resize(s);
 }
 
 void OpenGLWidget::render_template_data(FloatImageData &color_data,

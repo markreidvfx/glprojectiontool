@@ -10,6 +10,7 @@
 #include <iostream>
 #include <algorithm>
 #include <QDebug>
+#include <QMimeData>
 #include "scene/scene.h"
 
 
@@ -18,6 +19,7 @@ Projector::Projector(QWidget *parent) :
     ui(new Ui::Projector)
 {
     ui->setupUi(this);
+	setAcceptDrops(true);
 
     OpenGLWidget *glwidget = ui->projector->glwidget;
     //Renderer *renderer = ui->projector->renderer;
@@ -41,14 +43,16 @@ Projector::Projector(QWidget *parent) :
             this, SLOT(showSceneViewContextMenu(QPoint)));
 
     connect(ui->browse_imageplane_button, SIGNAL(clicked(bool)),
-            this, SLOT(on_browse_imageplane_clicked()));
+            this, SLOT(browse_imageplane_clicked()));
     connect(ui->browse_mesh_button, SIGNAL(clicked(bool)),
-            this, SLOT(on_browse_mesh_clicked()));
+            this, SLOT(browse_mesh_clicked()));
     connect(ui->browse_project_button, SIGNAL(clicked(bool)),
-            this, SLOT(on_browse_project_clicked()));
+            this, SLOT(browse_project_clicked()));
+    connect(ui->browse_template_button, SIGNAL(clicked(bool)),
+            this, SLOT(browse_template_texure_clicked()));
 
     connect(ui->imageplane_path, SIGNAL(editingFinished()),
-            this, SLOT(update()));
+            this, SLOT(update_all()));
 
     connect(ui->add_current_frame, SIGNAL(clicked(bool)),
             this, SLOT(add_current_frame()));
@@ -88,7 +92,7 @@ Projector::Projector(QWidget *parent) :
     connect(ui->progress_cancel, SIGNAL(clicked(bool)),
             this, SLOT(cancel_processing()));
 
-    connect(this, SIGNAL(request_template_texture(QString)),
+    connect(ui->template_texture_path, SIGNAL(textChanged(QString)),
             ui->projector->loader, SLOT(set_template_texture(QString)));
 
     connect(this, SIGNAL(set_subdivision_level(int)),
@@ -126,6 +130,47 @@ void Projector::keyPressEvent(QKeyEvent * event)
     }
 }
 
+void Projector::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasUrls()) {
+        event->acceptProposedAction();
+    }
+
+}
+
+void Projector::dropEvent(QDropEvent *event)
+{
+    QList<QUrl> url_list = event->mimeData()->urls();
+
+    QStringList image_plane_formats;
+    QStringList geo_formats;
+
+    image_plane_formats << "dpx" << "tif" << "tiff" << "jpg" << "png";
+    geo_formats << "abc";
+
+    for (int i=0; i < url_list.size(); i++) {
+        QUrl u = url_list.at(i);
+        if (!u.isLocalFile())
+            continue;
+
+        QFileInfo info(u.toString());
+
+        QString suffix = info.suffix().toLower();
+
+        std::cerr << info.suffix().toLower().toStdString() << "\n";
+
+        if (geo_formats.contains(suffix, Qt::CaseInsensitive)) {
+            open(u.toLocalFile());
+        }
+
+        if (image_plane_formats.contains(suffix, Qt::CaseInsensitive)) {
+            set_imageplane(u.toLocalFile());
+        }
+    }
+
+    event->acceptProposedAction();
+}
+
 void Projector::browse_file(BrowseFilter f)
 {
     QString path;
@@ -133,7 +178,7 @@ void Projector::browse_file(BrowseFilter f)
     if(f == Imageplane) {
         path = QFileDialog::getOpenFileName(this,
                             tr("Open Image Sequence"), ui->imageplane_path->text(),
-                            tr("Image Files (*.dpx *.jpg *.png *.exr)"));
+                            tr("Image Files (*.dpx *.jpg *.png *.exr *.tif *.tiff)"));
         if(!path.isNull())
             set_imageplane(path);
 
@@ -142,7 +187,14 @@ void Projector::browse_file(BrowseFilter f)
                             tr("Add Alembic File"), "",
                             tr("ABC Files (*.abc)"));
         if(!path.isNull())
-            ui->projector->scene.open(path.toStdString());
+            open(path);
+
+    } else if (f == TemplateTexture) {
+        path = QFileDialog::getOpenFileName(this,
+                            tr("Open Template Image"), ui->imageplane_path->text(),
+                            tr("Image Files (*.dpx *.jpg *.png *.exr *.tif *.tiff)"));
+        if(!path.isNull())
+            set_template_texture(path);
 
     } else if( f == Project) {
         path = QFileDialog::getExistingDirectory(this,tr("Set Project directory"));
@@ -202,6 +254,16 @@ void Projector::set_imageplane(const QString &path)
         ui->imageplane_path->setText(path);
     }
 }
+void Projector::set_template_texture(QString path)
+{
+    ui->template_texture_path->setText(path);
+    //emit request_template_texture(path);
+}
+
+void Projector::set_project(const QString &path)
+{
+    ui->project_path->setText(path);
+}
 
 void Projector::setFrameRange(int first, int last)
 {
@@ -238,7 +300,7 @@ void Projector::frameChange(int value)
     ui->timeSlider->blockSignals(false);
 }
 
-void Projector::update()
+void Projector::update_all()
 {
     frameChange(ui->currentTime->value());
 }

@@ -6,6 +6,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <QMainWindow>
+#include <QDir>
 #include "scene/imagereader.h"
 
 #ifndef QT_NO_OPENGL
@@ -130,6 +131,14 @@ int main(int argc, char *argv[])
         std::cerr << "opening " << options.scene_files[i].toStdString() << "\n";
         widget.open(options.scene_files[i]);
     }
+
+    QString project_path = options.project_path;
+
+    if (project_path.isEmpty())
+        project_path = QDir::currentPath();
+
+    std::cerr << "project " << project_path.toStdString() << "\n";
+    widget.set_project(project_path);
 
     widget.resize(QSize(1200,600));
     widget.show();

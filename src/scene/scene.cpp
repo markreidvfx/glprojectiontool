@@ -34,6 +34,7 @@ Scene::Scene() : m_time(0),
     camera->setName("Persp");
     m_cameras.push_back(camera);
     m_imageplane_time = 0;
+    m_template_texture_crc = 0;
     m_subdiv_level = 1;
     m_draw_count = 0;
     m_wait_for_imageplane = false;
@@ -216,6 +217,7 @@ void Scene::set_imageplane_data(const std::vector <float> &data, int width, int 
 void Scene::set_template_texture(const std::vector<float> &data, int width, int height)
 {
     m_template.set_template_texture(data, width, height);
+    m_template_texture_crc++;
 }
 
 void Scene::render_template_data(FloatImageData &color_data,
@@ -277,6 +279,7 @@ void Scene::draw(unsigned int default_framebuffer_id)
     glm::ivec2 buffer_size(m_template.width(),m_template.height());
     float line_width = m_template.line_width();
 
+    append_crc(&m_template_texture_crc, sizeof(unsigned int));
     append_crc(&line_width, sizeof(float));
     append_crc(&buffer_size[0], sizeof(glm::ivec2));
     append_crc(&modelToProjectionMatrix[0][0], sizeof(glm::mat4));

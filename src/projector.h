@@ -17,6 +17,7 @@ enum BrowseFilter {
     Imageplane,
     Project,
     AddMesh,
+    TemplateTexture,
 };
 
 class Projector : public QWidget
@@ -37,13 +38,13 @@ public slots:
     void setFrameRange(int first, int last);
 
     void set_imageplane(const QString &path);
-    void set_project(const QString &path) {}
+    void set_project(const QString &path);
     void create_templates();
 
     void hide_progress();
     void show_progress(QString message, int min, int max, int value);
     void cancel_processing();
-    void set_template_texture(QString path) {emit request_template_texture(path);}
+    void set_template_texture(QString path);
 
 private slots:
     void hide_selected();
@@ -54,11 +55,12 @@ private slots:
     void add_current_frame();
     void next_template();
     void check_progress();
-    void update();
+    void update_all();
 
-    void on_browse_imageplane_clicked() {browse_file(Imageplane);}
-    void on_browse_project_clicked() {browse_file(Project);}
-    void on_browse_mesh_clicked(){browse_file(AddMesh);}
+    void browse_imageplane_clicked() {browse_file(Imageplane);}
+    void browse_project_clicked() {browse_file(Project);}
+    void browse_mesh_clicked(){browse_file(AddMesh);}
+    void browse_template_texure_clicked(){browse_file(TemplateTexture);}
 
 signals:
     void frameChanged(int value);
@@ -74,6 +76,8 @@ signals:
 
 private:
     void keyPressEvent(QKeyEvent * event) Q_DECL_OVERRIDE;
+    void dragEnterEvent(QDragEnterEvent *event) Q_DECL_OVERRIDE;
+    void dropEvent(QDropEvent *event) Q_DECL_OVERRIDE;
 
     Ui::Projector *ui;
     void filter_selected(SelectionFilter f);
