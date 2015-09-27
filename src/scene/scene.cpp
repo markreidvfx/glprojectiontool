@@ -241,6 +241,17 @@ void Scene::render_template_data(FloatImageData &color_data,
 
 }
 
+void Scene::export_mesh(const std::string &path, int frame)
+{
+
+}
+
+void Scene::export_camera(const std::string &path, int frame)
+{
+
+}
+
+
 void Scene::draw(unsigned int default_framebuffer_id)
 {
 

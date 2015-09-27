@@ -11,6 +11,9 @@
 #include <algorithm>
 #include <QDebug>
 #include <QMimeData>
+#include <QProcess>
+#include <QDesktopServices>
+
 #include "scene/scene.h"
 
 
@@ -87,7 +90,7 @@ Projector::Projector(QWidget *parent) :
             ui->projector->loader, SLOT(create_template(QString, QString, int)));
 
     connect(ui->projector->loader, SIGNAL(projection_template_complete(QString,QString,int)),
-            this, SLOT(next_template()));
+            this, SLOT(projection_template_complete(QString,QString,int)));
 
     connect(ui->progress_cancel, SIGNAL(clicked(bool)),
             this, SLOT(cancel_processing()));
@@ -430,6 +433,34 @@ void Projector::create_templates()
     next_template();
 }
 
+static void reveal_file(const QString &file_path)
+{
+
+    QStringList args;
+    args << "-e";
+    args << "tell application \"Finder\"";
+    args << "-e";
+    args << "activate";
+    args << "-e";
+    args << "select POSIX file \""+file_path+"\"";
+    args << "-e";
+    args << "end tell";
+    QProcess::startDetached("osascript", args);
+/*
+#ifdef Q_WS_WIN
+    QStringList args;
+    args << "/select," << QDir::toNativeSeparators(file_path);
+    QProcess::startDetached("explorer", args);
+#endif*/
+
+}
+
+void Projector::projection_template_complete(QString imageplane, QString dest, int frame)
+{
+    reveal_file(dest);
+    next_template();
+}
+
 void Projector::next_template()
 {
     if (!m_projection_frames.size() || m_cancel_processing){
@@ -443,8 +474,9 @@ void Projector::next_template()
     QString imageplane;
     imageplane.sprintf(ui->imageplane_path->text().toStdString().c_str(), frame);
 
-    QString dest;
-    dest.sprintf("test.%04d.psd", frame);
+    QString project = ui->project_path->text();
+
+    //dest.sprintf("test.%04d.psd", frame);
 
     frameChange(frame);
 
@@ -456,7 +488,7 @@ void Projector::next_template()
     show_progress(message, 0, 100, 0);
     QTimer::singleShot(100, this, SLOT(check_progress()));
 
-    emit request_template(imageplane, dest, frame);
+    emit request_template(imageplane, project, frame);
 }
 
 void Projector::check_progress()

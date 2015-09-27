@@ -2,7 +2,9 @@
 #include "../scene/imagereader.h"
 #include <QTimer>
 #include <QThread>
-
+#include <QFileInfo>
+#include <QStringList>
+#include <QDir>
 #include <iostream>
 
 Loader::Loader(Scene *scene, QObject *parent) : QObject(parent)
@@ -54,7 +56,18 @@ void Loader::set_subdivision_level(int value)
     emit update_mesh();
 }
 
-void Loader::create_template(QString imageplane_path, QString dest, int frame)
+static QDir stringlist_join(QString root, QStringList subdirs)
+{
+    QDir dest_dir(root);
+
+    for (int i =0; i < subdirs.size(); i++) {
+        dest_dir = QDir(dest_dir).filePath(subdirs.at(i));
+    }
+
+    return dest_dir;
+}
+
+void Loader::create_template(QString imageplane_path, QString project, int frame)
 {
 
     FloatImageData color;
@@ -73,14 +86,38 @@ void Loader::create_template(QString imageplane_path, QString dest, int frame)
 
     std::cerr << color.width << "\n";
 
+    QFileInfo info(imageplane_path);
+    QString basename = info.completeBaseName();
+    std::cerr << "base" <<basename.toStdString() << "\n";
+    QString dest_name = info.completeBaseName() + ".psd";
+
+    QStringList subdirs;
+    QString frame_string;
+    frame_string.sprintf("%04d", frame);
+
+    subdirs << "sourceimages" << "projections" << frame_string << "gltool_template";
+
+    QDir template_root = stringlist_join(project, subdirs);
+    template_root.mkpath(template_root.path());
+    template_root.mkdir("data");
+    QDir data_root = template_root.filePath("data");
+    template_root.mkdir("work");
+    QDir work_root = template_root.filePath("work");
+
+    QString dest = work_root.filePath(dest_name);
+
+    std::cerr << dest.toStdString() << "\n";
+
     write_template_psd(imageplane_path.toStdString(),
                        dest.toStdString(),
+                       data_root.path().toStdString(),
                        color,
                        alpha,
                        contour,
                        progress);
 
-
+    m_scene->export_camera(data_root.filePath("camera.abc").toStdString(), frame);
+    m_scene->export_mesh(data_root.filePath("mesh.abc").toStdString(), frame);
     //QThread::currentThread()->sleep(3);
 
     progress.set_value(100);

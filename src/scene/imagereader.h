@@ -44,6 +44,7 @@ void read_image(const std::string &path, FloatImageData &image);
 
 void write_template_psd(const std::string &imageplane,
                         const std::string &dest,
+                        const std::string &data_dir,
                         FloatImageData &color_data,
                         FloatImageData &alpha_data,
                         FloatImageData &contour_data,

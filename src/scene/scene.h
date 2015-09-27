@@ -81,6 +81,9 @@ public:
                               FloatImageData &contour_data,
                               int frame);
 
+    void export_mesh(const std::string &path, int frame);
+    void export_camera(const std::string &path, int frame);
+
     int progress(){return m_template.get_progress();}
 
 private:

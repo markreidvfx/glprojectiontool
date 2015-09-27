@@ -137,6 +137,7 @@ void OpenGLWidget::initializeGL()
     //m_scene->update();
 
     emit opengl_initialized();
+    emit scene_loaded("");
 }
 
 

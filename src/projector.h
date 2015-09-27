@@ -62,12 +62,14 @@ private slots:
     void browse_mesh_clicked(){browse_file(AddMesh);}
     void browse_template_texure_clicked(){browse_file(TemplateTexture);}
 
+    void projection_template_complete(QString imageplane, QString dest, int frame);
+
 signals:
     void frameChanged(int value);
     void imageplaneChanged(QString path);
 
     void request_template(QString imageplane,
-                          QString dest,
+                          QString project,
                           int frame);
 
     void request_template_texture(QString path);

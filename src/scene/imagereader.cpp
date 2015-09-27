@@ -68,6 +68,7 @@ static void prep_image(Magick::Image &image)
 
 void write_template_psd(const std::string &imageplane,
                         const std::string &dest,
+                        const std::string &data_dir,
                         FloatImageData &color_data,
                         FloatImageData &alpha_data,
                         FloatImageData &contour_data,
@@ -108,11 +109,11 @@ void write_template_psd(const std::string &imageplane,
 
     plane.read(imageplane);
 
-    plane.write("plane.png");
-    alpha.write("alpha.png");
-    color.write("color.png");
-    contour.write("contour.png");
-    empty.write("empty.png");
+    plane.write(data_dir + "/plane.png");
+    alpha.write(data_dir + "/alpha.png");
+    color.write(data_dir + "/color.png");
+    contour.write(data_dir + "/contour.png");
+    empty.write(data_dir + "/empty.png");
 
     p.set_value(80);
 
@@ -134,5 +135,5 @@ void write_template_psd(const std::string &imageplane,
     images.push_back(color);
     images.push_back(contour);
     p.set_value(90);
-    Magick::writeImages(images.begin(), images.end(), "out.psd");
+    Magick::writeImages(images.begin(), images.end(), dest);
 }
