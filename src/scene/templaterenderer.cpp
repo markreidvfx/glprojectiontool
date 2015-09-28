@@ -80,8 +80,10 @@ void TemplateRenderer::draw(std::vector< std::shared_ptr<Mesh> > objects,
     if (!objects.size())
         return;
 
-    if (!m_texture_loaded)
-       return;
+    //if (!m_texture_loaded)
+    //   return;
+
+    m_framebuffer.texture_loaded = m_texture_loaded;
 
     if (redraw_offscreen_buffers) {
         m_framebuffer.bind();

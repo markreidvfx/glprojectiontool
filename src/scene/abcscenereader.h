@@ -9,6 +9,7 @@
 #include <Alembic/Abc/ErrorHandler.h>
 #include <Alembic/Abc/All.h>
 #include <Alembic/Abc/ISchema.h>
+#include <vector>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -28,6 +29,9 @@ public:
     void read_object(const IObject &object,
                      std::vector< std::shared_ptr<Mesh> > &objects,
                      std::vector<std::shared_ptr<Camera>> &cameras);
+
+    void export_mesh(OArchive &oArchive, int frame);
+    IArchive archive() {return m_archive;}
 
     void close() {}
 private:

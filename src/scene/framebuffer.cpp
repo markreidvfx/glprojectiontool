@@ -243,12 +243,13 @@ void FrameBuffer::draw(unsigned int contour_texture_id)
     glBindVertexArray(m_vertex_array_id);
 
     float p = 0.0;
-
-    for (int i =0; i < 3; i++) {
-        p -= .002;
-        glUniform1f(m_z_pos_loc, p);
-        glUniform1i(m_mode_loc, 0);
-        glDrawElements(GL_TRIANGLES, m_index_size, GL_UNSIGNED_INT, (void*)0 );
+    if (texture_loaded) {
+        for (int i =0; i < 3; i++) {
+            p -= .002;
+            glUniform1f(m_z_pos_loc, p);
+            glUniform1i(m_mode_loc, 0);
+            glDrawElements(GL_TRIANGLES, m_index_size, GL_UNSIGNED_INT, (void*)0 );
+        }
     }
 
     p -= .002;

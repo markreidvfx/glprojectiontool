@@ -5,6 +5,8 @@
 #include "imageplane.h"
 #include "imagereader.h"
 #include "abcscenereader.h"
+#include "abcutils.h"
+
 #include "rc_helper.h"
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
@@ -243,6 +245,14 @@ void Scene::render_template_data(FloatImageData &color_data,
 
 void Scene::export_mesh(const std::string &path, int frame)
 {
+    std::vector< IArchive > archives;
+
+    for (int i =0; i< m_scene_readers.size(); i++){
+        std::shared_ptr<AbcSceneReader> r = std::dynamic_pointer_cast<AbcSceneReader>(m_scene_readers[i]);
+        if (r)
+            archives.push_back(r->archive());
+    }
+    export_abc(archives, path, frame);
 
 }
 

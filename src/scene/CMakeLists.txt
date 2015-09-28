@@ -19,6 +19,7 @@ imagereader.cpp
 framebuffer.cpp
 templaterenderer.cpp
 contourrender.cpp
+abcutils.cpp
 )
 
 target_include_directories(projectionscene PRIVATE

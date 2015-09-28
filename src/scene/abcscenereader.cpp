@@ -76,3 +76,8 @@ void AbcSceneReader::read_object(const IObject &object,
     }
 
 }
+
+void AbcSceneReader::export_mesh(OArchive &oArchive, int frame)
+{
+
+}

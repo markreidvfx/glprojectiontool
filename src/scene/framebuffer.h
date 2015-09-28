@@ -33,6 +33,8 @@ public:
     unsigned int m_depth_buffer_id;
     unsigned int m_normal_buffer_id;
 
+    bool texture_loaded;
+
 private:
 
     unsigned int m_framebuffer_id;
