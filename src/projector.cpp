@@ -54,6 +54,9 @@ Projector::Projector(QWidget *parent) :
     connect(ui->browse_template_button, SIGNAL(clicked(bool)),
             this, SLOT(browse_template_texure_clicked()));
 
+    connect(ui->clear_button, SIGNAL(clicked(bool)),
+            ui->projector->loader, SLOT(clear()));
+
     connect(ui->imageplane_path, SIGNAL(editingFinished()),
             this, SLOT(update_all()));
 
@@ -256,6 +259,8 @@ void Projector::set_imageplane(const QString &path)
     } else {
         ui->imageplane_path->setText(path);
     }
+
+    update_all();
 }
 void Projector::set_template_texture(QString path)
 {
@@ -291,14 +296,17 @@ void Projector::frameChange(int value)
     QString path;
     path.sprintf(ui->imageplane_path->text().toStdString().c_str(), value);
 
+
     ui->projector->loader->set_imageplane_path(path, value);
 
     //ui->projector->renderer->setImagePlanePath(path, double(value));
 
     ui->currentTime->blockSignals(true);
     ui->timeSlider->blockSignals(true);
+
     ui->currentTime->setValue(value);
     ui->timeSlider->setValue(value);
+
     ui->currentTime->blockSignals(false);
     ui->timeSlider->blockSignals(false);
 }
@@ -372,8 +380,8 @@ void Projector::updateScene()
         scene_objects[i].selected = item->isSelected();
     }
     ui->projector->scene.update_objects(scene_objects);
-
-    ui->projector->glwidget->update();
+    update_all();
+    //ui->projector->glwidget->force_update();
 }
 static void qstring_int_list(QString &str, std::vector<int> &values)
 {

@@ -222,6 +222,17 @@ void Scene::set_template_texture(const std::vector<float> &data, int width, int 
     m_template_texture_crc++;
 }
 
+void Scene::clear()
+{
+    m_cameras.clear();
+    m_objects.clear();
+    m_scene_readers.clear();
+
+    camera = std::make_shared<Camera>();
+    camera->setName("Persp");
+    m_cameras.push_back(camera);
+}
+
 void Scene::render_template_data(FloatImageData &color_data,
                                  FloatImageData &alpha_data,
                                  FloatImageData &contour_data,

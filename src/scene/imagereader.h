@@ -35,7 +35,7 @@ private:
 
 void setup_imagemagick();
 
-void read_image(const std::string &path,
+bool read_image(const std::string &path,
                 std::vector<float> &data,
                 int &width, int &height);
 

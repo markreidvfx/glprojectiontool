@@ -16,17 +16,23 @@ void setup_imagemagick()
     Magick::InitializeMagick(NULL);
 }
 
-void read_image(const std::string &path,
+bool read_image(const std::string &path,
                 std::vector<float> &data,
                 int &width, int &height)
 {
     Magick::Image image;
     std::chrono::time_point<std::chrono::system_clock> start;
     start = std::chrono::system_clock::now();
+    std::cerr << "reading " << path << "\n";
 
+    bool result = false;
     try {
-        //image.read("logo:");
-        image.read( path);
+        if (path.empty()) {
+            image.read("logo:");
+        } else {
+            image.read( path);
+            result = true;
+        }
     }
     catch (...) {
         std::cerr << "error reading" << path << "\n";
@@ -42,6 +48,8 @@ void read_image(const std::string &path,
 
     std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now()-start;
     std::cerr << "image read in " << elapsed_seconds.count() << " secs\n";
+
+    return result;
 
 }
 

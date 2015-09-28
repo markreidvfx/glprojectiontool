@@ -196,7 +196,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton">
+              <widget class="QPushButton" name="clear_button">
                <property name="toolTip">
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clear loaded mesh&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>

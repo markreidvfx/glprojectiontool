@@ -128,6 +128,26 @@ void OpenGLWidget::render_template_data(FloatImageData &color_data,
     doneCurrent();
 }
 
+void OpenGLWidget::clear()
+{
+    m_scene->clear();
+    emit scene_loaded("");
+    update();
+
+    force_update();
+}
+
+void OpenGLWidget::force_update()
+{
+    update();
+
+    QSize s = size();
+    s.setWidth(s.width() + 1);
+    resize(s);
+    s.setWidth(s.width() - 1);
+    resize(s);
+}
+
 void OpenGLWidget::initializeGL()
 {
     glew_initialize();

@@ -34,6 +34,7 @@ signals:
                                    int frame);
     void update_mesh();
     void request_open_scene_file(QString path);
+    void request_clear();
 
 public slots:
     void wait_for_condition();
@@ -41,6 +42,7 @@ public slots:
     void create_template(QString imageplane_path, QString project, int frame);
     void set_subdivision_level(int value);
     void open_scene_file(QString path){emit request_open_scene_file(path);}
+    void clear(){emit request_clear();}
 
 private slots:
     void load_imageplane();

@@ -48,6 +48,8 @@ public slots:
                               FloatImageData &contour_data,
                               int frame);
     void update_mesh();
+    void force_update();
+    void clear();
 
 signals:
     void scene_loaded(QString);

@@ -31,7 +31,6 @@ void Loader::set_imageplane_path(QString path, int frame)
     m_imagelane_list.append(p);
     locker.unlock();
 
-
     QTimer::singleShot(0, this, SLOT(load_imageplane()));
 }
 void Loader::set_template_texture(QString path)
@@ -136,7 +135,7 @@ void Loader::load_imageplane()
     m_imagelane_list.clear();
     locker.unlock();
 
-    std::cerr << p.first.toStdString() << " " << p.second << "\n";
+    std::cerr << "image plane " << p.first.toStdString() << " " << p.second << "\n";
     //QThread::currentThread()->sleep(3);
 
     std::vector<float> data;
@@ -147,11 +146,18 @@ void Loader::load_imageplane()
     //read_image(p.first.toStdString(), data, width, height);
 
     FloatImageData image;
+    std::cerr << "reading \n";
     read_image(p.first.toStdString(), image);
+
+    std::cerr << "subdividing\n";
 
     m_scene->caculate(p.second);
 
+    std::cerr << "sending \n";
+
     // this signal should block
     emit imageplane_ready(image.data, image.width, image.height, p.second);
+
+    std::cerr << "done\n";
 
 }
