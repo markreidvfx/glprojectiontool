@@ -58,7 +58,7 @@ void read_image(const std::string &path, FloatImageData &image)
     read_image(path, image.data, image.width, image.height);
 }
 
-static void prep_image(Magick::Image &image)
+static void prep_image(Magick::Image &image, const std::string &label)
 {
     image.modifyImage();
     Magick::PixelPacket *pixels = image.getPixels(0, 0, image.size().width(), 1);
@@ -70,6 +70,14 @@ static void prep_image(Magick::Image &image)
         pixels[i] = c;
     }
     image.syncPixels();
+
+    image.attribute("label", label);
+    image.filterType(Magick::TriangleFilter);
+    image.depth(16);
+    image.magick("PSD");
+    image.backgroundColor("rgba(0, 0, 0, 0.0)");
+    image.compressType(Magick::RLECompression);
+    image.type(Magick::TrueColorMatteType);
 
 }
 
@@ -97,21 +105,17 @@ void write_template_psd(const std::string &imageplane,
 
     alpha.channel(Magick::RedChannel);
     color.composite(alpha, 0, 0, Magick::CopyOpacityCompositeOp);
-    color.attribute("label", "guides");
     color.resize(geo);
     color.flip();
 
     contour.flip();
-    contour.attribute("label", "contour");
     contour.resize(geo);
 
     Magick::Image empty(geo,"rgba(0,0,0,0.0)" );
-    empty.type(Magick::TrueColorMatteType);
-    empty.attribute("label", "clones");
 
-    prep_image(empty);
-    prep_image(color);
-    prep_image(contour);
+    prep_image(empty, "clones");
+    prep_image(color, "guides");
+    prep_image(contour, "contour");
 
     p.set_value(60);
 
