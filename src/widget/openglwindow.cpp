@@ -45,9 +45,20 @@ void OpenGLWidget::mouseMoveEvent(QMouseEvent *event)
 
     glm::vec2 delta = (cur - last) * time_delta;
 
-    if (m_mouseButtons & Qt::LeftButton &&
-            event->modifiers() & Qt::AltModifier &&
-            event->modifiers() & Qt::ControlModifier) {
+    if ((m_mouseButtons & Qt::RightButton &&
+         event->modifiers() & Qt::AltModifier) ||
+        (m_mouseButtons & Qt::LeftButton &&
+         m_mouseButtons & Qt::MiddleButton &&
+         event->modifiers() & Qt::AltModifier)) {
+
+        m_scene->camera->dolly(delta);
+        update();
+
+    } else if ((m_mouseButtons & Qt::LeftButton &&
+         event->modifiers() & Qt::AltModifier &&
+         event->modifiers() & Qt::ControlModifier) ||
+        (m_mouseButtons & Qt::MiddleButton && Qt::AltModifier)){
+
         m_scene->camera->pan(delta);
         update();
 
@@ -56,11 +67,8 @@ void OpenGLWidget::mouseMoveEvent(QMouseEvent *event)
          m_scene->camera->rotate(delta);
         update();
 
-    } else if (m_mouseButtons & Qt::RightButton &&
-               event->modifiers() & Qt::AltModifier) {
-        m_scene->camera->dolly(delta);
-        update();
     }
+
     event->accept();
 
 
