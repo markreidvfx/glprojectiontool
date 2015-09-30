@@ -108,6 +108,8 @@ Projector::Projector(QWidget *parent) :
             ui->projector->loader, SLOT(open_scene_file(QString)));
 
     hide_progress();
+
+    emit ui->template_texture_path->textChanged("");
 }
 
 Projector::~Projector()

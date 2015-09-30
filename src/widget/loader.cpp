@@ -87,8 +87,12 @@ void Loader::create_template(QString imageplane_path, QString project, int frame
 
     QFileInfo info(imageplane_path);
     QString basename = info.completeBaseName();
+
+    if (basename.isEmpty())
+        basename = "template";
+
     std::cerr << "base" <<basename.toStdString() << "\n";
-    QString dest_name = info.completeBaseName() + ".psd";
+    QString dest_name = basename + ".psd";
 
     QStringList subdirs;
     QString frame_string;
@@ -107,7 +111,7 @@ void Loader::create_template(QString imageplane_path, QString project, int frame
 
     std::cerr << dest.toStdString() << "\n";
 
-    write_template_psd(imageplane_path.toStdString(),
+    write_template_psd(info.exists() ? imageplane_path.toStdString(): "",
                        dest.toStdString(),
                        data_root.path().toStdString(),
                        color,

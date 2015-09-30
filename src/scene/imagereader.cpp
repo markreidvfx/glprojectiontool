@@ -1,11 +1,7 @@
 #include "imagereader.h"
 #include <iostream>
 
-#include <thread>
-#include <future>
-
 #include <Magick++.h>
-//using namespace Magick;
 
 #include <list>
 #include <chrono>
@@ -14,6 +10,11 @@
 void setup_imagemagick()
 {
     Magick::InitializeMagick(NULL);
+}
+
+static Magick::Image empty_image()
+{
+    return Magick::Image("1024x1024","rgba(0,0,0,0.0)");
 }
 
 bool read_image(const std::string &path,
@@ -28,7 +29,7 @@ bool read_image(const std::string &path,
     bool result = false;
     try {
         if (path.empty()) {
-            image.read("logo:");
+            image = empty_image();
         } else {
             image.read( path);
             result = true;
@@ -36,7 +37,7 @@ bool read_image(const std::string &path,
     }
     catch (...) {
         std::cerr << "error reading" << path << "\n";
-        image.read("logo:");
+        image = empty_image();
         //return false;
     }
     image.resize("1024x1024!");
@@ -60,17 +61,20 @@ void read_image(const std::string &path, FloatImageData &image)
 
 static void prep_image(Magick::Image &image, const std::string &label)
 {
+    /*
     image.modifyImage();
-    Magick::PixelPacket *pixels = image.getPixels(0, 0, image.size().width(), 1);
 
+    Magick::PixelPacket *pixels = image.getPixels(0, 0, image.size().width(), 1);
     for (int i = 0; i < image.size().width(); i++ ) {
         float alpha = .01 * 1.0 / (i+1);
         Magick::Color c = pixels[i];
         c.alpha(1.0 - alpha + c.alpha());
         pixels[i] = c;
     }
-    image.syncPixels();
+    image.syncPixels(); */
 
+    image.strip();
+    image.attribute("colorspace", "srgb");
     image.attribute("label", label);
     image.filterType(Magick::TriangleFilter);
     image.depth(16);
@@ -78,6 +82,7 @@ static void prep_image(Magick::Image &image, const std::string &label)
     image.backgroundColor("rgba(0, 0, 0, 0.0)");
     image.compressType(Magick::RLECompression);
     image.type(Magick::TrueColorMatteType);
+    image.verbose(true);
 
 }
 
@@ -119,7 +124,12 @@ void write_template_psd(const std::string &imageplane,
 
     p.set_value(60);
 
-    plane.read(imageplane);
+    if (imageplane.empty())
+        plane = empty;
+    else
+        plane.read(imageplane);
+
+    prep_image(plane, "background");
 
     plane.write(data_dir + "/plane.png");
     alpha.write(data_dir + "/alpha.png");
@@ -128,13 +138,6 @@ void write_template_psd(const std::string &imageplane,
     empty.write(data_dir + "/empty.png");
 
     p.set_value(80);
-
-    plane.attribute("colorspace", "rgb");
-    plane.magick("PSD");
-    plane.depth(16);
-    plane.verbose(true);
-    plane.compressType(Magick::RLECompression);
-    plane.attribute("label", "background");
 
     Magick::Image liquify = plane;
     liquify.attribute("label", "liquify");
