@@ -7,6 +7,7 @@
 #include "contourrender.h"
 #include "imagereader.h"
 #include <mutex>
+#include <memory>
 
 class TemplateRenderer
 {
