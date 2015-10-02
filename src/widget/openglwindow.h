@@ -47,6 +47,12 @@ public slots:
                               FloatImageData &alpha_data,
                               FloatImageData &contour_data,
                               int frame);
+
+    void render_template_data_tiled(std::vector<FloatImageData> &color_data,
+                                    std::vector<FloatImageData> &alpha_data,
+                                    std::vector<FloatImageData> &contour_data,
+                                    int frame, int tiles
+                                    );
     void update_mesh();
     void force_update();
     void clear();

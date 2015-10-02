@@ -254,6 +254,50 @@ void Scene::render_template_data(FloatImageData &color_data,
 
 }
 
+void Scene::render_template_data_tiled(std::vector<FloatImageData> &color_data,
+                                       std::vector<FloatImageData> &alpha_data,
+                                       std::vector<FloatImageData> &contour_data,
+                                       int frame, int tiles
+                                       )
+{
+    std::cerr << "render tiled\n";
+
+    color_data.resize(tiles * tiles);
+    alpha_data.resize(tiles * tiles);
+    contour_data.resize(tiles * tiles);
+
+    m_template.resize_buffers(1024, 1024);
+    float line_width = m_template.line_width();
+    m_template.set_line_width(0.5);
+
+    update(frame);
+    m_template.buffer_scale = glm::vec2(tiles, tiles);
+    m_template.buffer_offset = glm::vec2(0, 0);
+    int i = 0;
+    for (int y = 0; y < tiles; y++) {
+
+
+        for (int x = 0; x < tiles; x++) {
+            std::cerr << "drawing tile " << i << std::endl;
+            draw();
+
+            m_template.render_template_data(color_data[i], alpha_data[i], contour_data[i]);
+            m_template.buffer_offset.x -= 2.0 / (double) tiles;
+            i++;
+        }
+
+        m_template.buffer_offset.y -= 2.0 / (double) tiles;
+        m_template.buffer_offset.x = 0;
+
+    }
+    m_template.resize_buffers(DEFAULT_BUFFER_SIZE,
+                              DEFAULT_BUFFER_SIZE);
+
+    m_template.set_line_width(line_width);
+    m_template.buffer_scale = glm::vec2(1, 1);
+    m_template.buffer_offset = glm::vec2(0, 0);
+}
+
 void Scene::export_mesh(const std::string &path, int frame)
 {
     std::vector< IArchive > archives;
@@ -315,6 +359,8 @@ void Scene::draw(unsigned int default_framebuffer_id)
     append_crc(&line_width, sizeof(float));
     append_crc(&buffer_size[0], sizeof(glm::ivec2));
     append_crc(&modelToProjectionMatrix[0][0], sizeof(glm::mat4));
+    append_crc(&m_template.buffer_offset[0], sizeof(glm::vec2));
+    append_crc(&m_template.buffer_scale[0], sizeof(glm::vec2));
 
     bool redraw_offscreen_buffers = false;
 

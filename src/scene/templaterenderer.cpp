@@ -4,6 +4,7 @@
 #include "shaders.h"
 #include <iostream>
 #include <list>
+#include <glm/gtx/transform.hpp>
 
 TemplateRenderer::TemplateRenderer()
 {
@@ -12,6 +13,8 @@ TemplateRenderer::TemplateRenderer()
     m_height = 1080;
     m_template_texture_id = 0;
     m_created = false;
+    buffer_offset = glm::vec2(0,0);
+    buffer_scale = glm::vec2(1,1);
 }
 
 void TemplateRenderer::load_shaders()
@@ -89,7 +92,19 @@ void TemplateRenderer::draw(std::vector< std::shared_ptr<Mesh> > objects,
         m_framebuffer.bind();
 
         glUseProgram(m_template_shader_id);
-        glUniformMatrix4fv(m_mvp_mat_loc, 1, GL_FALSE, &modelToProjectionMatrix[0][0]);
+
+        glm::mat4 m;
+
+        m *= glm::translate(glm::vec3(-1,-1,0));
+
+        m *= glm::scale(glm::vec3(buffer_scale.x, buffer_scale.y, 1));
+        m *= glm::translate(glm::vec3(buffer_offset.x,buffer_offset.y,0));
+        m *= glm::translate(glm::vec3(1,1,0));
+
+
+        m = m * modelToProjectionMatrix;
+
+        glUniformMatrix4fv(m_mvp_mat_loc, 1, GL_FALSE, &m[0][0]);
 
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, m_template_texture_id);

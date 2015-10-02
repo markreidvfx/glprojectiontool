@@ -59,6 +59,44 @@ void read_image(const std::string &path, FloatImageData &image)
     read_image(path, image.data, image.width, image.height);
 }
 
+static Magick::Image montage_tiles(const std::vector<FloatImageData> &data, int tiles)
+{
+    Magick::Image image;
+
+    std::vector<Magick::Image> images;
+
+    images.resize(data.size());
+    for (int i = 0; i < data.size(); i++) {
+
+        const FloatImageData &d = data[i];
+
+        images[i].read(d.width, d.height, "RGBA", Magick::FloatPixel, &d.data[0]);
+        char buff[100];
+        snprintf(buff, sizeof(buff), "%04d", i);
+        std::string pad = buff;
+        std::string path = "tile" +  pad + ".jpg";
+        //images[i].write(path);
+    }
+
+    Magick::Montage opts;
+    Magick::Geometry t;
+    t.width(tiles);
+    t.height(tiles);
+
+    opts.tile(t);
+
+    opts.geometry(images[0].size());
+    opts.backgroundColor("rgba(0, 0, 0, 0.0)");
+
+    std::vector<Magick::Image> result;
+    Magick::montageImages(&result, images.begin(), images.end(), opts);
+
+    result[0].flip();
+
+    //result[0].write("montage.png");
+    return result[0];
+}
+
 static void prep_image(Magick::Image &image, const std::string &label)
 {
     /*
@@ -90,30 +128,27 @@ static void prep_image(Magick::Image &image, const std::string &label)
 void write_template_psd(const std::string &imageplane,
                         const std::string &dest,
                         const std::string &data_dir,
-                        FloatImageData &color_data,
-                        FloatImageData &alpha_data,
-                        FloatImageData &contour_data,
+                        const std::vector<FloatImageData> &color_tiles,
+                        const std::vector<FloatImageData> &alpha_tiles,
+                        const std::vector<FloatImageData> &contour_tiles,
+                        int tiles,
                         Progress &p)
 {
     Magick::Image plane;
-    Magick::Image color;
-    Magick::Image alpha;
-    Magick::Image contour;
+    Magick::Image color = montage_tiles(color_tiles, tiles);
+    Magick::Image alpha = montage_tiles(alpha_tiles, tiles);;
+    Magick::Image contour = montage_tiles(contour_tiles, tiles);;
 
     Magick::Geometry geo("1920x1080!");
-
-    color.read(color_data.width, color_data.height, "RGBA", Magick::FloatPixel, &color_data.data[0]);
-    alpha.read(alpha_data.width, alpha_data.height, "RGBA", Magick::FloatPixel, &alpha_data.data[0]);
-    contour.read(contour_data.width, contour_data.height, "RGBA", Magick::FloatPixel, &contour_data.data[0]);
 
     p.set_value(50);
 
     alpha.channel(Magick::RedChannel);
     color.composite(alpha, 0, 0, Magick::CopyOpacityCompositeOp);
     color.resize(geo);
-    color.flip();
+    //color.flip();
 
-    contour.flip();
+    //contour.flip();
     contour.resize(geo);
 
     Magick::Image empty(geo,"rgba(0,0,0,0.0)" );

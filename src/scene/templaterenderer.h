@@ -29,6 +29,7 @@ public:
 
     void set_template_texture(const std::vector<float> &data, int width, int height);
 
+
     void resize_buffers(int width, int height)
     {
         m_framebuffer.resize(width, height);
@@ -50,6 +51,9 @@ public:
         std::lock_guard<std::recursive_mutex> lock(m_lock);
         m_progress = value;
     }
+
+    glm::vec2 buffer_offset;
+    glm::vec2 buffer_scale;
 
 private:
     bool m_created;

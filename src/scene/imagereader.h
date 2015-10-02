@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <mutex>
-#include <future>
 
 struct FloatImageData {
     std::vector<float> data;
@@ -45,9 +44,12 @@ void read_image(const std::string &path, FloatImageData &image);
 void write_template_psd(const std::string &imageplane,
                         const std::string &dest,
                         const std::string &data_dir,
-                        FloatImageData &color_data,
-                        FloatImageData &alpha_data,
-                        FloatImageData &contour_data,
+                        const std::vector<FloatImageData> &color_tiles,
+                        const std::vector<FloatImageData> &alpha_tiles,
+                        const std::vector<FloatImageData> &contour_tiles,
+                        int tiles,
                         Progress &p);
+
+//void montage_tiles(const std::vector<FloatImageData> &data, int tiles);
 
 #endif // IMAGEREADER_H

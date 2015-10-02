@@ -25,7 +25,7 @@ void Loader::set_imageplane_path(QString path, int frame)
     QPair <QString, int > p;
 
     p.first = path;
-    p.second = frame;
+    p.second = frame - 1;
 
     QMutexLocker locker(&m_lock);
     m_imagelane_list.append(p);
@@ -73,13 +73,19 @@ void Loader::create_template(QString imageplane_path, QString project, int frame
     FloatImageData alpha;
     FloatImageData contour;
 
+    std::vector<FloatImageData> color_tiles;
+    std::vector<FloatImageData> alpha_tiles;
+    std::vector<FloatImageData> contour_tiles;
+
     progress.set_value(5);
 
-    m_scene->caculate(frame);
+    m_scene->caculate(frame - 1);
 
     progress.set_value(10);
-
-    emit request_template_textures(color, alpha, contour, frame);
+    int tiles = 4;
+    emit request_template_data_tiled(color_tiles, alpha_tiles, contour_tiles, frame - 1, tiles);
+    //montage_tiles(contour_tiles, tiles);
+    //emit request_template_textures(color, alpha, contour, frame);
 
     progress.set_value(25);
 
@@ -114,9 +120,10 @@ void Loader::create_template(QString imageplane_path, QString project, int frame
     write_template_psd(info.exists() ? imageplane_path.toStdString(): "",
                        dest.toStdString(),
                        data_root.path().toStdString(),
-                       color,
-                       alpha,
-                       contour,
+                       color_tiles,
+                       alpha_tiles,
+                       contour_tiles,
+                       tiles,
                        progress);
 
     m_scene->export_camera(data_root.filePath("camera.abc").toStdString(), frame);
