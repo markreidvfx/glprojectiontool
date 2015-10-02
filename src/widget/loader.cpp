@@ -6,6 +6,7 @@
 #include <QStringList>
 #include <QDir>
 #include <iostream>
+#include <QThread>
 
 Loader::Loader(Scene *scene, QObject *parent) : QObject(parent)
 {
@@ -91,6 +92,8 @@ void Loader::create_template(QString imageplane_path, QString project, int frame
         emit request_template_data_tiled(color_tiles, alpha_tiles, contour_tiles, frame - 1, tiles, i);
 
         progress.set_value(10 + i*2);
+        QThread::currentThread()->msleep(2);
+
     }
     //montage_tiles(contour_tiles, tiles);
     //emit request_template_textures(color, alpha, contour, frame);
