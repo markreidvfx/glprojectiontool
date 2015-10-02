@@ -35,7 +35,7 @@ signals:
     void request_template_data_tiled(std::vector<FloatImageData> &color_data,
                                      std::vector<FloatImageData> &alpha_data,
                                      std::vector<FloatImageData> &contour_data,
-                                     int frame, int tiles);
+                                     int frame, int tiles, int index);
     void update_mesh();
     void request_open_scene_file(QString path);
     void request_clear();

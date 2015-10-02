@@ -27,8 +27,8 @@ ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
                      glwidget, SLOT(render_template_data(FloatImageData&,FloatImageData&,FloatImageData&,int)),
                      Qt::BlockingQueuedConnection);
 
-    QObject::connect(loader, SIGNAL(request_template_data_tiled(std::vector<FloatImageData>&,std::vector<FloatImageData>&,std::vector<FloatImageData>&,int,int)),
-                     glwidget, SLOT(render_template_data_tiled(std::vector<FloatImageData>&,std::vector<FloatImageData>&,std::vector<FloatImageData>&,int,int)),
+    QObject::connect(loader, SIGNAL(request_template_data_tiled(std::vector<FloatImageData>&,std::vector<FloatImageData>&,std::vector<FloatImageData>&,int,int,int)),
+                     glwidget, SLOT(render_template_data_tiled(std::vector<FloatImageData>&,std::vector<FloatImageData>&,std::vector<FloatImageData>&,int,int,int)),
                      Qt::BlockingQueuedConnection);
 
     QObject::connect(loader, SIGNAL(update_mesh()),

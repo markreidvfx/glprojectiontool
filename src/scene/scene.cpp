@@ -257,14 +257,14 @@ void Scene::render_template_data(FloatImageData &color_data,
 void Scene::render_template_data_tiled(std::vector<FloatImageData> &color_data,
                                        std::vector<FloatImageData> &alpha_data,
                                        std::vector<FloatImageData> &contour_data,
-                                       int frame, int tiles
+                                       int frame, int tiles, int tile_index
                                        )
 {
-    std::cerr << "render tiled\n";
+    std::cerr << "rendering tiled index " << tile_index << std::endl ;
 
-    color_data.resize(tiles * tiles);
-    alpha_data.resize(tiles * tiles);
-    contour_data.resize(tiles * tiles);
+    //color_data.resize(tiles * tiles);
+    //alpha_data.resize(tiles * tiles);
+    //contour_data.resize(tiles * tiles);
 
     m_template.resize_buffers(1024, 1024);
     float line_width = m_template.line_width();
@@ -278,10 +278,11 @@ void Scene::render_template_data_tiled(std::vector<FloatImageData> &color_data,
 
 
         for (int x = 0; x < tiles; x++) {
-            std::cerr << "drawing tile " << i << std::endl;
-            draw();
-
-            m_template.render_template_data(color_data[i], alpha_data[i], contour_data[i]);
+            if (i == tile_index) {
+                std::cerr << "drawing tile " << i << std::endl;
+                draw();
+                m_template.render_template_data(color_data[i], alpha_data[i], contour_data[i]);
+            }
             m_template.buffer_offset.x -= 2.0 / (double) tiles;
             i++;
         }

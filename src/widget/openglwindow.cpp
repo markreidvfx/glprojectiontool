@@ -139,10 +139,10 @@ void OpenGLWidget::render_template_data(FloatImageData &color_data,
 void OpenGLWidget::render_template_data_tiled(std::vector<FloatImageData> &color_data,
                                               std::vector<FloatImageData> &alpha_data,
                                               std::vector<FloatImageData> &contour_data,
-                                              int frame, int tiles)
+                                              int frame, int tiles, int index)
 {
     makeCurrent();
-    m_scene->render_template_data_tiled(color_data, alpha_data, contour_data, frame, tiles);
+    m_scene->render_template_data_tiled(color_data, alpha_data, contour_data, frame, tiles, index);
     doneCurrent();
 }
 

@@ -135,29 +135,36 @@ void write_template_psd(const std::string &imageplane,
                         Progress &p)
 {
     Magick::Image plane;
+
+    p.set_value(50);
     Magick::Image color = montage_tiles(color_tiles, tiles);
-    Magick::Image alpha = montage_tiles(alpha_tiles, tiles);;
-    Magick::Image contour = montage_tiles(contour_tiles, tiles);;
+    p.set_value(52);
+    Magick::Image alpha = montage_tiles(alpha_tiles, tiles);
+    p.set_value(54);
+    Magick::Image contour = montage_tiles(contour_tiles, tiles);
+    p.set_value(58);
 
     Magick::Geometry geo("1920x1080!");
 
-    p.set_value(50);
+
 
     alpha.channel(Magick::RedChannel);
     color.composite(alpha, 0, 0, Magick::CopyOpacityCompositeOp);
     color.resize(geo);
     //color.flip();
-
+    p.set_value(60);
     //contour.flip();
     contour.resize(geo);
-
+    p.set_value(65);
     Magick::Image empty(geo,"rgba(0,0,0,0.0)" );
 
     prep_image(empty, "clones");
+    p.set_value(68);
     prep_image(color, "guides");
+    p.set_value(68);
     prep_image(contour, "contour");
 
-    p.set_value(60);
+    p.set_value(77);
 
     if (imageplane.empty())
         plane = empty;
@@ -165,14 +172,14 @@ void write_template_psd(const std::string &imageplane,
         plane.read(imageplane);
 
     prep_image(plane, "background");
-
+    p.set_value(80);
     plane.write(data_dir + "/plane.png");
     alpha.write(data_dir + "/alpha.png");
     color.write(data_dir + "/color.png");
     contour.write(data_dir + "/contour.png");
     empty.write(data_dir + "/empty.png");
 
-    p.set_value(80);
+    p.set_value(85);
 
     Magick::Image liquify = plane;
     liquify.attribute("label", "liquify");

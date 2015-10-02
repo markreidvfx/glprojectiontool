@@ -496,7 +496,7 @@ void Projector::next_template()
                                                        m_projection_count - m_projection_frames.size(),
                                                        m_projection_count);
     show_progress(message, 0, 100, 0);
-    QTimer::singleShot(100, this, SLOT(check_progress()));
+    QTimer::singleShot(50, this, SLOT(check_progress()));
 
     emit request_template(imageplane, project, frame);
 }
