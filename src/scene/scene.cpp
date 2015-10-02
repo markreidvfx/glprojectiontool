@@ -239,7 +239,7 @@ void Scene::render_template_data(FloatImageData &color_data,
                                  int frame)
 {
 
-    m_template.resize_buffers(1024 * 4 , 1024 * 4);
+    m_template.resize_buffers(1024 * 2 , 1024 * 2);
     float line_width = m_template.line_width();
     m_template.set_line_width(0.5);
 
