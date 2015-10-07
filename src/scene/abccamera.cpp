@@ -3,47 +3,19 @@
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
-
+#include "abcutils.h"
 
 AbcCamera::AbcCamera()
 {
 
 }
 
-void accumXform( M44d &xf, IObject obj )
-{
-    if ( IXform::matches( obj.getHeader() ) )
-    {
-        IXform x( obj, kWrapExisting );
-        XformSample xs;
-        x.getSchema().get( xs );
-        // AbcGeom::XformSample::getMatrix() will compute an Imath::M44d that
-        // represents the condensed xform for this AbcGeom::XformSample.
-        xf *= xs.getMatrix();
-    }
-}
-
-
-M44d getFinalMatrix( IObject &iObj ){
-    M44d xf;
-    xf.makeIdentity();
-    IObject parent = iObj.getParent();
-
-    while ( parent )
-    {
-        accumXform( xf, parent );
-        parent = parent.getParent();
-    }
-
-    return xf;
-}
-
-void AbcCamera::update(double time)
+void AbcCamera::update(double seconds)
 {
     M44d xf;
     {
     std::lock_guard<std::recursive_mutex> l(m_reader->lock);
-    xf = getFinalMatrix(m_camera);
+    xf = getFinalMatrix(m_camera, seconds);
     }
     //std::cerr <<xf << "\n";
 

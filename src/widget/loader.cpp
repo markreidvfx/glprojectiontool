@@ -80,7 +80,7 @@ void Loader::create_template(QString imageplane_path, QString project, int frame
 
     progress.set_value(5);
 
-    m_scene->caculate(frame - 1);
+    m_scene->caculate( frame  / 24.0);
 
     progress.set_value(10);
     int tiles = 4;
@@ -89,7 +89,7 @@ void Loader::create_template(QString imageplane_path, QString project, int frame
     contour_tiles.resize(tiles*tiles);
 
     for (int i =0; i < tiles * tiles; i++) {
-        emit request_template_data_tiled(color_tiles, alpha_tiles, contour_tiles, frame - 1, tiles, i);
+        emit request_template_data_tiled(color_tiles, alpha_tiles, contour_tiles, frame, tiles, i);
 
         progress.set_value(10 + i*2);
         QThread::currentThread()->msleep(2);
@@ -173,7 +173,7 @@ void Loader::load_imageplane()
 
     std::cerr << "subdividing\n";
 
-    m_scene->caculate(p.second);
+    m_scene->caculate( (p.second +1) / 24.0);
 
     std::cerr << "sending \n";
 

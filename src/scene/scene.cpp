@@ -10,6 +10,7 @@
 #include "rc_helper.h"
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
+#include <OpenEXR/ImathBoxAlgo.h>
 
 #include <chrono>
 
@@ -171,25 +172,32 @@ static void _update(std::shared_ptr<Mesh> object)
 }
 
 // this is to run in bg thread
-void Scene::caculate(double time)
+void Scene::caculate(double seconds)
 {
     std::chrono::time_point<std::chrono::system_clock> start;
     std::chrono::duration<double> elapsed_seconds;
     start = std::chrono::system_clock::now();
 
     int level = subdivLevel();
+
+    Imath::Box3d bounds;
+
     for (int i = 0; i < m_objects.size(); i++) {
         m_objects[i]->subdiv_level = level;
-        m_objects[i]->time = time;
-        m_objects[i]->calculate(time, level);
+        m_objects[i]->time = seconds;
+        m_objects[i]->calculate(seconds, level);
+        bounds.extendBy(m_objects[i]->bounds(seconds));
     }
-    m_time = time;
+    m_time = seconds;
 
     elapsed_seconds = std::chrono::system_clock::now()-start;
+    //std::cerr << bounds. << std::endl;
     std::cerr << "geo caculated in " << elapsed_seconds.count() << " secs \n";
+
+
 }
 
-void Scene::update(double time)
+void Scene::update(double seconds)
 {
     std::chrono::time_point<std::chrono::system_clock> start;
     std::chrono::duration<double> elapsed_seconds;
@@ -200,7 +208,7 @@ void Scene::update(double time)
     }
 
     for (int i = 0; i < m_cameras.size(); i++) {
-        m_cameras[i]->update(time);
+        m_cameras[i]->update(seconds);
     }
 
     elapsed_seconds = std::chrono::system_clock::now()-start;
@@ -213,7 +221,7 @@ void Scene::set_imageplane_data(const std::vector <float> &data, int width, int 
 
     m_imageplane->update();
     m_imageplane->setImageData(width, height, data);
-    update(frame);
+    update(frame / 24.0);
 }
 
 void Scene::set_template_texture(const std::vector<float> &data, int width, int height)
@@ -243,7 +251,7 @@ void Scene::render_template_data(FloatImageData &color_data,
     float line_width = m_template.line_width();
     m_template.set_line_width(0.5);
 
-    update(frame);
+    update(frame / 24.0);
     draw();
     m_template.render_template_data(color_data, alpha_data, contour_data);
 
@@ -270,7 +278,7 @@ void Scene::render_template_data_tiled(std::vector<FloatImageData> &color_data,
     float line_width = m_template.line_width();
     m_template.set_line_width(0.5);
 
-    update(frame);
+    update(frame / 24.0);
     m_template.buffer_scale = glm::vec2(tiles, tiles);
     m_template.buffer_offset = glm::vec2(0, 0);
     int i = 0;
@@ -308,7 +316,7 @@ void Scene::export_mesh(const std::string &path, int frame)
         if (r)
             archives.push_back(r->archive());
     }
-    export_abc(archives, path, frame);
+    export_abc(archives, path, frame / 24.0);
 
 }
 

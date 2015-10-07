@@ -5,6 +5,8 @@
 #include <opensubdiv/far/topologyDescriptor.h>
 #include <opensubdiv/far/primvarRefiner.h>
 #include <opensubdiv/far/stencilTableFactory.h>
+#include "abcutils.h"
+#include <ImathBoxAlgo.h>
 
 using namespace OpenSubdiv;
 typedef Far::TopologyDescriptor Descriptor;
@@ -398,17 +400,19 @@ void AbcMesh::subdivide(std::vector<glm::vec3> &vertices,
     */
 }
 
-void AbcMesh::calculate(double time, int subdivision_level)
+void AbcMesh::calculate(double seconds, int subdivision_level)
 {
     data.clear();
     subdiv_level = subdivision_level;
-    read_data(data, time);
+    read_data(data, seconds);
 }
 
-void AbcMesh::read_data(MeshData &data, double time)
+void AbcMesh::read_data(MeshData &data, double seconds)
 {
     std::lock_guard<std::recursive_mutex> l(m_reader->lock);
-    m_schema.get(m_sample, time);
+    std::cerr << time << "\n";
+    ISampleSelector sel(seconds);
+    m_schema.get(m_sample, sel);
     read(data.vertices, data.uvs, data.normals, data.indices);
 }
 
@@ -656,4 +660,20 @@ void AbcMesh::create_normals(std::vector<glm::vec3> &normals)
     }
 
 
+}
+
+Imath::Box3d AbcMesh::bounds(double seconds)
+{
+    Imath::Box3d bbox;
+    bbox.makeEmpty();
+    M44d xf = getFinalMatrix(m_mesh, seconds);
+
+    IBox3dProperty boxProp = m_schema.getSelfBoundsProperty();
+    if (!boxProp.valid())
+        return bbox;
+
+    ISampleSelector sel( seconds );
+    bbox = boxProp.getValue( sel );
+    bbox = Imath::transform(bbox, xf);
+    return bbox;
 }

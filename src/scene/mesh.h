@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
+#include <OpenEXR/ImathBox.h>
 
 struct MeshData {
     std::vector<glm::vec3> vertices;
@@ -28,8 +29,9 @@ public:
     virtual void create() = 0;
     virtual void update() = 0;
     virtual void draw() = 0;
-    virtual void calculate(double time, int subdivision_level = 0) = 0;
-    virtual void read_data(MeshData &data, double time) = 0;
+    virtual void calculate(double seconds, int subdivision_level = 0) = 0;
+    virtual void read_data(MeshData &data, double seconds) = 0;
+    virtual Imath::Box3d bounds(double seconds) = 0;
 
     unsigned int vertexArrayId;
 

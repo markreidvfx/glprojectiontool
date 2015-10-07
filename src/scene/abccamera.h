@@ -28,7 +28,7 @@ public:
         m_name = camera.getName();
         m_reader = reader;
     }
-    virtual void update(double time = 0);
+    virtual void update(double seconds = 0);
 
 private:
     ICamera m_camera;

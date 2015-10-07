@@ -1,5 +1,36 @@
 #include "abcutils.h"
 
+
+static void accumXform( M44d &xf, IObject obj, chrono_t seconds )
+{
+    if ( IXform::matches( obj.getHeader() ) )
+    {
+        IXform x( obj, kWrapExisting );
+        XformSample xs;
+        ISampleSelector sel( seconds );
+        x.getSchema().get( xs, sel );
+        xf *= xs.getMatrix();
+    }
+}
+
+
+M44d getFinalMatrix( IObject &iObj, chrono_t seconds )
+{
+    M44d xf;
+    xf.makeIdentity();
+
+    IObject parent = iObj.getParent();
+
+    while ( parent )
+    {
+        accumXform( xf, parent, seconds );
+        parent = parent.getParent();
+    }
+
+    return xf;
+}
+
+
 static void copy_props(Alembic::Abc::ICompoundProperty & iRead,
     Alembic::Abc::OCompoundProperty & iWrite, double seconds)
 {
@@ -121,9 +152,8 @@ void copy_object(Alembic::Abc::IObject & iIn,
     }
 }
 
-void export_abc(std::vector< IArchive > &archives, std::string path, int frame)
+void export_abc(std::vector< IArchive > &archives, std::string path, double seconds)
 {
-    double seconds = frame / 24.0f;
     OArchive out_archive(Alembic::AbcCoreHDF5::WriteArchive(), path);
     OObject out_top = out_archive.getTop();
     for (int i = 0; i < archives.size(); i++) {

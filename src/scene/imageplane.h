@@ -12,11 +12,12 @@ public:
     virtual ~ImagePlane();
     void create();
     void update();
-    void calculate(double time,  int subdivision_level = 0) {}
-    void read_data(MeshData &data, double time) {}
+    void calculate(double seconds,  int subdivision_level = 0) {}
+    void read_data(MeshData &data, double seconds) {}
     void setImageData(const int width, const int height,
                          const std::vector<float> &image_data);
     void draw();
+    Imath::Box3d bounds(double seconds){return Imath::Box3d();}
 
     void setZ(float value){m_z = value;}
     void setAlpha(float value =1.0) {m_alpha = value;}

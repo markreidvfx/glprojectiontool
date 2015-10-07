@@ -12,6 +12,7 @@
 using namespace Alembic::AbcGeom;
 using namespace Alembic::AbcCoreAbstract;
 
-void export_abc(std::vector< IArchive > &archives, std::string path, int frame);
+M44d getFinalMatrix( IObject &iObj, chrono_t seconds);
+void export_abc(std::vector< IArchive > &archives, std::string path, double seconds);
 
 #endif // ABCUTILS_H

@@ -66,7 +66,7 @@ public:
         return m_viewport_size;
     }
 
-    virtual void update(double time=0) {}
+    virtual void update(double seconds=0) {}
 
     std::string name() {
         return m_name;

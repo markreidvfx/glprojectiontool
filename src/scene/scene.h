@@ -8,6 +8,8 @@
 #include "templaterenderer.h"
 #include "imagereader.h"
 
+#include <OpenEXR/ImathBox.h>
+
 #include <vector>
 #include <string>
 #include <string>
@@ -29,7 +31,7 @@ public:
     ~Scene();
     void open(const std::string &path);
     void create();
-    void update(double time = 0);
+    void update(double seconds = 0);
 
     void updateImagePlanes();
     void draw(unsigned int default_framebuffer_id=0);
@@ -63,7 +65,7 @@ public:
         return result;
     }
 
-    void caculate(double time);
+    void caculate(double seconds);
     void clear();
 
     std::vector<SceneObject> scene_objects();
@@ -121,7 +123,7 @@ private:
     long int m_last;
 
     int m_draw_count;
-
+    Imath::Box3d m_bounds;
 
     TemplateRenderer m_template;
 
