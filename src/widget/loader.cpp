@@ -26,7 +26,7 @@ void Loader::set_imageplane_path(QString path, int frame)
     QPair <QString, int > p;
 
     p.first = path;
-    p.second = frame - 1;
+    p.second = frame;
 
     QMutexLocker locker(&m_lock);
     m_imagelane_list.append(p);
@@ -79,8 +79,9 @@ void Loader::create_template(QString imageplane_path, QString project, int frame
     std::vector<FloatImageData> contour_tiles;
 
     progress.set_value(5);
+    double seconds = frame  / 24.0;
 
-    m_scene->caculate( frame  / 24.0);
+    m_scene->caculate(seconds);
 
     progress.set_value(10);
     int tiles = 4;
@@ -137,8 +138,8 @@ void Loader::create_template(QString imageplane_path, QString project, int frame
                        tiles,
                        progress);
 
-    m_scene->export_camera(data_root.filePath("camera.abc").toStdString(), frame);
-    m_scene->export_mesh(data_root.filePath("mesh.abc").toStdString(), frame);
+    //m_scene->export_camera(data_root.filePath("camera.abc").toStdString(), seconds);
+    m_scene->export_mesh(data_root.filePath("mesh.abc").toStdString(), seconds);
     //QThread::currentThread()->sleep(3);
 
     progress.set_value(100);
@@ -165,6 +166,8 @@ void Loader::load_imageplane()
     int width;
     int height;
 
+    double seconds = p.second / 24.0;
+
     //read_image(p.first.toStdString(), data, width, height);
 
     FloatImageData image;
@@ -173,7 +176,7 @@ void Loader::load_imageplane()
 
     std::cerr << "subdividing\n";
 
-    m_scene->caculate( (p.second +1) / 24.0);
+    m_scene->caculate(seconds);
 
     std::cerr << "sending \n";
 

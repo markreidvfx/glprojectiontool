@@ -307,7 +307,7 @@ void Scene::render_template_data_tiled(std::vector<FloatImageData> &color_data,
     m_template.buffer_offset = glm::vec2(0, 0);
 }
 
-void Scene::export_mesh(const std::string &path, int frame)
+void Scene::export_mesh(const std::string &path, double seconds)
 {
     std::vector< IArchive > archives;
 
@@ -316,7 +316,7 @@ void Scene::export_mesh(const std::string &path, int frame)
         if (r)
             archives.push_back(r->archive());
     }
-    export_abc(archives, path, frame / 24.0);
+    export_abc(archives, path, seconds);
 
 }
 
