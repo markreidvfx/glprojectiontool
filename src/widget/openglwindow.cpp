@@ -79,10 +79,10 @@ void OpenGLWidget::mouseReleaseEvent(QMouseEvent *event)
     m_mouseButtons = Qt::NoButton;
 }
 
-void OpenGLWidget::set_imageplane_data(const FloatImage &data, int width, int height, int frame)
+void OpenGLWidget::set_imageplane_data(const FloatImage &data, int width, int height, double seconds)
 {
     makeCurrent();
-    m_scene->set_imageplane_data(data, width, height, frame);
+    m_scene->set_imageplane_data(data, width, height,  seconds);
     doneCurrent();
     update();
     QSize s = size();

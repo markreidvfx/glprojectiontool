@@ -216,12 +216,12 @@ void Scene::update(double seconds)
 
 }
 
-void Scene::set_imageplane_data(const std::vector <float> &data, int width, int height, int frame)
+void Scene::set_imageplane_data(const std::vector <float> &data, int width, int height, double seconds)
 {
 
     m_imageplane->update();
     m_imageplane->setImageData(width, height, data);
-    update(frame / 24.0);
+    update(seconds);
 }
 
 void Scene::set_template_texture(const std::vector<float> &data, int width, int height)

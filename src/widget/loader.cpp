@@ -181,7 +181,7 @@ void Loader::load_imageplane()
     std::cerr << "sending \n";
 
     // this signal should block
-    emit imageplane_ready(image.data, image.width, image.height, p.second);
+    emit imageplane_ready(image.data, image.width, image.height, seconds);
 
     std::cerr << "done\n";
 

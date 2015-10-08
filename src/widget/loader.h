@@ -25,7 +25,7 @@ public:
     QWaitCondition wait_condition;
 
 signals:
-    void imageplane_ready( const FloatImage &data, int width, int height, int frame);
+    void imageplane_ready( const FloatImage &data, int width, int height, double seconds);
     void template_texture_ready(const FloatImage &data, int width, int height);
     void projection_template_complete(QString imageplane_path, QString project,int frame);
     void request_template_data_tiled(std::vector<FloatImageData> &color_data,
