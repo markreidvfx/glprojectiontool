@@ -70,10 +70,6 @@ static QDir stringlist_join(QString root, QStringList subdirs)
 void Loader::create_template(QString imageplane_path, QString project, int frame)
 {
 
-    FloatImageData color;
-    FloatImageData alpha;
-    FloatImageData contour;
-
     std::vector<FloatImageData> color_tiles;
     std::vector<FloatImageData> alpha_tiles;
     std::vector<FloatImageData> contour_tiles;
@@ -96,12 +92,8 @@ void Loader::create_template(QString imageplane_path, QString project, int frame
         QThread::currentThread()->msleep(2);
 
     }
-    //montage_tiles(contour_tiles, tiles);
-    //emit request_template_textures(color, alpha, contour, frame);
 
     progress.set_value(45);
-
-    std::cerr << color.width << "\n";
 
     QFileInfo info(imageplane_path);
     QString basename = info.completeBaseName();
@@ -168,21 +160,11 @@ void Loader::load_imageplane()
 
     double seconds = p.second / 24.0;
 
-    //read_image(p.first.toStdString(), data, width, height);
-
     FloatImageData image;
     std::cerr << "reading \n";
     read_image(p.first.toStdString(), image);
 
-    std::cerr << "subdividing\n";
-
     m_scene->caculate(seconds);
-
-    std::cerr << "sending \n";
-
     // this signal should block
     emit imageplane_ready(image.data, image.width, image.height, seconds);
-
-    std::cerr << "done\n";
-
 }

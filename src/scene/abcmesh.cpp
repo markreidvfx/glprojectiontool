@@ -410,7 +410,6 @@ void AbcMesh::calculate(double seconds, int subdivision_level)
 void AbcMesh::read_data(MeshData &data, double seconds)
 {
     std::lock_guard<std::recursive_mutex> l(m_reader->lock);
-    std::cerr << time << "\n";
     ISampleSelector sel(seconds);
     m_schema.get(m_sample, sel);
     read(data.vertices, data.uvs, data.normals, data.indices);
