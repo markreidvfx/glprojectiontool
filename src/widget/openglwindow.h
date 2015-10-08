@@ -43,15 +43,10 @@ public slots:
     void set_imageplane_data(const FloatImage &data, int width, int height, int frame);
     void set_template_texture(const FloatImage &data, int width, int height);
 
-    void render_template_data(FloatImageData &color_data,
-                              FloatImageData &alpha_data,
-                              FloatImageData &contour_data,
-                              int frame);
-
     void render_template_data_tiled(std::vector<FloatImageData> &color_data,
                                     std::vector<FloatImageData> &alpha_data,
                                     std::vector<FloatImageData> &contour_data,
-                                    int frame, int tiles, int index
+                                    double seconds, int tiles, int index
                                     );
     void update_mesh();
     void force_update();

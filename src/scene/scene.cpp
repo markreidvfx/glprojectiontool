@@ -241,31 +241,10 @@ void Scene::clear()
     m_cameras.push_back(camera);
 }
 
-void Scene::render_template_data(FloatImageData &color_data,
-                                 FloatImageData &alpha_data,
-                                 FloatImageData &contour_data,
-                                 int frame)
-{
-
-    m_template.resize_buffers(1024 * 2 , 1024 * 2);
-    float line_width = m_template.line_width();
-    m_template.set_line_width(0.5);
-
-    update(frame / 24.0);
-    draw();
-    m_template.render_template_data(color_data, alpha_data, contour_data);
-
-    //reset sizes
-    m_template.resize_buffers(DEFAULT_BUFFER_SIZE,
-                              DEFAULT_BUFFER_SIZE);
-    m_template.set_line_width(line_width);
-
-}
-
 void Scene::render_template_data_tiled(std::vector<FloatImageData> &color_data,
                                        std::vector<FloatImageData> &alpha_data,
                                        std::vector<FloatImageData> &contour_data,
-                                       int frame, int tiles, int tile_index
+                                       double seconds, int tiles, int tile_index
                                        )
 {
     std::cerr << "rendering tiled index " << tile_index << std::endl ;
@@ -278,7 +257,7 @@ void Scene::render_template_data_tiled(std::vector<FloatImageData> &color_data,
     float line_width = m_template.line_width();
     m_template.set_line_width(0.5);
 
-    update(frame / 24.0);
+    update(seconds);
     m_template.buffer_scale = glm::vec2(tiles, tiles);
     m_template.buffer_offset = glm::vec2(0, 0);
     int i = 0;

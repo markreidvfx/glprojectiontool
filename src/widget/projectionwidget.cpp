@@ -23,12 +23,8 @@ ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
                      glwidget, SLOT(set_template_texture(const FloatImage&,int,int)),
                      Qt::BlockingQueuedConnection);
 
-    QObject::connect(loader, SIGNAL(request_template_textures(FloatImageData&,FloatImageData&,FloatImageData&,int)),
-                     glwidget, SLOT(render_template_data(FloatImageData&,FloatImageData&,FloatImageData&,int)),
-                     Qt::BlockingQueuedConnection);
-
-    QObject::connect(loader, SIGNAL(request_template_data_tiled(std::vector<FloatImageData>&,std::vector<FloatImageData>&,std::vector<FloatImageData>&,int,int,int)),
-                     glwidget, SLOT(render_template_data_tiled(std::vector<FloatImageData>&,std::vector<FloatImageData>&,std::vector<FloatImageData>&,int,int,int)),
+    QObject::connect(loader, SIGNAL(request_template_data_tiled(std::vector<FloatImageData>&,std::vector<FloatImageData>&,std::vector<FloatImageData>&,double,int,int)),
+                     glwidget, SLOT(render_template_data_tiled(std::vector<FloatImageData>&,std::vector<FloatImageData>&,std::vector<FloatImageData>&,double,int,int)),
                      Qt::BlockingQueuedConnection);
 
     QObject::connect(loader, SIGNAL(update_mesh()),

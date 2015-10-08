@@ -28,14 +28,10 @@ signals:
     void imageplane_ready( const FloatImage &data, int width, int height, int frame);
     void template_texture_ready(const FloatImage &data, int width, int height);
     void projection_template_complete(QString imageplane_path, QString project,int frame);
-    void request_template_textures(FloatImageData &color_data,
-                                   FloatImageData &alpha_data,
-                                   FloatImageData &contour_data,
-                                   int frame);
     void request_template_data_tiled(std::vector<FloatImageData> &color_data,
                                      std::vector<FloatImageData> &alpha_data,
                                      std::vector<FloatImageData> &contour_data,
-                                     int frame, int tiles, int index);
+                                     double seconds, int tiles, int index);
     void update_mesh();
     void request_open_scene_file(QString path);
     void request_clear();

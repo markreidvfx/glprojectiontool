@@ -126,23 +126,13 @@ void OpenGLWidget::set_template_texture(const FloatImage &data, int width, int h
     resize(s);
 }
 
-void OpenGLWidget::render_template_data(FloatImageData &color_data,
-                                        FloatImageData &alpha_data,
-                                        FloatImageData &contour_data,
-                                        int frame)
-{
-    makeCurrent();
-    m_scene->render_template_data(color_data, alpha_data, contour_data, frame);
-    doneCurrent();
-}
-
 void OpenGLWidget::render_template_data_tiled(std::vector<FloatImageData> &color_data,
                                               std::vector<FloatImageData> &alpha_data,
                                               std::vector<FloatImageData> &contour_data,
-                                              int frame, int tiles, int index)
+                                              double seconds, int tiles, int index)
 {
     makeCurrent();
-    m_scene->render_template_data_tiled(color_data, alpha_data, contour_data, frame, tiles, index);
+    m_scene->render_template_data_tiled(color_data, alpha_data, contour_data, seconds, tiles, index);
     doneCurrent();
 }
 

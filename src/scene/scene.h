@@ -80,14 +80,10 @@ public:
     void set_imageplane_data(const std::vector<float> &data, int width, int height, int frame);
     void set_template_texture(const std::vector<float> &data, int width, int height);
 
-    void render_template_data(FloatImageData &color_data,
-                              FloatImageData &alpha_data,
-                              FloatImageData &contour_data,
-                              int frame);
     void render_template_data_tiled(std::vector<FloatImageData> &color_data,
                                     std::vector<FloatImageData> &alpha_data,
                                     std::vector<FloatImageData> &contour_data,
-                                    int frame, int tiles, int tile_index
+                                    double seconds, int tiles, int tile_index
                                     );
 
     void export_mesh(const std::string &path, double seconds);
