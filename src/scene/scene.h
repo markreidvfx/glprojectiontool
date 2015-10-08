@@ -36,26 +36,14 @@ public:
     void updateImagePlanes();
     void draw(unsigned int default_framebuffer_id=0);
 
-    void setTime(double value);
-    double time() {
-         return m_time;
-    }
+    void set_time(double seconds){m_time = seconds;}
+    double time() {return m_time;}
 
-    long int first() {
-        return m_first;
-    }
+    long int first() {return m_first;}
+    long int last() {return m_last;}
 
-    long int last() {
-        return m_last;
-    }
-
-    void setSubdivLevel(int value) {
-        m_subdiv_level = value;
-    }
-
-    int subdivLevel(){
-        return m_subdiv_level;
-    }
+    void set_subdiv_level(int value) {m_subdiv_level = value;}
+    int subdiv_level(){return m_subdiv_level;}
 
     bool scene_loaded(std::string &path)
     {

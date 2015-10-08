@@ -143,13 +143,6 @@ void Scene::update_frame_range()
 
 }
 
-void Scene::setTime(double value)
-{
-    cerr << value/24.0 << " " << m_first / 24.0 <<"\n";
-    m_time = value/24.0;
-}
-
-
 void Scene::create()
 {
     glClearColor(0.85f, 0.85f, 0.85f, 0.0f);
@@ -178,7 +171,7 @@ void Scene::caculate(double seconds)
     std::chrono::duration<double> elapsed_seconds;
     start = std::chrono::system_clock::now();
 
-    int level = subdivLevel();
+    int level = subdiv_level();
 
     Imath::Box3d bounds;
 

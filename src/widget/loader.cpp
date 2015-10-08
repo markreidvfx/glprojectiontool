@@ -51,7 +51,7 @@ void Loader::set_subdivision_level(int value)
 {
     std::cerr << value << "\n";
     //m_scene->caculate();
-    m_scene->setSubdivLevel(value);
+    m_scene->set_subdiv_level(value);
     m_scene->caculate(m_scene->time());
     emit update_mesh();
 }
