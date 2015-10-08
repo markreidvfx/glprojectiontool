@@ -2,7 +2,7 @@
 #include <QApplication>
 #include <QVBoxLayout>
 
-ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
+ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent), m_loader_locked(true)
 {
 
     glwidget = new OpenGLWidget(&scene, this);
@@ -56,8 +56,12 @@ ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent)
 
 void ProjectionWidget::unlock_loader()
 {
-    std::cerr << "releasing loader\n";
-    loader->wait_condition.wakeAll();
+
+    if (m_loader_locked) {
+        std::cerr << "releasing loader" << std::endl;
+        loader->wait_condition.wakeAll();
+        m_loader_locked = false;
+    }
 }
 
 ProjectionWidget::~ProjectionWidget()

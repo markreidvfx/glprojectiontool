@@ -23,6 +23,9 @@ public:
 private slots:
     void unlock_loader();
 
+private:
+    bool m_loader_locked;
+
 };
 
 #endif // PROJECTIONWIDGET_H
