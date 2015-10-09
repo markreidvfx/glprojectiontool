@@ -64,6 +64,8 @@ include_directories(
 ${Qt5Widgets_INCLUDES}
 ${GLEW_INCLUDE_DIRS}
 ${GLM_INCLUDE_DIR}
+${EXR_INCLUDE_DIR}
+${EXR_INCLUDE_DIR}/OpenEXR
 )
 
 # We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
