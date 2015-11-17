@@ -171,11 +171,10 @@ void Projector::dropEvent(QDropEvent *event)
             if (!image_files.size())
                 continue;
 
-            for (int j = 0; j < image_files.size(); j++) {
-                QString file_path = directory.filePath(image_files.at(i));
-                std::cerr << file_path.toStdString() << "\n";
-                info = file_path;
-            }
+            QString file_path = directory.filePath(image_files.at(0));
+            std::cerr << file_path.toStdString() << "\n";
+            info = file_path;
+
         }
 
 
