@@ -160,19 +160,35 @@ void Projector::dropEvent(QDropEvent *event)
         QUrl u = url_list.at(i);
         if (!u.isLocalFile())
             continue;
+        //std::cerr << u.toString().toStdString() << "\n";
+        QFileInfo info(u.toLocalFile());
+        if (info.isDir()) {
+            QStringList name_filter;
+            name_filter << "*.dpx";
+            QDir directory(u.toLocalFile());
+            QStringList image_files = directory.entryList(name_filter);
 
-        QFileInfo info(u.toString());
+            if (!image_files.size())
+                continue;
+
+            for (int j = 0; j < image_files.size(); j++) {
+                QString file_path = directory.filePath(image_files.at(i));
+                std::cerr << file_path.toStdString() << "\n";
+                info = file_path;
+            }
+        }
+
 
         QString suffix = info.suffix().toLower();
 
         std::cerr << info.suffix().toLower().toStdString() << "\n";
-
+        std::cerr << info.absoluteFilePath().toStdString() << "\n";
         if (geo_formats.contains(suffix, Qt::CaseInsensitive)) {
-            open(u.toLocalFile());
+            open(info.absoluteFilePath());
         }
 
         if (image_plane_formats.contains(suffix, Qt::CaseInsensitive)) {
-            set_imageplane(u.toLocalFile());
+            set_imageplane(info.absoluteFilePath());
         }
     }
 
