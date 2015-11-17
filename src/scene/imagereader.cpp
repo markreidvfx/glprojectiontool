@@ -17,6 +17,37 @@ static Magick::Image empty_image()
     return Magick::Image("1024x1024","rgba(0,0,0,0.0)");
 }
 
+bool read_image_blob(const char *blob_data, int blob_size, std::vector<float> &data, int &width, int &height)
+{
+
+    Magick::Blob blob(blob_data, blob_size);
+    Magick::Image image;
+    std::chrono::time_point<std::chrono::system_clock> start;
+    start = std::chrono::system_clock::now();
+    std::cerr << "reading " << "blob" << "\n";
+
+    bool result = false;
+    try {
+        image.read(blob);
+    } catch (...) {
+        std::cerr << "error reading" << "blob" << "\n";
+        image = empty_image();
+        //return false;
+    }
+
+    image.resize("1024x1024!");
+    width = image.size().width();
+    height = image.size().height();
+
+    data.resize(width * height * 4 );
+    image.write(0, 0, width, height, "RGBA",  Magick::FloatPixel, &data[0]);
+
+    std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now()-start;
+    std::cerr << "image read in " << elapsed_seconds.count() << " secs\n";
+
+    return true;
+}
+
 bool read_image(const std::string &path,
                 std::vector<float> &data,
                 int &width, int &height)

@@ -39,10 +39,20 @@ void Loader::set_template_texture(QString path)
     std::cerr << "setting texture " << path.toStdString() << "\n";
     std::vector<float> data;
 
-    int width;
-    int height;
+    int width = 0;
+    int height = 0;
 
-    read_image(path.toStdString(), data, width, height);
+
+    QFile f(path);
+    if (!f.open(QIODevice::ReadOnly)) {
+        std::cerr << " error reading file: " << path.toStdString() << "\n";
+        return;
+    }
+
+    QByteArray file_data = f.readAll();
+    read_image_blob(file_data.data(), file_data.size(), data, width, height);
+
+    //read_image(path.toStdString(), data, width, height);
     emit template_texture_ready(data, width, height);
 
 }

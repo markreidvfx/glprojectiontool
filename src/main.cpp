@@ -42,7 +42,8 @@ CommandLineParseResult parseCommandLine(QCommandLineParser &parser, ProjectorOpt
     const QCommandLineOption project_option(QStringList() << "p" << "project", "project directory, were to output images too.", "project directory");
     parser.addOption(project_option);
 
-    const QCommandLineOption template_option(QStringList() << "t" << "template", "template texture.", "template.png");
+    QCommandLineOption template_option(QStringList() << "t" << "template", "template texture.", "template.png");
+    template_option.setDefaultValue(":/textures/dog_guides.png");
     parser.addOption(template_option);
 
     const QCommandLineOption helpOption = parser.addHelpOption();
