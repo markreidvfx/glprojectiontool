@@ -41,7 +41,8 @@ void Loader::set_template_texture(QString path)
 
     int width = 0;
     int height = 0;
-
+    if (path.isEmpty())
+        return;
 
     QFile f(path);
     if (!f.open(QIODevice::ReadOnly)) {
