@@ -75,9 +75,9 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    app.setApplicationName("projector");
+    app.setApplicationName("glprojectiontool");
     app.setApplicationVersion("0.1");
-
+    app.setWindowIcon(QIcon(":/textures/icon.png"));
 
     qRegisterMetaType<std::vector < float > > ("FloatImage");
     qRegisterMetaType<FloatImageData>("FloatImageData");

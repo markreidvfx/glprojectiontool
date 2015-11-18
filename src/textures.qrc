@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>textures/dog_guides.png</file>
+        <file>textures/icon.png</file>
     </qresource>
 </RCC>
