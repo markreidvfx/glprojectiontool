@@ -1,5 +1,3 @@
-
-#include <QApplication>
 #include <QLabel>
 #include <QSurfaceFormat>
 #include <QCommandLineParser>
@@ -8,10 +6,12 @@
 #include <QMainWindow>
 #include <QDir>
 #include "scene/imagereader.h"
+#include "application.h"
 
 #ifndef QT_NO_OPENGL
 #include "projector.h"
 #endif
+
 
 struct ProjectorOptions
 {
@@ -73,7 +73,7 @@ CommandLineParseResult parseCommandLine(QCommandLineParser &parser, ProjectorOpt
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    Application app(argc, argv);
 
     app.setApplicationName("glprojectiontool");
     app.setApplicationVersion("0.1");
@@ -121,6 +121,8 @@ int main(int argc, char *argv[])
     //widget.setAttribute(Qt::WA_NativeWindow);
 
     //widget.setAttribute(Qt::WA_PaintOnScreen);
+    QObject::connect(&app,   SIGNAL(file_open_event(QUrl)),
+                     &widget, SLOT(file_open_event(QUrl)));
 
     std::cerr << "imageplane " << options.imageplane.toStdString() << "\n";
     widget.set_imageplane(options.imageplane);

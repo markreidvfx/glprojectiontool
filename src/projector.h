@@ -45,6 +45,7 @@ public slots:
     void show_progress(QString message, int min, int max, int value);
     void cancel_processing();
     void set_template_texture(QString path);
+    void file_open_event(QUrl url);
 
 private slots:
     void hide_selected();
@@ -56,13 +57,14 @@ private slots:
     void next_template();
     void check_progress();
     void update_all();
-
     void browse_imageplane_clicked() {browse_file(Imageplane);}
     void browse_project_clicked() {browse_file(Project);}
     void browse_mesh_clicked(){browse_file(AddMesh);}
     void browse_template_texure_clicked(){browse_file(TemplateTexture);}
 
     void projection_template_complete(QString imageplane, QString dest, int frame);
+    void handle_files(const QList<QUrl> &url_list);
+    void open_project_file(QString path);
 
 signals:
     void frameChanged(int value);

@@ -12,6 +12,7 @@ qt5_add_resources(RESOURCES textures.qrc)
 qt5_wrap_ui(UI_HEADERS projector.ui)
 
 add_executable(glprojectiontool
+application.cpp
 main.cpp
 projector.cpp
 ${UI_HEADERS}

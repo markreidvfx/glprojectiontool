@@ -13,6 +13,7 @@
 #include <QMimeData>
 #include <QProcess>
 #include <QDesktopServices>
+#include <QMessageBox>
 
 #include "scene/scene.h"
 
@@ -145,21 +146,28 @@ void Projector::dragEnterEvent(QDragEnterEvent *event)
     }
 
 }
-
-void Projector::dropEvent(QDropEvent *event)
+void Projector::file_open_event(QUrl url)
 {
-    QList<QUrl> url_list = event->mimeData()->urls();
-
+    QList<QUrl> url_list;
+    url_list << url;
+    handle_files(url_list);
+}
+void Projector::handle_files(const QList<QUrl> &url_list)
+{
     QStringList image_plane_formats;
     QStringList geo_formats;
+    QStringList project_formats;
 
     image_plane_formats << "dpx" << "tif" << "tiff" << "jpg" << "png";
     geo_formats << "abc";
+
+    project_formats << "glpt";
 
     for (int i=0; i < url_list.size(); i++) {
         QUrl u = url_list.at(i);
         if (!u.isLocalFile())
             continue;
+
         //std::cerr << u.toString().toStdString() << "\n";
         QFileInfo info(u.toLocalFile());
         if (info.isDir()) {
@@ -177,11 +185,15 @@ void Projector::dropEvent(QDropEvent *event)
 
         }
 
-
         QString suffix = info.suffix().toLower();
 
         std::cerr << info.suffix().toLower().toStdString() << "\n";
         std::cerr << info.absoluteFilePath().toStdString() << "\n";
+
+        if (project_formats.contains(suffix, Qt::CaseInsensitive)) {
+            open_project_file(info.absoluteFilePath());
+        }
+
         if (geo_formats.contains(suffix, Qt::CaseInsensitive)) {
             open(info.absoluteFilePath());
         }
@@ -190,7 +202,19 @@ void Projector::dropEvent(QDropEvent *event)
             set_imageplane(info.absoluteFilePath());
         }
     }
+}
 
+void Projector::open_project_file(QString path)
+{
+    QMessageBox msgBox;
+    msgBox.setText(path);
+    msgBox.exec();
+}
+
+void Projector::dropEvent(QDropEvent *event)
+{
+    QList<QUrl> url_list = event->mimeData()->urls();
+    handle_files(url_list);
     event->acceptProposedAction();
 }
 
