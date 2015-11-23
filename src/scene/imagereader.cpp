@@ -204,11 +204,11 @@ void write_template_psd(const std::string &imageplane,
 
     prep_image(plane, "background");
     p.set_value(80);
-    plane.write(data_dir + "/plane.png");
-    alpha.write(data_dir + "/alpha.png");
-    color.write(data_dir + "/color.png");
-    contour.write(data_dir + "/contour.png");
-    empty.write(data_dir + "/empty.png");
+    //plane.write(data_dir + "/plane.png");
+    //alpha.write(data_dir + "/alpha.png");
+    //color.write(data_dir + "/color.png");
+    //contour.write(data_dir + "/contour.png");
+    //empty.write(data_dir + "/empty.png");
 
     p.set_value(85);
 
