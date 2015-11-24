@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
 
     for (int i = 0; i < options.scene_files.size(); i++) {
         std::cerr << "opening " << options.scene_files[i].toStdString() << "\n";
-        widget.open(options.scene_files[i]);
+        widget.file_open_event(QUrl::fromLocalFile(options.scene_files[i]));
     }
 
     QString project_path = options.project_path;
