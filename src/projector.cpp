@@ -14,6 +14,8 @@
 #include <QProcess>
 #include <QDesktopServices>
 #include <QMessageBox>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #include "scene/scene.h"
 
@@ -56,6 +58,8 @@ Projector::Projector(QWidget *parent) :
             this, SLOT(browse_template_texure_clicked()));
 
     connect(ui->clear_button, SIGNAL(clicked(bool)),
+            ui->projector->loader, SLOT(clear()));
+    connect(this, SIGNAL(clear()),
             ui->projector->loader, SLOT(clear()));
 
     connect(ui->imageplane_path, SIGNAL(editingFinished()),
@@ -206,9 +210,29 @@ void Projector::handle_files(const QList<QUrl> &url_list)
 
 void Projector::open_project_file(QString path)
 {
-    QMessageBox msgBox;
-    msgBox.setText(path);
-    msgBox.exec();
+
+    QFile loadFile(path);
+    if (!loadFile.open(QIODevice::ReadOnly)) {
+        return;
+    }
+
+    QByteArray data = loadFile.readAll();
+    QJsonDocument doc(QJsonDocument::fromJson(data));
+    QJsonObject json = doc.object();
+
+    if (json.contains("plate_path")) {
+        set_imageplane(json["plate_path"].toString());
+    }
+
+    if (json.contains("geocache_path")) {
+        emit clear();
+        open(json["geocache_path"].toString());
+    }
+
+    if (json.contains("project_dir")) {
+        ui->project_path->setText(json["project_dir"].toString());
+    }
+
 }
 
 void Projector::dropEvent(QDropEvent *event)
