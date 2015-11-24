@@ -48,6 +48,22 @@ bool read_image_blob(const char *blob_data, int blob_size, std::vector<float> &d
     return true;
 }
 
+bool write_image_blob(const char *blob_data, int blob_size, const std::string &path)
+{
+    Magick::Blob blob(blob_data, blob_size);
+    Magick::Image image;
+
+    try {
+        image.read(blob);
+    } catch (...) {
+        std::cerr << "error reading" << "blob" << "\n";
+        return false;
+    }
+
+    image.depth(8);
+    image.write(path);
+}
+
 bool read_image(const std::string &path,
                 std::vector<float> &data,
                 int &width, int &height)

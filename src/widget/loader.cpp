@@ -34,13 +34,9 @@ void Loader::set_imageplane_path(QString path, int frame)
 
     QTimer::singleShot(0, this, SLOT(load_imageplane()));
 }
-void Loader::set_template_texture(QString path)
-{
-    std::cerr << "setting texture " << path.toStdString() << "\n";
-    std::vector<float> data;
 
-    int width = 0;
-    int height = 0;
+static void read_into_byte_array(const QString &path, QByteArray &data)
+{
     if (path.isEmpty())
         return;
 
@@ -50,8 +46,27 @@ void Loader::set_template_texture(QString path)
         return;
     }
 
-    QByteArray file_data = f.readAll();
+    data = f.readAll();
+}
+
+void Loader::set_template_texture(QString path)
+{
+    std::cerr << "setting texture " << path.toStdString() << "\n";
+    std::vector<float> data;
+
+    int width = 0;
+    int height = 0;
+
+    {
+    QByteArray file_data;
+    read_into_byte_array(path, file_data);
+
+    if (!file_data.size()) {
+        std::cerr << " emtpy data: " << path.toStdString() << "\n";
+    }
+
     read_image_blob(file_data.data(), file_data.size(), data, width, height);
+    }
 
     //read_image(path.toStdString(), data, width, height);
     emit template_texture_ready(data, width, height);
@@ -78,7 +93,7 @@ static QDir stringlist_join(QString root, QStringList subdirs)
     return dest_dir;
 }
 
-void Loader::create_template(QString imageplane_path, QString project, int frame)
+void Loader::create_template(QString imageplane_path, QString project, QString guides, int frame)
 {
 
     std::vector<FloatImageData> color_tiles;
@@ -129,6 +144,17 @@ void Loader::create_template(QString imageplane_path, QString project, int frame
     QDir work_root = template_root.filePath("work");
 
     QString dest = work_root.filePath(dest_name);
+
+    QString guides_output_path = data_root.filePath("guides.png");
+
+    {
+    QByteArray guides_data;
+    read_into_byte_array(guides, guides_data);
+
+    if (guides_data.size()) {
+        write_image_blob(guides_data.data(), guides_data.size(), guides_output_path.toStdString());
+    }
+    }
 
     std::cerr << dest.toStdString() << "\n";
 

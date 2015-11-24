@@ -72,6 +72,7 @@ signals:
 
     void request_template(QString imageplane,
                           QString project,
+                          QString guides,
                           int frame);
 
     void request_template_texture(QString path);

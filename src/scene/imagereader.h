@@ -39,6 +39,7 @@ bool read_image(const std::string &path,
                 int &width, int &height);
 
 bool read_image_blob(const char *blob_data, int blob_size, std::vector<float> &data, int &width, int &height);
+bool write_image_blob(const char *blob_data, int blob_size, const std::string &path);
 
 void read_image(const std::string &path, FloatImageData &image);
 
