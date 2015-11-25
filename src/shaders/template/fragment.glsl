@@ -47,11 +47,4 @@ void main()
         }
     }
 
-    if (gl_FrontFacing){
-        out_normals = vec4(0,0,0,1);
-        out_color = vec4(0,0,0,1);
-        out_alpha = vec4(0,0,0,1);
-    }
-
-
 }
