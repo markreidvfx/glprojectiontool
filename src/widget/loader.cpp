@@ -128,7 +128,7 @@ void Loader::create_template(QString imageplane_path, QString project, QString g
         basename = "template";
 
     std::cerr << "base" <<basename.toStdString() << "\n";
-    QString dest_name = basename + ".psd";
+
 
     QStringList subdirs;
     QString frame_string;
@@ -142,9 +142,15 @@ void Loader::create_template(QString imageplane_path, QString project, QString g
     QDir data_root = template_root.filePath("data");
     template_root.mkdir("work");
     QDir work_root = template_root.filePath("work");
+    QString dest_name = basename + ".psd";
+
+    int count = 1;
+    while (work_root.exists(dest_name)) {
+        dest_name.sprintf("%s-%d.psd", basename.toStdString().c_str(), count);
+        count++;
+    }
 
     QString dest = work_root.filePath(dest_name);
-
     QString guides_output_path = data_root.filePath("guides.png");
 
     {
