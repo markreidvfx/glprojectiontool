@@ -6,6 +6,7 @@
 
 #include <string>
 #include <memory>
+#include <OpenEXR/ImathBox.h>
 
 class Camera
 {
@@ -75,6 +76,8 @@ public:
     void setName(const std::string &name) {
         m_name = name;
     }
+
+    void auto_clipping_plane(const Imath::Box3d &bounds);
 
 protected:
     //std::recursive_mutex m_lock;

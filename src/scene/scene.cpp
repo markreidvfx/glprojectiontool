@@ -182,12 +182,13 @@ void Scene::caculate(double seconds)
         bounds.extendBy(m_objects[i]->bounds(seconds));
     }
     m_time = seconds;
-
+    m_bounds = bounds;
     elapsed_seconds = std::chrono::system_clock::now()-start;
     //std::cerr << bounds. << std::endl;
     std::cerr << "geo caculated in " << elapsed_seconds.count() << " secs \n";
-
-
+    //for (int i = 0; i < m_cameras.size(); i++) {
+    //    m_cameras[i]->auto_clipping_plane(bounds);
+    //}
 }
 
 void Scene::update(double seconds)
@@ -302,7 +303,7 @@ void Scene::draw(unsigned int default_framebuffer_id)
 {
 
     m_crc = crc32(0L, NULL, 0);
-
+    camera->auto_clipping_plane(m_bounds);
     glm::mat4 modelToVewMatrix = camera->viewMatrix();
     glm::mat4 projectionMatrix = camera->projectionMatrix();
     glm::mat4 viewportMatrix = camera->viewportMatrix();

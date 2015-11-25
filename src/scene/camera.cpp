@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include "glm/gtx/matrix_decompose.hpp"
+#include <cfloat>
 
 Camera::Camera()
     : m_rotation( 0.0, 0.0, 0.0 ),
@@ -224,4 +225,50 @@ void Camera::rotate(const glm::vec2 &point, double rotateSpeed)
     setTranslation(new_eye);
     setRotation(glm::vec3( rotX, rotY, rotZ ) );
 
+}
+
+void Camera::auto_clipping_plane( const Imath::Box3d &bounds)
+{
+    const double rotX = m_rotation.x;
+    const double rotY = m_rotation.y;
+    const glm::vec3 eye = m_translation;
+
+    double clipNear = FLT_MAX;
+    double clipFar = FLT_MIN;
+
+    glm::vec3 v(0.0, 0.0, -m_point_of_interest);
+    rotateVector(rotX, rotY, v);
+    const glm::vec3 view = eye + v;
+    v = glm::normalize(v);
+
+    glm::vec3 points[8];
+
+    points[0] = glm::vec3(bounds.min.x, bounds.min.y, bounds.min.z);
+    points[1] = glm::vec3(bounds.min.x, bounds.min.y, bounds.max.z);
+    points[2] = glm::vec3(bounds.min.x, bounds.max.y, bounds.min.z);
+    points[3] = glm::vec3(bounds.min.x, bounds.max.y, bounds.max.z);
+    points[4] = glm::vec3(bounds.max.x, bounds.min.y, bounds.min.z);
+    points[5] = glm::vec3(bounds.max.x, bounds.min.y, bounds.max.z);
+    points[6] = glm::vec3(bounds.max.x, bounds.max.y, bounds.min.z);
+    points[7] = glm::vec3(bounds.max.x, bounds.max.y, bounds.max.z);
+
+    for( int p = 0; p < 8; ++p )
+    {
+        glm::vec3 dp = points[p] - eye;
+        double proj = glm::dot(dp, v);
+        clipNear = std::min(proj, clipNear);
+        clipFar = std::max(proj, clipFar);
+    }
+
+    clipNear -= 0.5f;
+    clipFar  += 0.5f;
+    clipNear = glm::clamp(clipNear, 0.1, 100000.0);
+    clipFar  = glm::clamp(clipFar, 0.1, 100000.0);
+
+    if (clipFar <= clipNear) {
+        clipFar = clipNear + 0.1;
+    }
+
+    m_clip.x = clipNear;
+    m_clip.y = clipFar;
 }

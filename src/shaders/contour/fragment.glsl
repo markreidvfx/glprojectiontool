@@ -23,7 +23,7 @@ float g_normal[KERNEL_SIZE];
 float g_depth_max, g_depth_min;
 float g_normal_max, g_normal_min;
 
-float depth_threshold = 0.0001;
+float depth_threshold = 0.00001;
 float normal_threshold = 0.1;
 
 void load_pixels(vec2 tex_coord)
@@ -120,7 +120,7 @@ void main()
     float d = (g_depth_max - g_depth_min) / depth_threshold;
     float n = (g_normal_max - g_normal_min) / normal_threshold;
 
-    float edge_depth =  min(d * d, 1.0);
+    float edge_depth =  min(d, 1.0);
     float edge_normal = min(n * n, 1.0);
 
     color = vec4(0,0,0,0);
