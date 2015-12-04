@@ -263,7 +263,7 @@ void Camera::auto_clipping_plane( const Imath::Box3d &bounds)
     clipNear -= 0.5f;
     clipFar  += 0.5f;
     clipNear = glm::clamp(clipNear, 0.1, 100000.0);
-    clipFar  = glm::clamp(clipFar, 0.1, 100000.0);
+    clipFar  = glm::clamp(clipFar, 500.0, 100000.0);
 
     if (clipFar <= clipNear) {
         clipFar = clipNear + 0.1;
