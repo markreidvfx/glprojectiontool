@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include "glm/gtx/matrix_decompose.hpp"
+#include <glm/gtx/string_cast.hpp>
 #include <cfloat>
 
 Camera::Camera()
@@ -229,46 +230,39 @@ void Camera::rotate(const glm::vec2 &point, double rotateSpeed)
 
 void Camera::auto_clipping_plane( const Imath::Box3d &bounds)
 {
-    const double rotX = m_rotation.x;
-    const double rotY = m_rotation.y;
-    const glm::vec3 eye = m_translation;
 
-    double clipNear = FLT_MAX;
-    double clipFar = FLT_MIN;
+    float clipNear = FLT_MAX;
+    float clipFar = -FLT_MAX;
 
-    glm::vec3 v(0.0, 0.0, -m_point_of_interest);
-    rotateVector(rotX, rotY, v);
-    const glm::vec3 view = eye + v;
-    v = glm::normalize(v);
 
-    glm::vec3 points[8];
+    glm::vec4 points[8];
 
-    points[0] = glm::vec3(bounds.min.x, bounds.min.y, bounds.min.z);
-    points[1] = glm::vec3(bounds.min.x, bounds.min.y, bounds.max.z);
-    points[2] = glm::vec3(bounds.min.x, bounds.max.y, bounds.min.z);
-    points[3] = glm::vec3(bounds.min.x, bounds.max.y, bounds.max.z);
-    points[4] = glm::vec3(bounds.max.x, bounds.min.y, bounds.min.z);
-    points[5] = glm::vec3(bounds.max.x, bounds.min.y, bounds.max.z);
-    points[6] = glm::vec3(bounds.max.x, bounds.max.y, bounds.min.z);
-    points[7] = glm::vec3(bounds.max.x, bounds.max.y, bounds.max.z);
+    glm::mat4 view_mat = viewMatrix();
+
+    points[0] = glm::vec4(bounds.min.x, bounds.min.y, bounds.min.z, 1);
+    points[1] = glm::vec4(bounds.min.x, bounds.min.y, bounds.max.z, 1);
+    points[2] = glm::vec4(bounds.min.x, bounds.max.y, bounds.min.z, 1);
+    points[3] = glm::vec4(bounds.min.x, bounds.max.y, bounds.max.z, 1);
+    points[4] = glm::vec4(bounds.max.x, bounds.min.y, bounds.min.z, 1);
+    points[5] = glm::vec4(bounds.max.x, bounds.min.y, bounds.max.z, 1);
+    points[6] = glm::vec4(bounds.max.x, bounds.max.y, bounds.min.z, 1);
+    points[7] = glm::vec4(bounds.max.x, bounds.max.y, bounds.max.z, 1);
+
+
 
     for( int p = 0; p < 8; ++p )
     {
-        glm::vec3 dp = points[p] - eye;
-        double proj = glm::dot(dp, v);
-        clipNear = std::min(proj, clipNear);
-        clipFar = std::max(proj, clipFar);
+        glm::vec4 result = view_mat * points[p];
+        std::cerr << glm::to_string(result) << "\n";
+
+        clipNear = std::min(-result.z, clipNear);
+        clipFar = std::max(-result.z, clipFar);
+
     }
 
-    clipNear -= 0.5f;
-    clipFar  += 0.5f;
-    clipNear = glm::clamp(clipNear, 0.1, 100000.0);
-    clipFar  = glm::clamp(clipFar, 500.0, 100000.0);
-
-    if (clipFar <= clipNear) {
-        clipFar = clipNear + 0.1;
-    }
 
     m_clip.x = clipNear;
     m_clip.y = clipFar;
+
+    std::cerr << glm::to_string(m_clip) <<  " " << clipNear << " " << clipFar << "\n";
 }
