@@ -230,14 +230,11 @@ void Camera::rotate(const glm::vec2 &point, double rotateSpeed)
 
 void Camera::auto_clipping_plane( const Imath::Box3d &bounds)
 {
-
     float clipNear = FLT_MAX;
     float clipFar = -FLT_MAX;
 
-
-    glm::vec4 points[8];
-
     glm::mat4 view_mat = viewMatrix();
+    glm::vec4 points[8];
 
     points[0] = glm::vec4(bounds.min.x, bounds.min.y, bounds.min.z, 1);
     points[1] = glm::vec4(bounds.min.x, bounds.min.y, bounds.max.z, 1);
@@ -248,21 +245,15 @@ void Camera::auto_clipping_plane( const Imath::Box3d &bounds)
     points[6] = glm::vec4(bounds.max.x, bounds.max.y, bounds.min.z, 1);
     points[7] = glm::vec4(bounds.max.x, bounds.max.y, bounds.max.z, 1);
 
-
-
     for( int p = 0; p < 8; ++p )
     {
         glm::vec4 result = view_mat * points[p];
-        std::cerr << glm::to_string(result) << "\n";
-
         clipNear = std::min(-result.z, clipNear);
         clipFar = std::max(-result.z, clipFar);
-
     }
 
+    m_clip.x = glm::clamp(clipNear, 0.1f, FLT_MAX);
+    m_clip.y = glm::clamp(clipFar, 0.1f, FLT_MAX);
 
-    m_clip.x = clipNear;
-    m_clip.y = clipFar;
-
-    std::cerr << glm::to_string(m_clip) <<  " " << clipNear << " " << clipFar << "\n";
+    std::cerr << "auto clipping plane: " << glm::to_string(m_clip) <<  " " << clipNear << " " << clipFar << "\n";
 }

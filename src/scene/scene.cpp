@@ -174,6 +174,7 @@ void Scene::caculate(double seconds)
     int level = subdiv_level();
 
     Imath::Box3d bounds;
+    bounds.makeEmpty();
 
     for (int i = 0; i < m_objects.size(); i++) {
         m_objects[i]->subdiv_level = level;
@@ -183,6 +184,7 @@ void Scene::caculate(double seconds)
     }
     m_time = seconds;
     m_bounds = bounds;
+
     elapsed_seconds = std::chrono::system_clock::now()-start;
     //std::cerr << bounds. << std::endl;
     std::cerr << "geo caculated in " << elapsed_seconds.count() << " secs \n";
@@ -303,7 +305,9 @@ void Scene::draw(unsigned int default_framebuffer_id)
 {
 
     m_crc = crc32(0L, NULL, 0);
-    camera->auto_clipping_plane(m_bounds);
+    if (!m_bounds.isEmpty() && !m_bounds.isInfinite()) {
+        camera->auto_clipping_plane(m_bounds);
+    }
     glm::mat4 modelToVewMatrix = camera->viewMatrix();
     glm::mat4 projectionMatrix = camera->projectionMatrix();
     glm::mat4 viewportMatrix = camera->viewportMatrix();
