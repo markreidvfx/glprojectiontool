@@ -220,7 +220,7 @@ void FrameBuffer::draw(unsigned int contour_texture_id)
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, m_texture_alpha_id);
     glGenerateMipmap(GL_TEXTURE_2D);
-    glUniform1i(m_texture_alpha_id, 2);
+    glUniform1i(m_texture_alpha_loc, 2);
 
     glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_2D, m_normal_buffer_id);
