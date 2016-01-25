@@ -72,6 +72,7 @@ signals:
 
     void request_template(QString imageplane,
                           QString project,
+                          QString output_dir,
                           QString guides,
                           int frame);
 

@@ -93,7 +93,7 @@ static QDir stringlist_join(QString root, QStringList subdirs)
     return dest_dir;
 }
 
-void Loader::create_template(QString imageplane_path, QString project, QString guides, int frame)
+void Loader::create_template(QString imageplane_path, QString project, QString  output_dir, QString guides, int frame)
 {
 
     std::vector<FloatImageData> color_tiles;
@@ -134,7 +134,10 @@ void Loader::create_template(QString imageplane_path, QString project, QString g
     QString frame_string;
     frame_string.sprintf("%04d", frame);
 
-    subdirs << "sourceimages" << "projections" << frame_string << "gltool_template";
+    if (output_dir.isEmpty())
+        output_dir = "projections";
+
+    subdirs << "sourceimages" << output_dir << frame_string << "gltool_template";
 
     QDir template_root = stringlist_join(project, subdirs);
     template_root.mkpath(template_root.path());

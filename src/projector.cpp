@@ -38,6 +38,8 @@ Projector::Projector(QWidget *parent) :
     scene_view->setContextMenuPolicy(Qt::CustomContextMenu);
     scene_view->header()->setSectionResizeMode(0, QHeaderView::Stretch);
 
+    ui->output_dir->setText("projections");
+
     connect(camera_select, SIGNAL(currentIndexChanged(int)),
             this, SLOT(updateScene()));
     //connect(scene_view, SIGNAL(itemSelectionChanged()),
@@ -94,8 +96,8 @@ Projector::Projector(QWidget *parent) :
 
     connect(ui->export_templates, SIGNAL(clicked(bool)),
             this, SLOT(create_templates()));
-    connect(this,  SIGNAL(request_template(QString, QString, QString, int)),
-            ui->projector->loader, SLOT(create_template(QString, QString, QString, int)));
+    connect(this,  SIGNAL(request_template(QString, QString, QString, QString, int)),
+            ui->projector->loader, SLOT(create_template(QString, QString, QString, QString, int)));
 
     connect(ui->projector->loader, SIGNAL(projection_template_complete(QString,QString,int)),
             this, SLOT(projection_template_complete(QString,QString,int)));
@@ -510,6 +512,15 @@ static void reveal_file(const QString &file_path)
 {
 
     QStringList args;
+
+#ifdef Q_OS_LINUX
+    QFileInfo info(file_path);
+    QDir dirname = info.dir();
+    args << dirname.path();
+    std::cerr << "linux!!\n";
+    QProcess::startDetached("xdg-open", args);
+
+#else
     args << "-e";
     args << "tell application \"Finder\"";
     args << "-e";
@@ -519,12 +530,8 @@ static void reveal_file(const QString &file_path)
     args << "-e";
     args << "end tell";
     QProcess::startDetached("osascript", args);
-/*
-#ifdef Q_WS_WIN
-    QStringList args;
-    args << "/select," << QDir::toNativeSeparators(file_path);
-    QProcess::startDetached("explorer", args);
-#endif*/
+#endif
+
 
 }
 
@@ -550,6 +557,8 @@ void Projector::next_template()
     QString project = ui->project_path->text();
     QString guides = ui->template_texture_path->text();
 
+    QString output_dir = ui->output_dir->text();
+
     //dest.sprintf("test.%04d.psd", frame);
 
     frameChange(frame);
@@ -562,7 +571,7 @@ void Projector::next_template()
     show_progress(message, 0, 100, 0);
     QTimer::singleShot(50, this, SLOT(check_progress()));
 
-    emit request_template(imageplane, project, guides, frame);
+    emit request_template(imageplane, project, output_dir, guides, frame);
 }
 
 void Projector::check_progress()
