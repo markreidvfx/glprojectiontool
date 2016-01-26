@@ -231,6 +231,10 @@ void Projector::open_project_file(QString path)
         open(json["geocache_path"].toString());
     }
 
+    if (json.contains("asset_name") && !json["asset_name"].isNull()) {
+        ui->output_dir->setText("projections_" + json["asset_name"].toString());
+    }
+
     if (json.contains("project_dir")) {
         ui->project_path->setText(json["project_dir"].toString());
     }
