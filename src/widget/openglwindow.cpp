@@ -103,7 +103,9 @@ void OpenGLWidget::update_mesh()
 void OpenGLWidget::open_scene_file(QString path)
 {
     makeCurrent();
-    m_scene->open(path.toStdString());
+    if(!m_scene->open(path.toStdString())){
+        emit error_message("Error Reading Alembic File: \n" + path);
+    }
 
     QSize s = size();
     m_scene->camera->setViewportSize(glm::vec2(s.width(),s.height()));

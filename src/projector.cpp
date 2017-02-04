@@ -114,6 +114,9 @@ Projector::Projector(QWidget *parent) :
     connect(this, SIGNAL(open_scene_file(QString)),
             ui->projector->loader, SLOT(open_scene_file(QString)));
 
+    connect(glwidget, SIGNAL(error_message(QString)),
+            this, SLOT(error_message(QString)));
+
     hide_progress();
 
     emit ui->template_texture_path->textChanged("");
@@ -704,4 +707,10 @@ void Projector::show_only_selected()
 {
     std::cerr << "show only selected\n";
     filter_selected(ShowOnlySelected);
+}
+
+void Projector::error_message(QString error_message)
+{
+    std::cerr << "ERROR: " << error_message.toStdString() << "\n";
+    QMessageBox::critical(this, "Error", error_message);
 }

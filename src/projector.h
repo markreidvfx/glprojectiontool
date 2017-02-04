@@ -66,6 +66,8 @@ private slots:
     void handle_files(const QList<QUrl> &url_list);
     void open_project_file(QString path);
 
+    void error_message(QString message);
+
 signals:
     void frameChanged(int value);
     void imageplaneChanged(QString path);

@@ -23,7 +23,7 @@ class AbcSceneReader : public SceneReader
 {
 public:
     AbcSceneReader();
-    void open(const std::string &path);
+    bool open(const std::string &path);
     void read(std::vector< std::shared_ptr<Mesh> > &objects,
               std::vector<std::shared_ptr<Camera>> &cameras);
     void read_object(const IObject &object,

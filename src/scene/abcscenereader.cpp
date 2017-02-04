@@ -12,7 +12,7 @@ AbcSceneReader::AbcSceneReader()
 }
 
 
-void AbcSceneReader::open(const std::string &path)
+bool AbcSceneReader::open(const std::string &path)
 {
     std::cerr << "opening abc file " << path << "\n";
     // should error check
@@ -20,6 +20,11 @@ void AbcSceneReader::open(const std::string &path)
     factory.setPolicy(Abc::ErrorHandler::kQuietNoopPolicy);
     AbcF::IFactory::CoreType coreType;
     m_archive = factory.getArchive(path, coreType);
+
+    if (!m_archive.valid()) {
+        std::cerr << "error reading abc file " << path << "\n";
+        return false;
+    }
 
     // determin frame range
     double fps = 24.0;
@@ -32,11 +37,16 @@ void AbcSceneReader::open(const std::string &path)
     last = (int)(l*fps);
     has_range =true;
 
+    return true;
+
 }
 
 void AbcSceneReader::read(std::vector< std::shared_ptr<Mesh> > &objects,
                           std::vector<std::shared_ptr<Camera>> &cameras)
 {
+    if (!m_archive.valid())
+        return;
+
     IObject obj = m_archive.getTop();
     //cerr <<obj.getFullName() << " children " << obj.getNumChildren() << "\n";
 

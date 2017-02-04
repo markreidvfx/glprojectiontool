@@ -29,7 +29,7 @@ class Scene
 public:
     Scene();
     ~Scene();
-    void open(const std::string &path);
+    bool open(const std::string &path);
     void create();
     void update(double seconds = 0);
 

@@ -14,7 +14,7 @@ class SceneReader
 {
 public:
     SceneReader():first(1),last(100),has_range(false) {}
-    virtual void open(const std::string &path) = 0;
+    virtual bool open(const std::string &path) = 0;
     virtual void read(std::vector< std::shared_ptr<Mesh> > &objects,
                       std::vector<std::shared_ptr<Camera> > &cameras) = 0;
     virtual void close() = 0;

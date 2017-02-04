@@ -48,10 +48,12 @@ Scene::~Scene()
 
 }
 
-void Scene::open(const std::string &path)
+bool Scene::open(const std::string &path)
 {
     auto reader = std::make_shared<AbcSceneReader>();
-    reader->open(path);
+    if(!reader->open(path))
+        return false;
+
     reader->read(m_objects, m_cameras);
 
     camera = m_cameras[m_cameras.size() -1 ];
@@ -61,7 +63,7 @@ void Scene::open(const std::string &path)
     m_scene_path = path;
 
     update_frame_range();
-
+    return true;
 }
 
 std::vector<SceneObject> Scene::scene_cameras()
