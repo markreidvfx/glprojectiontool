@@ -56,6 +56,7 @@ private:
     IPolyMesh m_mesh;
     IPolyMeshSchema m_schema;
     IPolyMeshSchema::Sample m_sample;
+    vector<int> m_fvar_indices;
     double m_time;
 
     OpenSubdiv::Far::TopologyRefiner * m_refiner;

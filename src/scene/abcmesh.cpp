@@ -228,20 +228,27 @@ void AbcMesh::create_refiner()
     desc.numVertsPerFace = faceCounts->get();
     desc.vertIndicesPerFace  = faceIndices->get();
 
+    cerr << desc.numVertices << "\n";
+    cerr << desc.numFaces << "\n";
+//    cerr << desc.numVertsPerFace << "\n";
+//    cerr << desc.vertIndicesPerFace << "\n";
+
     int channelUV = 0;
     int channelNormal = 1;
 
-    vector<int> fvar_indices(faceIndices->size());
-    for (int i; i < fvar_indices.size(); i++){
-        fvar_indices[i] = i;
+//    vector<int> fvar_indices(faceIndices->size());
+    m_fvar_indices = vector<int>(faceIndices->size());
+
+    for (int i; i < m_fvar_indices.size(); i++){
+        m_fvar_indices[i] = i;
     }
 
     Descriptor::FVarChannel channels[2];
-    channels[channelUV].numValues = fvar_indices.size();
-    channels[channelUV].valueIndices = &fvar_indices[0];
+    channels[channelUV].numValues = m_fvar_indices.size();
+    channels[channelUV].valueIndices = &m_fvar_indices[0];
 
-    channels[channelNormal].numValues = fvar_indices.size();
-    channels[channelNormal].valueIndices = &fvar_indices[0];
+    channels[channelNormal].numValues = m_fvar_indices.size();
+    channels[channelNormal].valueIndices = &m_fvar_indices[0];
 
     desc.numFVarChannels = 2;
     desc.fvarChannels = channels;
@@ -291,26 +298,39 @@ void AbcMesh::subdivide(std::vector<glm::vec3> &vertices,
     int nCoarseVertUVs = tmp_uvs.size();
     int nFineVerUVs   = m_refiner->GetLevel(maxlevel).GetNumFVarValues(channelUV);
     int nTotalVertUVs  = m_refiner->GetNumFVarValuesTotal(channelUV);
-    int nTempVertUVs   = nTotalVertUVs - nCoarseVertUVs - nFineVerUVs;
-
-    //cerr << "fine sizes: " << nFineVerts << " "<< nFineVerUVs << "\n";
+    int nTempVertUVs   = nTotalVertUVs - nFineVerUVs;
 
     std::vector<VertexUV> tempUVBuffer(nTempVertUVs);
     std::vector<VertexUV> fineUVBuffer(nFineVerUVs);
 
-    VertexUV * srcUV = reinterpret_cast<VertexUV *>(&tmp_uvs[0]);
-    VertexUV * dstUV = &tempUVBuffer[0];
+    for (int i = 0; i < nCoarseVertUVs; i++) {
+        VertexUV uv;
+        uv.uv = tmp_uvs[i];
+        tempUVBuffer[i] = uv;
+    }
 
-    int nCoarseVertNormals = tmp_uvs.size();
+    VertexUV * srcUV = &tempUVBuffer[0] ;
+    VertexUV * dstUV = &tempUVBuffer[0] + nCoarseVertUVs;
+
+    int nCoarseVertNormals = tmp_normals.size();
     int nFineVerNormals   = m_refiner->GetLevel(maxlevel).GetNumFVarValues(channelNormal);
     int nTotalVertNormals  = m_refiner->GetNumFVarValuesTotal(channelNormal);
-    int nTempVertNormals   = nTotalVertNormals - nCoarseVertNormals - nFineVerNormals;
+    int nTempVertNormals   = nTotalVertNormals - nFineVerNormals;
 
     std::vector<Vertex> tempNormalBuffer(nTempVertNormals);
     std::vector<Vertex> fineNormalBuffer(nFineVerNormals);
 
-    Vertex * srcNormal = reinterpret_cast<Vertex *>(&tmp_normals[0]);
-    Vertex * dstNormal = &tempNormalBuffer[0];
+    for (int i = 0; i < nCoarseVertNormals; i++) {
+        Vertex normal;
+        normal.pos = tmp_normals[i];
+        tempNormalBuffer[i] = normal;
+    }
+
+//    Vertex * srcNormal = reinterpret_cast<Vertex *>(&tmp_normals[0]);
+    Vertex * srcNormal = &tempNormalBuffer[0];
+    Vertex * dstNormal = &tempNormalBuffer[0] +nCoarseVertNormals ;
+
+    cerr << "fine sizes: " << nFineVerts << " uvs:"<< nFineVerUVs << " normals: "<< nFineVerNormals <<"\n";
 
     // Interpolate vertex primvar data
     OpenSubdiv::Far::PrimvarRefiner primvarRefiner(*m_refiner);
@@ -363,23 +383,25 @@ void AbcMesh::subdivide(std::vector<glm::vec3> &vertices,
             value_indices[1] = glm::ivec3(fverts[vert    ], fuvs[vert    ], fnormals[vert    ]);
             value_indices[2] = glm::ivec3(fverts[vert + 1], fuvs[vert + 1], fnormals[vert + 1]);
 
-            for (int j = 0; j < 3; j++) {\
+            for (int j = 0; j < 3; j++) {
                 const PackedVertex packed = {finePosBuffer[   value_indices[j].x].pos,
                                              fineUVBuffer[    value_indices[j].y].uv,
                                              fineNormalBuffer[value_indices[j].z].pos
                                             };
 
-                unsigned int found_index;
+                unsigned int found_index = 0;
                 bool found = get_similar_vertex_index(packed,
                                                       vertex_pack_map,
                                                       found_index);
                 total_indice_count++;
+//                found = false;
                 if (found) {
                     total_optimised_count++;
                     indices.push_back(found_index);
                 } else {
                     vertices.push_back(packed.vertex);
                     uvs.push_back(packed.uv);
+//                    cerr << packed.uv.x << " " << packed.uv.y << "\n";
                     normals.push_back(packed.normal);
                     unsigned int new_index = vertices.size()-1;
                     indices.push_back(new_index);
@@ -391,13 +413,18 @@ void AbcMesh::subdivide(std::vector<glm::vec3> &vertices,
 
 
     }
-    /*
+
     cerr <<  "Vertexs             : " << refLastLevel.GetNumVertices() << "\n";
     cerr <<  "FVar values uvs     : " << refLastLevel.GetNumFVarValues(channelUV) << "\n";
     cerr <<  "FVar values normals : " << refLastLevel.GetNumFVarValues(channelNormal) << "\n";
 
     cerr << "total " << total_indice_count << " opt to -> " << vertices.size() << "\n";
-    */
+    cerr << "    uvs " << uvs.size() << "\n";
+
+//    for (int i=0; i<uvs.size(); i++) {
+//        cerr << "   " << uvs[i].x << " " << uvs[i].y << "\n";
+//    }
+
 }
 
 void AbcMesh::calculate(double seconds, int subdivision_level)
@@ -421,7 +448,7 @@ void AbcMesh::read(std::vector<glm::vec3> &vertices,
                    std::vector<unsigned int> &indices)
 {
 
-    //cerr << "reading " << name << "\n";
+    cerr << "reading " << name << "\n";
     if (subdiv_level) {
         subdivide(vertices, uvs, normals, indices);
         return;
@@ -431,9 +458,9 @@ void AbcMesh::read(std::vector<glm::vec3> &vertices,
     const Int32ArraySamplePtr &faceIndices = m_sample.getFaceIndices();
     const Int32ArraySamplePtr &faceCounts = m_sample.getFaceCounts();
 
-    //cerr << "   vertex count: " << positions->size() << "\n";
-    //cerr << "   indices: " << faceIndices->size() <<  "\n";
-    //cerr << "   face count: " << faceCounts->size() << "\n";
+    cerr << "   vertex count: " << positions->size() << "\n";
+    cerr << "   indices: " << faceIndices->size() <<  "\n";
+    cerr << "   face count: " << faceCounts->size() << "\n";
 
     std::vector<glm::vec3> tmp_vertices;
     //read positions
@@ -444,11 +471,11 @@ void AbcMesh::read(std::vector<glm::vec3> &vertices,
 
     std::vector<glm::vec2> tmp_uvs;
     read_uvs(tmp_uvs);
-    //cerr << "   tmp uvs count: " << tmp_uvs.size() << "\n";
+    cerr << "   tmp uvs count: " << tmp_uvs.size() << "\n";
 
     std::vector<glm::vec3> tmp_normals;
     read_normals(tmp_normals);
-    //cerr << "   tmp normals count: " << tmp_normals.size() << "\n";
+    cerr << "   tmp normals count: " << tmp_normals.size() << "\n";
 
     std::map<PackedVertex,unsigned int> vertex_pack_map;
     unsigned int cur_index = 0;
@@ -484,7 +511,7 @@ void AbcMesh::read(std::vector<glm::vec3> &vertices,
                 bool found = get_similar_vertex_index(packed,
                                                       vertex_pack_map,
                                                       found_index);
-                //found = false;
+//                found = false;
                 if (found) {
                     indices.push_back(found_index);
                 } else {
@@ -501,10 +528,10 @@ void AbcMesh::read(std::vector<glm::vec3> &vertices,
         cur_index += face_size;
     }
 
-    //cerr << "   out indices: " << indices.size() << "\n";
-    //cerr << "   out uvs count: " << uvs.size() << "\n";
-    //cerr << "   out normal count: " << normals.size() << "\n";
-    //cerr << "   out vert count: " << vertices.size() << "\n";
+    cerr << "   out indices: " << indices.size() << "\n";
+    cerr << "   out uvs count: " << uvs.size() << "\n";
+    cerr << "   out normal count: " << normals.size() << "\n";
+    cerr << "   out vert count: " << vertices.size() << "\n";
 
 }
 
