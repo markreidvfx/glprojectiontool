@@ -15,6 +15,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
+#include <queue>
 
 #include <opensubdiv/far/primvarRefiner.h>
 
@@ -22,6 +23,7 @@ using namespace std;
 using namespace Alembic::AbcGeom;
 namespace AbcF = ::Alembic::AbcCoreFactory;
 
+#define MESH_CACHE_SIZE 500
 
 class AbcMesh : public Mesh
 {
@@ -61,6 +63,9 @@ private:
 
     OpenSubdiv::Far::TopologyRefiner * m_refiner;
     AbcSceneReader* m_reader;
+
+    std::map<std::pair<double, unsigned int>, MeshData> m_mesh_cache;
+    std::queue<std::pair<double, unsigned int> > m_mesh_cache_queue;
 };
 
 #endif // ABCMESH_H

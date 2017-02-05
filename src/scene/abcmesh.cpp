@@ -430,9 +430,23 @@ void AbcMesh::subdivide(std::vector<glm::vec3> &vertices,
 
 void AbcMesh::calculate(double seconds, int subdivision_level)
 {
-    data.clear();
+
     subdiv_level = subdivision_level;
-    read_data(data, seconds);
+    std::pair<double, unsigned int> key(seconds, subdiv_level);
+    if (m_mesh_cache.find(key) == m_mesh_cache.end()) {
+        data.clear();
+        read_data(data, seconds);
+        m_mesh_cache[key] = data;
+        m_mesh_cache_queue.push(key);
+        if (m_mesh_cache_queue.size() > MESH_CACHE_SIZE) {
+            cerr << "mesh cache full, removing oldest\n";
+            m_mesh_cache.erase(m_mesh_cache_queue.front());
+            m_mesh_cache_queue.pop();
+        }
+    } else {
+        data = m_mesh_cache.at(key);
+    }
+
 }
 
 void AbcMesh::read_data(MeshData &data, double seconds)

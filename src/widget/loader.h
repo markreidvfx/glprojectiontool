@@ -12,8 +12,11 @@
 #include "../scene/scene.h"
 
 #include <vector>
+#include <queue>
 
 typedef std::vector < float > FloatImage;
+
+#define IMAGEPLANE_CACHE_SIZE 500
 
 class Loader : public QObject
 {
@@ -51,6 +54,8 @@ private:
     QMutex m_lock;
     QList< QPair < QString, int > > m_imagelane_list;
     Scene *m_scene;
+    std::map<std::string, FloatImageData> m_imageplane_cache;
+    std::queue<std::string> m_imageplane_cache_queue;
 
 };
 

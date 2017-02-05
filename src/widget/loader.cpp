@@ -196,21 +196,34 @@ void Loader::load_imageplane()
     m_imagelane_list.clear();
     locker.unlock();
 
-    std::cerr << "image plane " << p.first.toStdString() << " " << p.second << "\n";
+    std::string path = p.first.toStdString();
+
+    std::cerr << "image plane " << path << " " << p.second << "\n";
     //QThread::currentThread()->sleep(3);
-
-    std::vector<float> data;
-
-    int width;
-    int height;
 
     double seconds = p.second / 24.0;
 
     FloatImageData image;
-    std::cerr << "reading \n";
-    bool loaded = read_image(p.first.toStdString(), image);
+    bool loaded = true;
+    if (m_imageplane_cache.find(path) == m_imageplane_cache.end()) {
+        std::cerr << "reading image\n";
+        loaded = read_image(p.first.toStdString(), image);
+        if (loaded) {
+            m_imageplane_cache[path] = image;
+            m_imageplane_cache_queue.push(path);
+            if (m_imageplane_cache_queue.size() > IMAGEPLANE_CACHE_SIZE ) {
+                std::cerr << "imageplane cache full removing oldest\n";
+                m_imageplane_cache.erase(m_imageplane_cache_queue.front() );
+                m_imageplane_cache_queue.pop();
+            }
+        }
+    } else {
+        std::cerr << "using image cache\n";
+        image = m_imageplane_cache.at(path);
+    }
 
     m_scene->caculate(seconds);
+
     // this signal should block
     emit imageplane_ready(image.data, image.width, image.height, seconds, loaded);
 }
