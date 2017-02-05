@@ -208,9 +208,9 @@ void Loader::load_imageplane()
 
     FloatImageData image;
     std::cerr << "reading \n";
-    read_image(p.first.toStdString(), image);
+    bool loaded = read_image(p.first.toStdString(), image);
 
     m_scene->caculate(seconds);
     // this signal should block
-    emit imageplane_ready(image.data, image.width, image.height, seconds);
+    emit imageplane_ready(image.data, image.width, image.height, seconds, loaded);
 }

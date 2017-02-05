@@ -22,6 +22,7 @@ public:
     void setZ(float value){m_z = value;}
     void setAlpha(float value =1.0) {m_alpha = value;}
     void setViewportMatrix(glm::mat4 &m) {m_viewport_matrix = m;}
+    void setLoaded(bool loaded);
 
 private:
     void loadShader();
@@ -30,6 +31,7 @@ private:
 
     float m_z;
     float m_alpha;
+    int m_image_error;
 
     unsigned int m_programId;
     unsigned int m_textureId;
@@ -39,6 +41,7 @@ private:
     unsigned int m_textureSamplerLocation;
     unsigned int m_z_pos_loc;
     unsigned int m_alpha_loc;
+    unsigned int m_image_error_loc;
     unsigned int m_viewport_matrix_loc;
     unsigned int m_texture_loc;
 

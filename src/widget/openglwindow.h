@@ -40,7 +40,7 @@ private:
 
 public slots:
     void open_scene_file(QString path);
-    void set_imageplane_data(const FloatImage &data, int width, int height, double seconds);
+    void set_imageplane_data(const FloatImage &data, int width, int height, double seconds, bool loaded);
     void set_template_texture(const FloatImage &data, int width, int height);
 
     void render_template_data_tiled(std::vector<FloatImageData> &color_data,

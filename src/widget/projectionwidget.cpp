@@ -15,8 +15,8 @@ ProjectionWidget::ProjectionWidget(QWidget *parent) : QWidget(parent), m_loader_
     QSize windowSize(400, 320);
     glwidget->setMinimumSize(windowSize);
 
-    QObject::connect(loader, SIGNAL(imageplane_ready(const FloatImage&,int,int,double)),
-                     glwidget, SLOT(set_imageplane_data(const FloatImage&,int,int,double)),
+    QObject::connect(loader, SIGNAL(imageplane_ready(const FloatImage&,int,int,double,bool)),
+                     glwidget, SLOT(set_imageplane_data(const FloatImage&,int,int,double,bool)),
                      Qt::BlockingQueuedConnection);
 
     QObject::connect(loader, SIGNAL(template_texture_ready(const FloatImage&,int,int)),

@@ -65,7 +65,7 @@ public:
 
     bool frame_range_changed;
 
-    void set_imageplane_data(const std::vector<float> &data, int width, int height, double seconds);
+    void set_imageplane_data(const std::vector<float> &data, int width, int height, double seconds, bool loaded);
     void set_template_texture(const std::vector<float> &data, int width, int height);
 
     void render_template_data_tiled(std::vector<FloatImageData> &color_data,

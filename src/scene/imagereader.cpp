@@ -101,9 +101,9 @@ bool read_image(const std::string &path,
 
 }
 
-void read_image(const std::string &path, FloatImageData &image)
+bool read_image(const std::string &path, FloatImageData &image)
 {
-    read_image(path, image.data, image.width, image.height);
+    return read_image(path, image.data, image.width, image.height);
 }
 
 static Magick::Image montage_tiles(const std::vector<FloatImageData> &data, int tiles)

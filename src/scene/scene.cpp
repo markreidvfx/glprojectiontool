@@ -214,11 +214,12 @@ void Scene::update(double seconds)
 
 }
 
-void Scene::set_imageplane_data(const std::vector <float> &data, int width, int height, double seconds)
+void Scene::set_imageplane_data(const std::vector <float> &data, int width, int height, double seconds, bool loaded)
 {
 
     m_imageplane->update();
     m_imageplane->setImageData(width, height, data);
+    m_imageplane->setLoaded(loaded);
     update(seconds);
 }
 

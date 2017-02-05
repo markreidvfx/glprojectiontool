@@ -47,6 +47,7 @@ ImagePlane::ImagePlane() : m_z(0.9999f), m_alpha(1.0f)
     normalBufferId = 0;
     m_textureId = 0;
     vertexArrayId = 0;
+    m_image_error = 1;
 
 }
 
@@ -85,6 +86,7 @@ void ImagePlane::loadShader()
     m_viewport_matrix_loc = glGetUniformLocation(m_programId, "viewport_matrix");
 
     m_texture_loc = glGetUniformLocation(m_programId, "image_sampler");
+    m_image_error_loc = glGetUniformLocation(m_programId, "image_error");
 
 
     std::cerr << "loaded imageplane shader\n";
@@ -110,6 +112,14 @@ void ImagePlane::setImageData(const int width, const int height,
 
     glBindVertexArray(0);
 
+}
+
+void ImagePlane::setLoaded(bool loaded)
+{
+    if (loaded)
+        m_image_error = 0;
+    else
+        m_image_error = 1;
 }
 
 void ImagePlane::update()
@@ -187,6 +197,7 @@ void ImagePlane::draw()
     // set uniforms
     glUniform1fv(m_z_pos_loc, 1, &m_z);
     glUniform1fv(m_alpha_loc, 1, &m_alpha);
+    glUniform1i(m_image_error_loc, m_image_error);
     glUniformMatrix4fv(m_viewport_matrix_loc, 1, GL_FALSE, &m_viewport_matrix[0][0]);
     //glUniform1i(m_texture_loc, 0);
     glActiveTexture(GL_TEXTURE0);
