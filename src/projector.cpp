@@ -67,6 +67,9 @@ Projector::Projector(QWidget *parent) :
     connect(ui->imageplane_path, SIGNAL(editingFinished()),
             this, SLOT(update_all()));
 
+    connect(ui->flipbook_button, SIGNAL(clicked()),
+            this, SLOT(flipbook()));
+
     connect(ui->add_current_frame, SIGNAL(clicked(bool)),
             this, SLOT(add_current_frame()));
 
@@ -540,6 +543,18 @@ static void reveal_file(const QString &file_path)
 #endif
 
 
+}
+
+void Projector::flipbook()
+{
+    QString path = ui->imageplane_path->text();
+    QString rv_command = "-play " + path;
+    QString rvlink = "rvlink://baked/" + rv_command.toLatin1().toHex();
+
+    std::cerr << rvlink.toStdString() << "\n";
+    bool result = QDesktopServices::openUrl(rvlink);
+    if (!result)
+        error_message("Unable to open rvlink: \n" + rvlink);
 }
 
 void Projector::projection_template_complete(QString imageplane, QString dest, int frame)

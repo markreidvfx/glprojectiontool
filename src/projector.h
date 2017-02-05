@@ -61,6 +61,7 @@ private slots:
     void browse_project_clicked() {browse_file(Project);}
     void browse_mesh_clicked(){browse_file(AddMesh);}
     void browse_template_texure_clicked(){browse_file(TemplateTexture);}
+    void flipbook();
 
     void projection_template_complete(QString imageplane, QString dest, int frame);
     void handle_files(const QList<QUrl> &url_list);

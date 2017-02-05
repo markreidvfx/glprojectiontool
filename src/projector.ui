@@ -85,6 +85,13 @@
            </property>
           </widget>
          </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="flipbook_button">
+           <property name="text">
+            <string>Flipbook</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
@@ -248,7 +255,16 @@
               <string>Template</string>
              </attribute>
              <layout class="QVBoxLayout" name="verticalLayout_2">
-              <property name="margin">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
                <number>0</number>
               </property>
               <item>
@@ -314,7 +330,16 @@
               <property name="spacing">
                <number>0</number>
               </property>
-              <property name="margin">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
                <number>0</number>
               </property>
               <item>
