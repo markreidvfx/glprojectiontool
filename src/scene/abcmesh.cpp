@@ -357,19 +357,20 @@ void AbcMesh::subdivide(std::vector<glm::vec3> &vertices,
     primvarRefiner.InterpolateFaceVarying(maxlevel, srcUV, fineUVBuffer, channelUV);
     primvarRefiner.InterpolateFaceVarying(maxlevel, srcNormal, fineNormalBuffer, channelNormal);
 
-    Far::TopologyLevel const & refLastLevel = m_refiner->GetLevel(maxlevel);
-
-    int nfaces = refLastLevel.GetNumFaces();
-
-
-    std::map<PackedVertex, unsigned int> vertex_pack_map;
-
     int total_indice_count = 0;
     int total_optimised_count = 0;
 
+    Far::TopologyLevel const & refLastLevel = m_refiner->GetLevel(maxlevel);
+    std::map<PackedVertex, unsigned int> vertex_pack_map;
+
+
+    // something doesn't initalize if we don't call this...
+    refLastLevel.GetNumFVarValues(channelUV);
+    refLastLevel.GetNumFVarValues(channelNormal);
+
     // Triangulation
 
-    for (int face = 0; face < nfaces; ++face) {
+    for (int face = 0; face < refLastLevel.GetNumFaces(); ++face) {
 
         Far::ConstIndexArray fverts   = refLastLevel.GetFaceVertices(face);
         Far::ConstIndexArray fuvs     = refLastLevel.GetFaceFVarValues(face, channelUV);
@@ -414,12 +415,12 @@ void AbcMesh::subdivide(std::vector<glm::vec3> &vertices,
 
     }
 
-    cerr <<  "Vertexs             : " << refLastLevel.GetNumVertices() << "\n";
-    cerr <<  "FVar values uvs     : " << refLastLevel.GetNumFVarValues(channelUV) << "\n";
-    cerr <<  "FVar values normals : " << refLastLevel.GetNumFVarValues(channelNormal) << "\n";
+    //    cerr <<  "Vertexs             : " << refLastLevel.GetNumVertices() << "\n";
+    //    cerr <<  "FVar values uvs     : " << refLastLevel.GetNumFVarValues(channelUV) << "\n";
+    //    cerr <<  "FVar values normals : " << refLastLevel.GetNumFVarValues(channelNormal) << "\n";
 
-    cerr << "total " << total_indice_count << " opt to -> " << vertices.size() << "\n";
-    cerr << "    uvs " << uvs.size() << "\n";
+//    cerr << "total " << total_indice_count << " opt to -> " << vertices.size() << "\n";
+//    cerr << "    uvs " << uvs.size() << "\n";
 
 //    for (int i=0; i<uvs.size(); i++) {
 //        cerr << "   " << uvs[i].x << " " << uvs[i].y << "\n";
