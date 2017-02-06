@@ -548,8 +548,8 @@ static void reveal_file(const QString &file_path)
 void Projector::flipbook()
 {
     QString path = ui->imageplane_path->text();
-    QString rv_command = "-play " + path;
-    QString rvlink = "rvlink://baked/" + rv_command.toLatin1().toHex();
+    QString rv_command = "-play " +  path;
+    QString rvlink = "rvlink://baked/" + rv_command.replace("%", "%25").toUtf8().toHex();
 
     std::cerr << rvlink.toStdString() << "\n";
     bool result = QDesktopServices::openUrl(rvlink);
