@@ -391,11 +391,11 @@ void AbcMesh::subdivide(std::vector<glm::vec3> &vertices,
                                             };
 
                 unsigned int found_index = 0;
-                bool found = get_similar_vertex_index(packed,
-                                                      vertex_pack_map,
-                                                      found_index);
+//                bool found = get_similar_vertex_index(packed,
+//                                                      vertex_pack_map,
+//                                                      found_index);
                 total_indice_count++;
-//                found = false;
+                bool found = false;
                 if (found) {
                     total_optimised_count++;
                     indices.push_back(found_index);
@@ -406,7 +406,7 @@ void AbcMesh::subdivide(std::vector<glm::vec3> &vertices,
                     normals.push_back(packed.normal);
                     unsigned int new_index = vertices.size()-1;
                     indices.push_back(new_index);
-                    vertex_pack_map[packed] = new_index;
+//                    vertex_pack_map[packed] = new_index;
                 }
             }
 
