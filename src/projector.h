@@ -77,7 +77,8 @@ signals:
                           QString project,
                           QString output_dir,
                           QString guides,
-                          int frame);
+                          int frame,
+                          QString out_format);
 
     void request_template_texture(QString path);
     void set_subdivision_level(int value);

@@ -42,7 +42,7 @@ signals:
 public slots:
     void wait_for_condition();
     void set_template_texture(QString path);
-    void create_template(QString imageplane_path, QString project, QString  output_dir, QString guides, int frame);
+    void create_template(QString imageplane_path, QString project, QString  output_dir, QString guides, int frame, QString out_format);
     void set_subdivision_level(int value);
     void open_scene_file(QString path){emit request_open_scene_file(path);}
     void clear(){emit request_clear();}

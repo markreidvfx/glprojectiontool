@@ -99,8 +99,8 @@ Projector::Projector(QWidget *parent) :
 
     connect(ui->export_templates, SIGNAL(clicked(bool)),
             this, SLOT(create_templates()));
-    connect(this,  SIGNAL(request_template(QString, QString, QString, QString, int)),
-            ui->projector->loader, SLOT(create_template(QString, QString, QString, QString, int)));
+    connect(this,  SIGNAL(request_template(QString, QString, QString, QString, int, QString)),
+            ui->projector->loader, SLOT(create_template(QString, QString, QString, QString, int, QString)));
 
     connect(ui->projector->loader, SIGNAL(projection_template_complete(QString,QString,int)),
             this, SLOT(projection_template_complete(QString,QString,int)));
@@ -580,6 +580,7 @@ void Projector::next_template()
     QString guides = ui->template_texture_path->text();
 
     QString output_dir = ui->output_dir->text();
+    QString output_format = ui->output_file_format->currentText();
 
     //dest.sprintf("test.%04d.psd", frame);
 
@@ -593,7 +594,7 @@ void Projector::next_template()
     show_progress(message, 0, 100, 0);
     QTimer::singleShot(50, this, SLOT(check_progress()));
 
-    emit request_template(imageplane, project, output_dir, guides, frame);
+    emit request_template(imageplane, project, output_dir, guides, frame, output_format);
 }
 
 void Projector::check_progress()

@@ -93,7 +93,7 @@ static QDir stringlist_join(QString root, QStringList subdirs)
     return dest_dir;
 }
 
-void Loader::create_template(QString imageplane_path, QString project, QString  output_dir, QString guides, int frame)
+void Loader::create_template(QString imageplane_path, QString project, QString  output_dir, QString guides, int frame, QString out_format)
 {
 
     std::vector<FloatImageData> color_tiles;
@@ -145,11 +145,18 @@ void Loader::create_template(QString imageplane_path, QString project, QString  
     QDir data_root = template_root.filePath("data");
     template_root.mkdir("work");
     QDir work_root = template_root.filePath("work");
-    QString dest_name = basename + ".psd";
+
+    QString ext = out_format;
+
+    if (out_format == ".tif") {
+        ext = ".layered.tif";
+    }
+
+    QString dest_name = basename + ext;
 
     int count = 1;
     while (work_root.exists(dest_name)) {
-        dest_name.sprintf("%s-%d.psd", basename.toStdString().c_str(), count);
+        dest_name.sprintf("%s-%d%s", basename.toStdString().c_str(), ext.toStdString().c_str(), count);
         count++;
     }
 
