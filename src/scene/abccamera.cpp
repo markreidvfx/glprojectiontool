@@ -38,7 +38,9 @@ void AbcCamera::update(double seconds)
     m_scale = scale;
 
     CameraSample sampler;
-    m_camera.getSchema().get(sampler);
+    ISampleSelector sel( seconds );
+
+    m_camera.getSchema().get(sampler, sel);
 
 
     //cerr << "t: " << glm::to_string(m_translation) << "\n";
