@@ -73,6 +73,7 @@ CommandLineParseResult parseCommandLine(QCommandLineParser &parser, ProjectorOpt
 
 int main(int argc, char *argv[])
 {
+   // QApplication::setDesktopSettingsAware(false);
     Application app(argc, argv);
 
     app.setApplicationName("glprojectiontool");
@@ -91,6 +92,19 @@ int main(int argc, char *argv[])
     format.setSamples(8);
     format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
     QSurfaceFormat::setDefaultFormat(format);
+
+    float hidpi_scale = 1;
+    QByteArray data = qgetenv("GL_HIDPI_SCALE");
+    if (!data.isEmpty()) {
+      QString data_str(data.constData());
+      std::cerr << "GL_HIDPI_SCALE=" << data_str.toStdString() << "\n";
+      bool ok;
+      hidpi_scale = data_str.toFloat(&ok);
+      if (!ok) {
+        std::cerr << "   GL_HIDPI_SCALE set incorrectly, defaulting to 1.0" << "\n";
+        hidpi_scale = 1;
+      }
+  }
 
 
     QCommandLineParser parser;
@@ -116,6 +130,8 @@ int main(int argc, char *argv[])
     }
 
     Projector widget;
+
+    widget.set_scale(hidpi_scale, hidpi_scale);
     //widget.setAttribute(Qt::WA_NoSystemBackground);
     //widget.setAttribute(Qt::WA_OpaquePaintEvent);
     //widget.setAttribute(Qt::WA_NativeWindow);

@@ -4,10 +4,12 @@
 #include <iostream>
 
 
-OpenGLWidget::OpenGLWidget(Scene *scene, QWidget *parent)
+OpenGLWidget::OpenGLWidget(Scene *scene, QWidget *parent, float scale)
     : QOpenGLWidget(parent)
 {
     m_scene = scene;
+    m_scaleX = scale;
+    m_scaleY = scale;
 }
 
 OpenGLWidget::~OpenGLWidget()
@@ -173,8 +175,8 @@ void OpenGLWidget::initializeGL()
 
 void OpenGLWidget::resizeGL(int w, int h)
 {
-    m_scene->camera->setViewportSize(glm::vec2(w,h));
-    glViewport(0, 0, w, h);
+    m_scene->camera->setViewportSize(glm::vec2(w*m_scaleX,h*m_scaleY));
+    glViewport(0, 0, w*m_scaleX, h*m_scaleY);
 }
 
 void OpenGLWidget::paintGL()

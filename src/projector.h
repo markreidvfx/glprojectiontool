@@ -39,6 +39,7 @@ public slots:
 
     void set_imageplane(const QString &path);
     void set_project(const QString &path);
+    void set_scale(float x, float y);
     void create_templates();
 
     void hide_progress();

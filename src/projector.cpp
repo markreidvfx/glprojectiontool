@@ -138,6 +138,11 @@ void Projector::open(const QString &path)
     //ui->projector->glwidget->open_abc(path);
 }
 
+void Projector::set_scale(float x, float y)
+{
+  ui->projector->glwidget->set_scale(x, y);
+}
+
 void Projector::keyPressEvent(QKeyEvent * event)
 {
     if (event->key() == Qt::Key_1){

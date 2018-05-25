@@ -20,12 +20,14 @@ class OpenGLWidget : public QOpenGLWidget
     Q_OBJECT
 
 public:
-    OpenGLWidget(Scene *scene, QWidget *parent = 0);
+    OpenGLWidget(Scene *scene, QWidget *parent = 0, float scale = 1);
     ~OpenGLWidget();
 
     void initializeGL() Q_DECL_OVERRIDE;
     void resizeGL(int w, int h) Q_DECL_OVERRIDE;
     void paintGL() Q_DECL_OVERRIDE;
+
+    void set_scale(float x, float y) {m_scaleX = x; m_scaleY = y;}
 
 private:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
@@ -35,6 +37,9 @@ private:
     QFlags<Qt::MouseButton> m_mouseButtons;
     glm::vec2 m_mousePressPosition;
     QTime m_mouseLastTime;
+
+    float m_scaleX;
+    float m_scaleY;
 
     Scene *m_scene;
 
