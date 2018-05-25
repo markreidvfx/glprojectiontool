@@ -419,8 +419,8 @@ void AbcMesh::subdivide(std::vector<glm::vec3> &vertices,
     //    cerr <<  "FVar values uvs     : " << refLastLevel.GetNumFVarValues(channelUV) << "\n";
     //    cerr <<  "FVar values normals : " << refLastLevel.GetNumFVarValues(channelNormal) << "\n";
 
-//    cerr << "total " << total_indice_count << " opt to -> " << vertices.size() << "\n";
-//    cerr << "    uvs " << uvs.size() << "\n";
+   cerr << "total " << total_indice_count << " opt to -> " << vertices.size() << "\n";
+   cerr << "    uvs " << uvs.size() << "\n";
 
 //    for (int i=0; i<uvs.size(); i++) {
 //        cerr << "   " << uvs[i].x << " " << uvs[i].y << "\n";
