@@ -62,6 +62,7 @@ bool write_image_blob(const char *blob_data, int blob_size, const std::string &p
 
     image.depth(8);
     image.write(path);
+    return true;
 }
 
 bool read_image(const std::string &path,
@@ -192,8 +193,15 @@ void write_template_psd(const std::string &imageplane,
     p.set_value(58);
 
     Magick::Geometry geo("1920x1080!");
+    Magick::Image empty(geo,"rgba(0,0,0,0.0)" );
 
-
+    if (imageplane.empty()) {
+        plane = empty;
+    } else {
+        plane.read(imageplane);
+        geo = plane.size();
+        geo.aspect(true);
+    }
 
     alpha.channel(Magick::RedChannel);
     color.composite(alpha, 0, 0, Magick::CopyOpacityCompositeOp);
@@ -203,7 +211,6 @@ void write_template_psd(const std::string &imageplane,
     //contour.flip();
     contour.resize(geo);
     p.set_value(65);
-    Magick::Image empty(geo,"rgba(0,0,0,0.0)" );
 
     prep_image(empty, "clones");
     p.set_value(68);
@@ -212,11 +219,6 @@ void write_template_psd(const std::string &imageplane,
     prep_image(contour, "contour");
 
     p.set_value(77);
-
-    if (imageplane.empty())
-        plane = empty;
-    else
-        plane.read(imageplane);
 
     prep_image(plane, "background");
     p.set_value(80);
