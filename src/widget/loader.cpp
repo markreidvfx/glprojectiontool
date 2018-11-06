@@ -156,7 +156,7 @@ void Loader::create_template(QString imageplane_path, QString project, QString  
 
     int count = 1;
     while (work_root.exists(dest_name)) {
-        dest_name.sprintf("%s-%d%s", basename.toStdString().c_str(), ext.toStdString().c_str(), count);
+        dest_name.sprintf("%s-%d%s", basename.toStdString().c_str(), count, ext.toStdString().c_str());
         count++;
     }
 
