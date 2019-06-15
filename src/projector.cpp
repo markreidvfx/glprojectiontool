@@ -554,7 +554,7 @@ void Projector::flipbook()
 {
     QString path = ui->imageplane_path->text();
     QString rv_command = "-play " +  path;
-    QString rvlink = "rvlink://baked/" + rv_command.replace("%", "%25").toUtf8().toHex();
+    QString rvlink = "rvlink://baked/" + rv_command.toUtf8().toHex();
 
     std::cerr << rvlink.toStdString() << "\n";
     bool result = QDesktopServices::openUrl(rvlink);
